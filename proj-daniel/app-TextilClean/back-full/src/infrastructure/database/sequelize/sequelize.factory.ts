@@ -2,12 +2,14 @@ import { Sequelize } from 'sequelize-typescript';
 import { getDbBlock } from '../../../config/environment/db-env.js';
 import { IEnvConfig } from '../../../config/environment/env.interface.js';
 import { ClientModel } from '../../../features/business/clients/infrastructure/persistence/models/client.model.js';
+import { ProductTypeModel } from '../../../features/business/product-types/infrastructure/persistence/models/product-type.model.js';
 
 // TODO: importa aquí los modelos a medida que crees cada feature.
 // En ISS-03..ISS-06 se añaden los modelos de business.
 
 export const ALL_MODELS: any[] = [
   ClientModel,
+  ProductTypeModel,
 ];
 
 export function sequelizeFactory(cfg: IEnvConfig): Sequelize {
