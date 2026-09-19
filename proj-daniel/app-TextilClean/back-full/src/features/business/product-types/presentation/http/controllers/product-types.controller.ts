@@ -12,7 +12,7 @@ import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { CreateProductTypeDto } from '../../../application/dto/create-product-type.dto.js';
 import { ProductTypeMapper } from '../../../application/mappers/product-type.mapper.js';
 import { CreateProductTypeUseCase } from '../../../application/use-cases/create-product-type.use-case.js';
-import { GetProductTypeByIdUseCase } from '../../../application/use-casetype-by-id.use-case.js';
+import { GetProductTypeByIdUseCase } from '../../../application/use-cases/get-product-type-by-id.use-case.js';
 import { ListProductTypesUseCase } from '../../../application/use-cases/list-product-types.use-case.js';
 
 @ApiTags('product-types')
