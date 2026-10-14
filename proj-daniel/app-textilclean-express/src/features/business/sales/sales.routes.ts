@@ -1,22 +1,23 @@
 import { Application } from "express";
 import { SalesController } from "./sales.controller";
+import { authenticate, authorize } from "../../auth/access";
 
 export class SalesRoutes {
   public salesController: SalesController = new SalesController();
 
   public routes(app: Application): void {
-    app.route("/api/ventas").get(this.salesController.getAll.bind(this.salesController));
-    app.route("/api/ventas/:id").get(this.salesController.getOne.bind(this.salesController));
-    app.route("/api/ventas").post(this.salesController.create.bind(this.salesController));
+    app.route("/api/ventas").get(authenticate, authorize, this.salesController.getAll.bind(this.salesController));
+    app.route("/api/ventas/:id").get(authenticate, authorize, this.salesController.getOne.bind(this.salesController));
+    app.route("/api/ventas").post(authenticate, authorize, this.salesController.create.bind(this.salesController));
     app
       .route("/api/ventas/:id")
-      .put(this.salesController.updatePut.bind(this.salesController))
-      .patch(this.salesController.updatePatch.bind(this.salesController));
+      .put(authenticate, authorize, this.salesController.updatePut.bind(this.salesController))
+      .patch(authenticate, authorize, this.salesController.updatePatch.bind(this.salesController));
     app
       .route("/api/ventas/:id")
-      .delete(this.salesController.deletePhysical.bind(this.salesController));
+      .delete(authenticate, authorize, this.salesController.deletePhysical.bind(this.salesController));
     app
       .route("/api/ventas/:id/deactivate")
-      .patch(this.salesController.deleteLogical.bind(this.salesController));
+      .patch(authenticate, authorize, this.salesController.deleteLogical.bind(this.salesController));
   }
 }

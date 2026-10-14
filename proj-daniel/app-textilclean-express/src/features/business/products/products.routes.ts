@@ -1,5 +1,6 @@
 import { Application } from "express";
 import { ProductsController } from "./products.controller";
+import { authenticate, authorize } from "../../auth/access";
 
 export class ProductsRoutes {
   public productsController: ProductsController = new ProductsController();
@@ -7,27 +8,27 @@ export class ProductsRoutes {
   public routes(app: Application): void {
     app
       .route("/api/productos")
-      .get(this.productsController.getAll.bind(this.productsController));
+      .get(authenticate, authorize, this.productsController.getAll.bind(this.productsController));
 
     app
       .route("/api/productos/:id")
-      .get(this.productsController.getOne.bind(this.productsController));
+      .get(authenticate, authorize, this.productsController.getOne.bind(this.productsController));
 
     app
       .route("/api/productos")
-      .post(this.productsController.create.bind(this.productsController));
+      .post(authenticate, authorize, this.productsController.create.bind(this.productsController));
 
     app
       .route("/api/productos/:id")
-      .put(this.productsController.updatePut.bind(this.productsController))
-      .patch(this.productsController.updatePatch.bind(this.productsController));
+      .put(authenticate, authorize, this.productsController.updatePut.bind(this.productsController))
+      .patch(authenticate, authorize, this.productsController.updatePatch.bind(this.productsController));
 
     app
       .route("/api/productos/:id")
-      .delete(this.productsController.deletePhysical.bind(this.productsController));
+      .delete(authenticate, authorize, this.productsController.deletePhysical.bind(this.productsController));
 
     app
       .route("/api/productos/:id/deactivate")
-      .patch(this.productsController.deleteLogical.bind(this.productsController));
+      .patch(authenticate, authorize, this.productsController.deleteLogical.bind(this.productsController));
   }
 }
