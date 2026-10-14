@@ -1,0 +1,15 @@
+### Feature Client — CREATE
+@baseUrl = http://localhost:4000
+
+### CREATE
+POST {{baseUrl}}/api/clientes
+Content-Type: application/json
+
+{
+  "name": "Ana Pérez",
+  "address": "Calle 10 #20-30",
+  "phone": "3001234567",
+  "email": "ana.perez@example.com",
+  "password": "Password123!",
+  "status": "active"
+}

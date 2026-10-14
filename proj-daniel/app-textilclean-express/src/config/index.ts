@@ -4,24 +4,7 @@ import morgan from "morgan";
 var cors = require("cors");
 import { sequelize, getDatabaseInfo, testConnection } from "../database/db";
 import "../features/business/clients/client.model";
-import "../features/business/product-types/product-type.model";
-import "../features/business/products/product.model";
-import "../features/business/sales/sale.model";
-import "../features/business/product-sales/product-sale.model";
-import "../features/business/products/products.associations";
-import "../features/business/sales/sales.associations";
-import "../features/business/product-sales/product-sales.associations";
-// Fase II — Auth con RBAC: primero los seis modelos, después las asociaciones
-// (las asociaciones referencian los modelos, no al revés).
-import "../features/auth/users/user.model";
-import "../features/auth/roles/role.model";
-import "../features/auth/resources/resource.model";
-import "../features/auth/role-users/role-user.model";
-import "../features/auth/resource-roles/resource-role.model";
-import "../features/auth/refresh-tokens/refresh-token.model";
-import "../features/auth/rbac.associations";
 import { Routes } from "../routes/index";
-import { setupSwagger } from "../swagger/index";
 
 dotenv.config();
 
@@ -34,7 +17,6 @@ export class App {
     this.settings();
     this.middlewares();
     this.routes();
-    this.docs();
     this.errorHandling();
   }
 
@@ -50,25 +32,21 @@ export class App {
   }
 
   private routes(): void {
-    // Fase I — Business
+    // Fase I — Business (features activos en este momento del lab)
     this.routePrv.clientsRoutes.routes(this.app);
-    this.routePrv.productTypesRoutes.routes(this.app);
-    this.routePrv.productsRoutes.routes(this.app);
-    this.routePrv.salesRoutes.routes(this.app);
-    this.routePrv.productSalesRoutes.routes(this.app);
 
-    // Fase II — Auth con RBAC
-    this.routePrv.sessionRoutes.routes(this.app);
-    this.routePrv.refreshTokensRoutes.routes(this.app);
-    this.routePrv.usersRoutes.routes(this.app);
-    this.routePrv.rolesRoutes.routes(this.app);
-    this.routePrv.resourcesRoutes.routes(this.app);
-    this.routePrv.roleUsersRoutes.routes(this.app);
-    this.routePrv.resourceRolesRoutes.routes(this.app);
-  }
-
-  private docs(): void {
-    setupSwagger(this.app);
+    // Las siguientes features se añaden en ISS-06…08 y Fase II:
+    // this.routePrv.productTypesRoutes.routes(this.app);
+    // this.routePrv.productsRoutes.routes(this.app);
+    // this.routePrv.salesRoutes.routes(this.app);
+    // this.routePrv.productSalesRoutes.routes(this.app);
+    // this.routePrv.sessionRoutes.routes(this.app);
+    // this.routePrv.refreshTokensRoutes.routes(this.app);
+    // this.routePrv.usersRoutes.routes(this.app);
+    // this.routePrv.rolesRoutes.routes(this.app);
+    // this.routePrv.resourcesRoutes.routes(this.app);
+    // this.routePrv.roleUsersRoutes.routes(this.app);
+    // this.routePrv.resourceRolesRoutes.routes(this.app);
   }
 
   private errorHandling(): void {

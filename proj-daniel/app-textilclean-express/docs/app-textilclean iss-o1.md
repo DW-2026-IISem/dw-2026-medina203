@@ -26,7 +26,7 @@ npm init -y
 mkdir -p docs
 ```
 
-![](imagenes/Captura de pantalla 2026-10-05 220730 - copia.png){width="475"}
+![](imagenes/Captura%20de%20pantalla%202026-10-05%20220730%20-%20copia.png){width="475"}
 
 **PARCHE — `package.json` ya existe (lo creó `npm init -y`).**
 
@@ -50,7 +50,7 @@ Verifica que los scripts quedaron registrados:
 node -e "const p=require('./package.json'); console.log(p.scripts)"
 ```
 
-![](imagenes/Captura de pantalla 2026-10-06 204518.png)
+![](imagenes/Captura%20de%20pantalla%202026-10-06%20204518.png)
 
 ## 2.2 Estructura de carpetas (features)
 
@@ -67,7 +67,7 @@ mkdir -p \
   src/features/business/clients
 ```
 
-![](imagenes/Captura de pantalla 2026-10-06 204842.png)
+![](imagenes/Captura%20de%20pantalla%202026-10-06%20204842.png)
 
 Árbol esperado:
 
@@ -93,7 +93,7 @@ Verifica el árbol creado:
 find src -type d | sort
 ```
 
-![](imagenes/Captura de pantalla 2026-10-06 221925.png)
+![](imagenes/Captura%20de%20pantalla%202026-10-06%20221925.png)
 
 ------------------------------------------------------------------------
 
@@ -105,7 +105,7 @@ Instala dependencias de producción: Express 5, cors, dotenv y morgan.
 npm install express@^5.2.1 cors@^2.8.6 dotenv@^17.4.2 morgan@^1.12.1
 ```
 
-![](imagenes/Captura de pantalla 2026-10-06 222028.png)
+![](imagenes/Captura%20de%20pantalla%202026-10-06%20222028.png)
 
 Instala dependencias de desarrollo: TypeScript 5.9.x (por compatibilidad con ts-node), ts-node, nodemon y los `@types/*`.
 
@@ -115,7 +115,7 @@ npm install -D typescript@~5.9.2 ts-node@^10.9.2 nodemon@^3.1.14 \
   @types/cors@^2.8.19 @types/morgan@^1.9.10
 ```
 
-![](imagenes/Captura de pantalla 2026-10-06 222219.png)
+![](imagenes/Captura%20de%20pantalla%202026-10-06%20222219.png)
 
 Verifica las dependencias instaladas a primer nivel:
 
@@ -123,13 +123,13 @@ Verifica las dependencias instaladas a primer nivel:
 npm ls --depth=0
 ```
 
-![](imagenes/Captura de pantalla 2026-10-06 222558.png)
+![](imagenes/Captura%20de%20pantalla%202026-10-06%20222558.png)
 
 ------------------------------------------------------------------------
 
 ## 2.4 TypeScript (tsconfig.json)
 
-Crea el archivo `tsconfig.json` con la configuración estricta del lab (`rootDir: ./src`, `outDir: ./dist`, `strict: true`).![](imagenes/Captura de pantalla 2026-10-06 223914.png)
+Crea el archivo `tsconfig.json` con la configuración estricta del lab (`rootDir: ./src`, `outDir: ./dist`, `strict: true`).![](imagenes/Captura%20de%20pantalla%202026-10-06%20223914.png)
 
 ``` bash
 : > tsconfig.json
@@ -157,7 +157,7 @@ cat >> tsconfig.json << 'EOF'
 EOF
 ```
 
-![](imagenes/Captura de pantalla 2026-10-06 223914.png)
+![](imagenes/Captura%20de%20pantalla%202026-10-06%20223914.png)
 
 Verifica que el archivo existe y muestra la configuración resuelta:
 
@@ -165,7 +165,7 @@ Verifica que el archivo existe y muestra la configuración resuelta:
 test -f tsconfig.json && npx tsc --showConfig | head -20
 ```
 
-![](imagenes/Captura de pantalla 2026-10-06 224502.png)
+![](imagenes/Captura%20de%20pantalla%202026-10-06%20224502.png)
 
 ------------------------------------------------------------------------
 
@@ -189,7 +189,7 @@ main();
 EOF
 ```
 
-![](imagenes/Captura de pantalla 2026-10-06 224601.png)
+![](imagenes/Captura%20de%20pantalla%202026-10-06%20224601.png)
 
 ### 2.5.2 `src/config/index.ts` (esqueleto)
 
@@ -327,7 +327,7 @@ export class App {
 EOF
 ```
 
-![](imagenes/Captura de pantalla 2026-10-06 224730.png)
+![](imagenes/Captura%20de%20pantalla%202026-10-06%20224730.png)
 
 ------------------------------------------------------------------------
 
@@ -340,7 +340,7 @@ npx tsc --noEmit
 find src -type f | sort
 ```
 
-![](imagenes/Captura de pantalla 2026-10-06 224759.png)
+![](imagenes/Captura%20de%20pantalla%202026-10-06%20224759.png)
 
 los errores mostrados son por archivos que no se han creado y que se solucionarán siguiendo mas adelante con los issues proximos.
 

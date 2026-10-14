@@ -1,25 +1,14 @@
 # 🛠 ISS-03 · Feature Client (CRUD por capas) — app-textilclean-express
 
-**Proyecto:** app-textilclean-express — Express 5 + TypeScript + Sequelize, arquitectura por features.
-**Fase I:** Business (sin auth ni roles).
-**Feature / tabla:** `clients` → `clients/`
-**API:** `/api/clientes`
-**Bloqueado por:** ISS-02 — Infraestructura de base de datos.
-**Habilita:** ISS-04 — Seeders con Faker · ISS-05 — Swagger / OpenAPI.
+**Proyecto:** app-textilclean-express — Express 5 + TypeScript + Sequelize, arquitectura por features. **Fase I:** Business (sin auth ni roles). **Feature / tabla:** `clients` → `clients/` **API:** `/api/clientes` **Bloqueado por:** ISS-02 — Infraestructura de base de datos. **Habilita:** ISS-04 — Seeders con Faker · ISS-05 — Swagger / OpenAPI.
 
-**Variantes internas (en orden):**
-- ISS-03-A fundación
-- ISS-03-B getAll / getOne
-- ISS-03-C create
-- ISS-03-D update PUT / PATCH
-- ISS-03-E delete físico / lógico
+**Variantes internas (en orden):** - ISS-03-A fundación - ISS-03-B getAll / getOne - ISS-03-C create - ISS-03-D update PUT / PATCH - ISS-03-E delete físico / lógico
 
----
+------------------------------------------------------------------------
 
 ## ISS-03-A — Feature Client — fundación (capas, modelo, esqueleto, HTTP, cableado)
 
-**Objetivo:** dejar el feature listo para CRUD con la arquitectura por capas — HTTP → Controller → Service → Repository → Model → Sequelize → BD —: modelo, repository, service, controller, routes, carpeta `http/` y cableado.
-**Bloqueado por:** ISS-02.
+**Objetivo:** dejar el feature listo para CRUD con la arquitectura por capas — HTTP → Controller → Service → Repository → Model → Sequelize → BD —: modelo, repository, service, controller, routes, carpeta `http/` y cableado. **Bloqueado por:** ISS-02.
 
 ### Criterios de aceptación (ISS-03-A)
 
@@ -35,11 +24,11 @@
 
 Crea las carpetas compartidas y el error de aplicación con status HTTP asociado (lo lanzan los services).
 
-```bash
+``` bash
 mkdir -p src/shared/errors src/shared/http src/shared/database
 ```
 
-```bash
+``` bash
 : > src/shared/errors/app-error.ts
 cat >> src/shared/errors/app-error.ts << 'EOF'
 /**
@@ -65,7 +54,7 @@ EOF
 
 Clase base de todos los controllers: concentra `run`, `paramId` y `handleError`.
 
-```bash
+``` bash
 : > src/shared/http/base-controller.ts
 cat >> src/shared/http/base-controller.ts << 'EOF'
 import { Request, Response } from "express";
@@ -130,7 +119,7 @@ EOF
 
 Helper unit of work: ejecuta un bloque dentro de una transacción (commit/rollback).
 
-```bash
+``` bash
 : > src/shared/database/with-transaction.ts
 cat >> src/shared/database/with-transaction.ts << 'EOF'
 import { Transaction } from "sequelize";
@@ -170,14 +159,14 @@ EOF
 
 Instala `bcryptjs` (para hashear passwords en los hooks del modelo).
 
-```bash
+``` bash
 npm install bcryptjs@^3.0.3
 npm install -D @types/bcryptjs@^3.0.0
 ```
 
 Crea el modelo `client.model.ts` con status `active/inactive`, timestamps y hooks de bcrypt.
 
-```bash
+``` bash
 : > src/features/business/clients/client.model.ts
 cat >> src/features/business/clients/client.model.ts << 'EOF'
 import { DataTypes, Model } from "sequelize";
@@ -281,14 +270,14 @@ EOF
 
 Crea la carpeta `http/` y los cuatro DTOs (create, update, patch, response) más el barrel `index.ts`.
 
-```bash
+``` bash
 mkdir -p src/features/business/clients/http
 mkdir -p src/features/business/clients/dto
 ```
 
 **`dto/create-client.dto.ts`**
 
-```bash
+``` bash
 : > src/features/business/clients/dto/create-client.dto.ts
 cat >> src/features/business/clients/dto/create-client.dto.ts << 'EOF'
 /** Datos de entrada de `POST /api/clientes`. */
@@ -306,7 +295,7 @@ EOF
 
 **`dto/update-client.dto.ts`**
 
-```bash
+``` bash
 : > src/features/business/clients/dto/update-client.dto.ts
 cat >> src/features/business/clients/dto/update-client.dto.ts << 'EOF'
 /**
@@ -330,7 +319,7 @@ EOF
 
 **`dto/patch-client.dto.ts`**
 
-```bash
+``` bash
 : > src/features/business/clients/dto/patch-client.dto.ts
 cat >> src/features/business/clients/dto/patch-client.dto.ts << 'EOF'
 import { UpdateClientDto } from "./update-client.dto";
@@ -342,7 +331,7 @@ EOF
 
 **`dto/client-response.dto.ts`**
 
-```bash
+``` bash
 : > src/features/business/clients/dto/client-response.dto.ts
 cat >> src/features/business/clients/dto/client-response.dto.ts << 'EOF'
 import { Client, ClientI } from "../client.model";
@@ -368,7 +357,7 @@ EOF
 
 **`dto/index.ts` (barrel)**
 
-```bash
+``` bash
 : > src/features/business/clients/dto/index.ts
 cat >> src/features/business/clients/dto/index.ts << 'EOF'
 export * from "./create-client.dto";
@@ -380,7 +369,7 @@ EOF
 
 **Esqueleto `clients.repository.ts`**
 
-```bash
+``` bash
 : > src/features/business/clients/clients.repository.ts
 cat >> src/features/business/clients/clients.repository.ts << 'EOF'
 import { Client } from "./client.model";
@@ -407,7 +396,7 @@ EOF
 
 **Esqueleto `clients.service.ts`**
 
-```bash
+``` bash
 : > src/features/business/clients/clients.service.ts
 cat >> src/features/business/clients/clients.service.ts << 'EOF'
 import { ClientsRepository } from "./clients.repository";
@@ -438,7 +427,7 @@ EOF
 
 **Esqueleto `clients.controller.ts`**
 
-```bash
+``` bash
 : > src/features/business/clients/clients.controller.ts
 cat >> src/features/business/clients/clients.controller.ts << 'EOF'
 import { Request, Response } from "express";
@@ -473,7 +462,7 @@ EOF
 
 **Esqueleto `clients.routes.ts`**
 
-```bash
+``` bash
 : > src/features/business/clients/clients.routes.ts
 cat >> src/features/business/clients/clients.routes.ts << 'EOF'
 import { Application } from "express";
@@ -494,7 +483,7 @@ EOF
 
 **`src/routes/index.ts`**
 
-```bash
+``` bash
 : > src/routes/index.ts
 cat >> src/routes/index.ts << 'EOF'
 import { ClientsRoutes } from "../features/business/clients/clients.routes";
@@ -509,7 +498,7 @@ EOF
 
 Debajo de `var cors = require("cors");` añadir:
 
-```typescript
+``` typescript
 import { sequelize, getDatabaseInfo, testConnection } from "../database/db";
 import "../features/business/clients/client.model";
 import { Routes } from "../routes/index";
@@ -517,19 +506,19 @@ import { Routes } from "../routes/index";
 
 Dentro de `export class App`, debajo de `public app: Application;` añadir:
 
-```typescript
+``` typescript
   public routePrv: Routes = new Routes();
 ```
 
 Dentro de `routes()`, reemplazar el comentario `// ISS-03 §4.3` por:
 
-```typescript
+``` typescript
     this.routePrv.clientsRoutes.routes(this.app);
 ```
 
 Dentro de `dbConnection()`, reemplazar el comentario `// ISS-02 / ISS-03` por:
 
-```typescript
+``` typescript
     try {
       // Mostrar información de la base de datos seleccionada
       const dbInfo = getDatabaseInfo();
@@ -556,24 +545,23 @@ Dentro de `dbConnection()`, reemplazar el comentario `// ISS-02 / ISS-03` por:
 
 ### Verificación ISS-03-A
 
-```bash
+``` bash
 test -d src/features/business/clients/http && echo HTTP_FOLDER_OK
 ```
 
 ### Cierre del ISS-03-A
 
-```bash
+``` bash
 npm run dev
 ```
 
 Sync OK y tabla `clients` (con `createdAt` / `updatedAt`). Detenerlo con `Ctrl+C` antes de continuar.
 
----
+------------------------------------------------------------------------
 
 ## ISS-03-B — Feature Client — GetAll y GetOne
 
-**Objetivo:** listar activos y obtener uno por id.
-**Bloqueado por:** ISS-03-A.
+**Objetivo:** listar activos y obtener uno por id. **Bloqueado por:** ISS-03-A.
 
 ### Criterios de aceptación (ISS-03-B)
 
@@ -588,13 +576,13 @@ Sync OK y tabla `clients` (con `createdAt` / `updatedAt`). Detenerlo con `Ctrl+C
 
 Arriba, junto al import del modelo, añadir el import de `Transaction`:
 
-```typescript
+``` typescript
 import { Transaction } from "sequelize";
 ```
 
 Debajo de `// ================== READ ==================` añadir:
 
-```typescript
+``` typescript
   /** Todos los clientes activos. */
   public async findAllActive(): Promise<Client[]> {
     return Client.findAll({ where: { status: "active" } });
@@ -610,7 +598,7 @@ Debajo de `// ================== READ ==================` añadir:
 
 Arriba, junto al import del repository, añadir:
 
-```typescript
+``` typescript
 import { ClientResponseDto, toClientResponse } from "./dto";
 import { Client } from "./client.model";
 import { AppError } from "../../../shared/errors/app-error";
@@ -618,7 +606,7 @@ import { AppError } from "../../../shared/errors/app-error";
 
 Debajo de `// ================== READ ==================` añadir:
 
-```typescript
+``` typescript
   public async getAll(): Promise<ClientResponseDto[]> {
     const clients = await this.repository.findAllActive();
     return clients.map((client) => toClientResponse(client));
@@ -631,7 +619,7 @@ Debajo de `// ================== READ ==================` añadir:
 
 Al final de la clase, debajo de `// ================== HELPERS ==================`, añadir:
 
-```typescript
+``` typescript
   private async findOrFail(id: number, onlyActive = true): Promise<Client> {
     const client = await this.repository.findById(id);
     if (!client || (onlyActive && client.status !== "active")) {
@@ -645,7 +633,7 @@ Al final de la clase, debajo de `// ================== HELPERS =================
 
 Debajo de `// ================== READ ==================` añadir:
 
-```typescript
+``` typescript
   public async getAll(_req: Request, res: Response): Promise<void> {
     await this.run(res, async () => {
       const clients = await this.service.getAll();
@@ -665,7 +653,7 @@ Debajo de `// ================== READ ==================` añadir:
 
 Debajo del comentario de rutas sin auth, añadir:
 
-```typescript
+``` typescript
     // getAll
     app
       .route("/api/clientes")
@@ -679,7 +667,7 @@ Debajo del comentario de rutas sin auth, añadir:
 
 ### HTTP — archivo nuevo
 
-```bash
+``` bash
 : > src/features/business/clients/http/clients.get.http
 cat >> src/features/business/clients/http/clients.get.http << 'EOF'
 ### Feature Client — GET ALL / GET ONE
@@ -693,12 +681,11 @@ GET {{baseUrl}}/api/clientes/1
 EOF
 ```
 
----
+------------------------------------------------------------------------
 
 ## ISS-03-C — Feature Client — Crear cliente
 
-**Objetivo:** `create` con `status` por defecto `active` y hash de password (hook del modelo).
-**Bloqueado por:** ISS-03-B.
+**Objetivo:** `create` con `status` por defecto `active` y hash de password (hook del modelo). **Bloqueado por:** ISS-03-B.
 
 ### Criterios de aceptación (ISS-03-C)
 
@@ -712,13 +699,13 @@ EOF
 
 Ampliar el import de sequelize para incluir `CreationAttributes`:
 
-```typescript
+``` typescript
 import { CreationAttributes, Transaction } from "sequelize";
 ```
 
 Debajo de `// ================== CREATE ==================` añadir:
 
-```typescript
+``` typescript
   /** Inserta un cliente. */
   public async create(data: CreationAttributes<Client>): Promise<Client> {
     return Client.create(data);
@@ -729,7 +716,7 @@ Debajo de `// ================== CREATE ==================` añadir:
 
 Debajo de `// ================== CREATE ==================` añadir:
 
-```typescript
+``` typescript
   public async create(body: CreateClientDto): Promise<ClientResponseDto> {
     const client = await this.repository.create({
       name: body.name,
@@ -747,13 +734,13 @@ Debajo de `// ================== CREATE ==================` añadir:
 
 Añadir import arriba:
 
-```typescript
+``` typescript
 import { CreateClientDto, PatchClientDto, UpdateClientDto } from "./dto";
 ```
 
 Debajo de `// ================== CREATE ==================` añadir:
 
-```typescript
+``` typescript
   public async create(req: Request, res: Response): Promise<void> {
     await this.run(res, async () => {
       const client = await this.service.create(req.body as CreateClientDto);
@@ -766,7 +753,7 @@ Debajo de `// ================== CREATE ==================` añadir:
 
 Debajo del bloque de `getOne`, añadir:
 
-```typescript
+``` typescript
     // create
     app
       .route("/api/clientes")
@@ -775,7 +762,7 @@ Debajo del bloque de `getOne`, añadir:
 
 ### HTTP — archivo nuevo
 
-```bash
+``` bash
 : > src/features/business/clients/http/clients.create.http
 cat >> src/features/business/clients/http/clients.create.http << 'EOF'
 ### Feature Client — CREATE
@@ -796,12 +783,11 @@ Content-Type: application/json
 EOF
 ```
 
----
+------------------------------------------------------------------------
 
 ## ISS-03-D — Feature Client — Update (PUT) y Update (PATCH)
 
-**Objetivo:** `updatePut` (reemplazo completo) y `updatePatch` (parcial).
-**Bloqueado por:** ISS-03-C.
+**Objetivo:** `updatePut` (reemplazo completo) y `updatePatch` (parcial). **Bloqueado por:** ISS-03-C.
 
 ### Criterios de aceptación (ISS-03-D)
 
@@ -816,7 +802,7 @@ EOF
 
 Debajo de `// ================== UPDATE ==================` añadir:
 
-```typescript
+``` typescript
   /** Persiste cambios sobre una instancia existente. */
   public async update(client: Client, data: Partial<ClientI>): Promise<Client> {
     return client.update(data);
@@ -827,7 +813,7 @@ Debajo de `// ================== UPDATE ==================` añadir:
 
 Debajo de `// ================== UPDATE ==================` añadir:
 
-```typescript
+``` typescript
   public async updatePut(id: number, body: UpdateClientDto): Promise<ClientResponseDto> {
     const client = await this.findOrFail(id);
 
@@ -853,7 +839,7 @@ Debajo de `// ================== UPDATE ==================` añadir:
 
 Debajo de `// ================== UPDATE ==================` añadir:
 
-```typescript
+``` typescript
   public async updatePut(req: Request, res: Response): Promise<void> {
     await this.run(res, async () => {
       const client = await this.service.updatePut(
@@ -879,7 +865,7 @@ Debajo de `// ================== UPDATE ==================` añadir:
 
 Debajo del bloque de `create`, añadir:
 
-```typescript
+``` typescript
     // update (PUT / PATCH)
     app
       .route("/api/clientes/:id")
@@ -889,7 +875,7 @@ Debajo del bloque de `create`, añadir:
 
 ### HTTP — archivo nuevo
 
-```bash
+``` bash
 : > src/features/business/clients/http/clients.update.http
 cat >> src/features/business/clients/http/clients.update.http << 'EOF'
 ### Feature Client — UPDATE (PUT) / UPDATE (PATCH)
@@ -919,12 +905,11 @@ Content-Type: application/json
 EOF
 ```
 
----
+------------------------------------------------------------------------
 
 ## ISS-03-E — Feature Client — Eliminar (físico y lógico)
 
-**Objetivo:** `deletePhysical` (DELETE) y `deleteLogical` (status = inactive).
-**Bloqueado por:** ISS-03-D.
+**Objetivo:** `deletePhysical` (DELETE) y `deleteLogical` (status = inactive). **Bloqueado por:** ISS-03-D.
 
 ### Criterios de aceptación (ISS-03-E)
 
@@ -938,7 +923,7 @@ EOF
 
 Debajo de `// ================== DELETE ==================` añadir:
 
-```typescript
+``` typescript
   /** Elimina físicamente una instancia. */
   public async delete(client: Client): Promise<void> {
     await client.destroy();
@@ -949,7 +934,7 @@ Debajo de `// ================== DELETE ==================` añadir:
 
 Debajo de `// ================== DELETE ==================` añadir:
 
-```typescript
+``` typescript
   /** Eliminación física. */
   public async deletePhysical(id: number): Promise<void> {
     const client = await this.findOrFail(id, false);
@@ -969,7 +954,7 @@ Debajo de `// ================== DELETE ==================` añadir:
 
 Debajo de `// ================== DELETE ==================` añadir:
 
-```typescript
+``` typescript
   public async deletePhysical(req: Request, res: Response): Promise<void> {
     await this.run(res, async () => {
       const id = this.paramId(req);
@@ -990,7 +975,7 @@ Debajo de `// ================== DELETE ==================` añadir:
 
 Debajo del bloque de `update`, añadir:
 
-```typescript
+``` typescript
     // delete físico
     app
       .route("/api/clientes/:id")
@@ -1004,7 +989,7 @@ Debajo del bloque de `update`, añadir:
 
 ### HTTP — archivo nuevo
 
-```bash
+``` bash
 : > src/features/business/clients/http/clients.delete.http
 cat >> src/features/business/clients/http/clients.delete.http << 'EOF'
 ### Feature Client — DELETE físico / DELETE lógico
@@ -1019,7 +1004,7 @@ PATCH {{baseUrl}}/api/clientes/{{id}}/deactivate
 EOF
 ```
 
----
+------------------------------------------------------------------------
 
 ## Estado final Client (CRUD completo) — archivos consolidados
 
@@ -1027,46 +1012,18 @@ Si prefieres pegar los archivos **completos** en lugar de ir aplicando PARCHEs u
 
 **DTOs — `dto/`**
 
-```bash
-: > src/features/business/clients/dto/create-client.dto.ts
-cat >> src/features/business/clients/dto/create-client.dto.ts << 'EOF'
-export interface CreateClientDto {
-  name: string;
-  address: string;
-  phone: string;
-  email: string;
-  password: string;
-  status?: "active" | "inactive";
-}
-EOF
+\`\`\`bash
 
-: > src/features/business/clients/dto/update-client.dto.ts
-cat >> src/features/business/clients/dto/update-client.dto.ts << 'EOF'
-export interface UpdateClientDto {
-  name: string;
-  address: string;
-  phone: string;
-  email: string;
-  password?: string;
-}
-EOF
+:   > src/features/business/clients/dto/create-client.dto.ts cat \>\> src/features/business/clients/dto/create-client.dto.ts \<\< 'EOF' export interface CreateClientDto { name: string; address: string; phone: string; email: string; password: string; status?: "active" \| "inactive"; } EOF
 
-: > src/features/business/clients/dto/patch-client.dto.ts
-cat >> src/features/business/clients/dto/patch-client.dto.ts << 'EOF'
-import { UpdateClientDto } from "./update-client.dto";
-export type PatchClientDto = Partial<UpdateClientDto>;
-EOF
+:   > src/features/business/clients/dto/update-client.dto.ts cat \>\> src/features/business/clients/dto/update-client.dto.ts \<\< 'EOF' export interface UpdateClientDto { name: string; address: string; phone: string; email: string; password?: string; } EOF
 
-: > src/features/business/clients/dto/client-response.dto.ts
-cat >> src/features/business/clients/dto/client-response.dto.ts << 'EOF'
-import { Client, ClientI } from "../client.model";
+:   > src/features/business/clients/dto/patch-client.dto.ts cat \>\> src/features/business/clients/dto/patch-client.dto.ts \<\< 'EOF' import { UpdateClientDto } from "./update-client.dto"; export type PatchClientDto = Partial<UpdateClientDto>; EOF
 
-export type ClientResponseDto = Omit<ClientI, "password">;
+:   > src/features/business/clients/dto/client-response.dto.ts cat \>\> src/features/business/clients/dto/client-response.dto.ts \<\< 'EOF' import { Client, ClientI } from "../client.model";
 
-export function toClientResponse(client: Client): ClientResponseDto {
-  const { password, ...safe } = client.toJSON() as ClientI & { password?: string };
-  return safe;
-}
-EOF
+export type ClientResponseDto = Omit\<ClientI, "password"\>;
 
-: > src/features/b
+export function toClientResponse(client: Client): ClientResponseDto { const { password, ...safe } = client.toJSON() as ClientI & { password?: string }; return safe; } EOF
+
+:   \> src/features/b

@@ -23,7 +23,7 @@ npm install sequelize@^6.37.8 mysql2@^3.24.4 pg@^8.23.0 pg-hstore@^2.3.4 \
 npm install -D @types/sequelize@^6.12.0
 ```
 
-![](imagenes/Captura de pantalla 2026-10-07 075156.png)
+![](imagenes/Captura%20de%20pantalla%202026-10-07%20075156.png)
 
 Crea el archivo `.env` con `PORT`, `DB_ENGINE` y los bloques de configuración para los cuatro motores.
 
@@ -66,7 +66,7 @@ ORACLE_PORT=1521
 EOF
 ```
 
-![](imagenes/Captura de pantalla 2026-10-07 074208.png)
+![](imagenes/Captura%20de%20pantalla%202026-10-07%20074208.png)
 
 Verifica que el `.env` existe y que `DB_ENGINE` está definido, y confirma que Sequelize y `mysql2` quedaron instalados.
 
@@ -75,7 +75,7 @@ test -f .env && grep DB_ENGINE .env
 npm ls sequelize mysql2 --depth=0 
 ```
 
-![](imagenes/Captura de pantalla 2026-10-07 075257.png)
+![](imagenes/Captura%20de%20pantalla%202026-10-07%20075257.png)
 
 > ⚠️ **Aviso:** el `.env` contiene credenciales. **No debe subirse al repositorio.** Añade `.env` a tu `.gitignore` y, si quieres versionar la plantilla, sube un `.env.example` sin valores reales.
 
@@ -169,7 +169,7 @@ export const testConnection = async (): Promise<boolean> => {
 EOF
 ```
 
-![](imagenes/Captura de pantalla 2026-10-07 075455.png)
+![](imagenes/Captura%20de%20pantalla%202026-10-07%20075455.png)
 
 Verifica que el archivo existe y que el proyecto compila (debería empezar a reducir los errores pendientes del ISS-01).
 
@@ -177,7 +177,7 @@ Verifica que el archivo existe y que el proyecto compila (debería empezar a red
 test -f src/database/db.ts && npx tsc --noEmit
 ```
 
-![](imagenes/Captura de pantalla 2026-10-07 075935.png)
+![](imagenes/Captura%20de%20pantalla%202026-10-07%20075935.png)
 
 ------------------------------------------------------------------------
 
@@ -196,7 +196,7 @@ Verifica que la carpeta existe:
 test -d src/database/seeders && echo OK
 ```
 
-![](imagenes/Captura de pantalla 2026-10-07 080238.png)
+![](imagenes/Captura%20de%20pantalla%202026-10-07%20080238.png)
 
 ------------------------------------------------------------------------
 
@@ -209,7 +209,7 @@ npx tsc --noEmit
 test -f src/database/db.ts && test -f .env && test -d src/database/seeders
 ```
 
-![](imagenes/Captura de pantalla 2026-10-07 080359.png)
+![](imagenes/Captura%20de%20pantalla%202026-10-07%20080359.png)
 
 ------------------------------------------------------------------------
 
@@ -221,7 +221,7 @@ Levanta el servidor en modo desarrollo. Debe arrancar sin error. Detenerlo con `
 npm run dev
 ```
 
-![](imagenes/Captura de pantalla 2026-10-07 080440.png)
+![](imagenes/Captura%20de%20pantalla%202026-10-07%20080440.png)
 
 ------------------------------------------------------------------------
 
