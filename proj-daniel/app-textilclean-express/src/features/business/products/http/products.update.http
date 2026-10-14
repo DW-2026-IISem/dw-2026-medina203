@@ -1,0 +1,25 @@
+### Feature Product - UPDATE PUT / PATCH (SIN AUTH)
+@baseUrl = http://localhost:3000
+@id = 1
+
+### PUT
+PUT {{baseUrl}}/api/productos/{{id}}
+Content-Type: application/json
+
+{
+  "name": "Laptop Pro Max",
+  "brand": "TechBrand",
+  "price": 1499.99,
+  "min_stock": 5,
+  "quantity": 40,
+  "product_type_id": 1
+}
+
+### PATCH
+PATCH {{baseUrl}}/api/productos/{{id}}
+Content-Type: application/json
+
+{
+  "price": 1399.99,
+  "quantity": 45
+}

@@ -2,11 +2,15 @@ import { Application } from "express";
 import swaggerUi from "swagger-ui-express";
 import { clientsSwagger } from "../features/business/clients/clients.swagger";
 import { productTypesSwagger } from "../features/business/product-types/product-types.swagger";
+import { productsSwagger } from "../features/business/products/products.swagger";
+import { salesSwagger } from "../features/business/sales/sales.swagger";
+import { productSalesSwagger } from "../features/business/product-sales/product-sales.swagger";
+import { usersSwagger } from "../features/auth/users/users.swagger";
 
 export type FeatureSwaggerModule = {
   tags: unknown[];
   paths: Record<string, unknown>;
-  components?: { schemas?: Record<string, unknown> };
+  components?: { schemas?: Record<string, unknown>; securitySchemes?: Record<string, unknown> };
 };
 
 /**
@@ -16,20 +20,26 @@ export type FeatureSwaggerModule = {
 const featureSwaggerModules: FeatureSwaggerModule[] = [
   clientsSwagger,
   productTypesSwagger,
-  
-  // userSwagger,
+  productsSwagger,
+  salesSwagger,
+  productSalesSwagger,
+  usersSwagger,
 ];
 
 export function buildOpenApiDocument() {
   const tags: unknown[] = [];
   const paths: Record<string, unknown> = {};
   const schemas: Record<string, unknown> = {};
+  const securitySchemes: Record<string, unknown> = {};
 
   for (const mod of featureSwaggerModules) {
     tags.push(...mod.tags);
     Object.assign(paths, mod.paths);
     if (mod.components?.schemas) {
       Object.assign(schemas, mod.components.schemas);
+    }
+    if (mod.components?.securitySchemes) {
+      Object.assign(securitySchemes, mod.components.securitySchemes);
     }
   }
 
@@ -49,7 +59,7 @@ export function buildOpenApiDocument() {
     ],
     tags,
     paths,
-    components: { schemas },
+    components: { schemas, securitySchemes },
   };
 }
 

@@ -1,0 +1,8 @@
+### Feature Sale - GET (SIN AUTH)
+@baseUrl = http://localhost:3000
+
+### GET ALL
+GET {{baseUrl}}/api/ventas
+
+### GET ONE
+GET {{baseUrl}}/api/ventas/1

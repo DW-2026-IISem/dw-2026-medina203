@@ -1,0 +1,8 @@
+### Feature Sale - DELETE (SIN AUTH)
+@baseUrl = http://localhost:3000
+
+### DELETE físico
+DELETE {{baseUrl}}/api/ventas/1
+
+### DELETE lógico
+PATCH {{baseUrl}}/api/ventas/1/deactivate

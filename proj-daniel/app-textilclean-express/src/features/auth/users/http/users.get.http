@@ -1,0 +1,12 @@
+### Feature Users - GET (temporalmente sin auth hasta ISS-13)
+@baseUrl = http://localhost:3000
+@id = 1
+
+### Listar usuarios
+GET {{baseUrl}}/api/usuarios
+
+### Obtener usuario
+GET {{baseUrl}}/api/usuarios/{{id}}
+
+### ID inválido
+GET {{baseUrl}}/api/usuarios/abc

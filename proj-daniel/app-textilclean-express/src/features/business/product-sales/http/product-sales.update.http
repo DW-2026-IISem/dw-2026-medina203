@@ -1,0 +1,14 @@
+### Feature ProductSale - UPDATE (SIN AUTH)
+@baseUrl = http://localhost:3000
+
+### PUT
+PUT {{baseUrl}}/api/detalle-ventas/1
+Content-Type: application/json
+
+{ "quantity": 3 }
+
+### PATCH
+PATCH {{baseUrl}}/api/detalle-ventas/1
+Content-Type: application/json
+
+{ "quantity": 1 }

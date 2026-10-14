@@ -1,0 +1,39 @@
+### Feature Users - escritura
+@baseUrl = http://localhost:3000
+@id = 2
+
+### Crear usuario
+POST {{baseUrl}}/api/usuarios
+Content-Type: application/json
+
+{
+  "username": "nuevo.usuario",
+  "email": "nuevo.usuario@textilclean.local",
+  "password": "Password123!",
+  "avatar": null
+}
+
+### Actualizar usuario
+PUT {{baseUrl}}/api/usuarios/{{id}}
+Content-Type: application/json
+
+{
+  "username": "seller",
+  "email": "seller@textilclean.local",
+  "avatar": null
+}
+
+### Cambiar contraseña
+PATCH {{baseUrl}}/api/usuarios/{{id}}/password
+Content-Type: application/json
+
+{
+  "current_password": "Seller123!",
+  "new_password": "Seller456!"
+}
+
+### Desactivar usuario
+PATCH {{baseUrl}}/api/usuarios/{{id}}/deactivate
+
+### Eliminar usuario físicamente
+DELETE {{baseUrl}}/api/usuarios/{{id}}

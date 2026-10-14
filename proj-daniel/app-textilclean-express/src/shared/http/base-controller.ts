@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import { AppError } from "../errors/app-error";
+import { sendError } from "./error-response";
 
 /**
  * Base de los controllers HTTP.
@@ -46,10 +47,6 @@ export abstract class BaseController {
 
   /** Mapea errores: `AppError` -> su status; cualquier otro -> 500. */
   protected handleError(res: Response, error: unknown): void {
-    if (error instanceof AppError) {
-      res.status(error.statusCode).json({ error: error.message });
-      return;
-    }
-    res.status(500).json({ error: "Internal server error", detail: String(error) });
+    sendError(res, error);
   }
 }

@@ -1,0 +1,18 @@
+### Feature Sale - UPDATE (SIN AUTH)
+@baseUrl = http://localhost:3000
+
+### PUT
+PUT {{baseUrl}}/api/ventas/1
+Content-Type: application/json
+
+{
+  "sale_date": "2026-10-14T12:00:00.000Z",
+  "tax": 10,
+  "discounts": 0
+}
+
+### PATCH
+PATCH {{baseUrl}}/api/ventas/1
+Content-Type: application/json
+
+{ "tax": 10 }

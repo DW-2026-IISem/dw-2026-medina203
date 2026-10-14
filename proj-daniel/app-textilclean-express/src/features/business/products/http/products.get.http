@@ -1,0 +1,9 @@
+### Feature Product - GET ALL / GET ONE (SIN AUTH)
+@baseUrl = http://localhost:3000
+@id = 1
+
+### GET ALL
+GET {{baseUrl}}/api/productos
+
+### GET ONE
+GET {{baseUrl}}/api/productos/{{id}}

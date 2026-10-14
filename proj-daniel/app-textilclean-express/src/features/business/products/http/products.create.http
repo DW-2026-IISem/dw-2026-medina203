@@ -1,0 +1,15 @@
+### Feature Product - CREATE (SIN AUTH)
+@baseUrl = http://localhost:3000
+
+POST {{baseUrl}}/api/productos
+Content-Type: application/json
+
+{
+  "name": "Laptop Pro",
+  "brand": "TechBrand",
+  "price": 1299.99,
+  "min_stock": 5,
+  "quantity": 50,
+  "product_type_id": 1,
+  "status": "active"
+}

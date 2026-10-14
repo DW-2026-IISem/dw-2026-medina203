@@ -1,0 +1,8 @@
+### Feature ProductSale - DELETE (SIN AUTH)
+@baseUrl = http://localhost:3000
+
+### DELETE físico
+DELETE {{baseUrl}}/api/detalle-ventas/1
+
+### DELETE lógico
+PATCH {{baseUrl}}/api/detalle-ventas/1/deactivate

@@ -1,0 +1,11 @@
+### Feature ProductSale - CREATE (SIN AUTH)
+@baseUrl = http://localhost:3000
+
+POST {{baseUrl}}/api/detalle-ventas
+Content-Type: application/json
+
+{
+  "sale_id": 1,
+  "product_id": 1,
+  "quantity": 2
+}
