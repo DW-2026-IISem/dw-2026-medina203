@@ -4,7 +4,10 @@ import morgan from "morgan";
 var cors = require("cors");
 import { sequelize, getDatabaseInfo, testConnection } from "../database/db";
 import "../features/business/clients/client.model";
+import "../features/business/product-types/product-type.model";
 import { Routes } from "../routes/index";
+import { setupSwagger } from "../swagger/index";
+
 
 dotenv.config();
 
@@ -17,6 +20,7 @@ export class App {
     this.settings();
     this.middlewares();
     this.routes();
+    this.docs();
     this.errorHandling();
   }
 
@@ -32,21 +36,14 @@ export class App {
   }
 
   private routes(): void {
-    // Fase I — Business (features activos en este momento del lab)
+   
     this.routePrv.clientsRoutes.routes(this.app);
+    this.routePrv.productTypesRoutes.routes(this.app);
 
-    // Las siguientes features se añaden en ISS-06…08 y Fase II:
-    // this.routePrv.productTypesRoutes.routes(this.app);
-    // this.routePrv.productsRoutes.routes(this.app);
-    // this.routePrv.salesRoutes.routes(this.app);
-    // this.routePrv.productSalesRoutes.routes(this.app);
-    // this.routePrv.sessionRoutes.routes(this.app);
-    // this.routePrv.refreshTokensRoutes.routes(this.app);
-    // this.routePrv.usersRoutes.routes(this.app);
-    // this.routePrv.rolesRoutes.routes(this.app);
-    // this.routePrv.resourcesRoutes.routes(this.app);
-    // this.routePrv.roleUsersRoutes.routes(this.app);
-    // this.routePrv.resourceRolesRoutes.routes(this.app);
+  }
+
+  private docs(): void {
+    setupSwagger(this.app);
   }
 
   private errorHandling(): void {

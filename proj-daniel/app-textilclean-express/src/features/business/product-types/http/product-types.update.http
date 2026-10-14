@@ -1,0 +1,20 @@
+### Feature ProductType — UPDATE (PUT) / UPDATE (PATCH) (SIN AUTH)
+@baseUrl = http://localhost:3000
+@id = 1
+
+### PUT
+PUT {{baseUrl}}/api/tipos-producto/{{id}}
+Content-Type: application/json
+
+{
+  "name": "Electrónica Actualizada",
+  "description": "Categoría renovada"
+}
+
+### PATCH
+PATCH {{baseUrl}}/api/tipos-producto/{{id}}
+Content-Type: application/json
+
+{
+  "description": "Descripción parcial"
+}

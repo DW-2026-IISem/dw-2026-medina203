@@ -1,0 +1,9 @@
+### Feature ProductType — DELETE físico / DELETE lógico (SIN AUTH)
+@baseUrl = http://localhost:3000
+@id = 1
+
+### DELETE físico
+DELETE {{baseUrl}}/api/tipos-producto/{{id}}
+
+### DELETE lógico
+PATCH {{baseUrl}}/api/tipos-producto/{{id}}/deactivate
