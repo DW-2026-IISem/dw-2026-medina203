@@ -1,0 +1,23 @@
+### Sesiones propias (requiere JWT)
+@baseUrl = http://localhost:3000
+@token = reemplazar_por_access_token
+
+### Listar sesiones propias
+GET {{baseUrl}}/api/sesiones
+Authorization: Bearer {{token}}
+
+### Consultar sesión propia
+GET {{baseUrl}}/api/sesiones/1
+Authorization: Bearer {{token}}
+
+### Revocar todas las sesiones propias
+PATCH {{baseUrl}}/api/sesiones/deactivate-all
+Authorization: Bearer {{token}}
+
+### Revocar una sesión propia
+PATCH {{baseUrl}}/api/sesiones/1/deactivate
+Authorization: Bearer {{token}}
+
+### Purgar sesiones revocadas o expiradas
+DELETE {{baseUrl}}/api/sesiones
+Authorization: Bearer {{token}}
