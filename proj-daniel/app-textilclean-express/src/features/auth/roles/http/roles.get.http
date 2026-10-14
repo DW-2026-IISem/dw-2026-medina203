@@ -1,0 +1,8 @@
+### Roles
+@baseUrl = http://localhost:3000
+@id = 1
+
+GET {{baseUrl}}/api/roles
+
+### Consultar uno
+GET {{baseUrl}}/api/roles/{{id}}

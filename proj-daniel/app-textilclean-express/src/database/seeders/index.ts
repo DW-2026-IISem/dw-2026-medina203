@@ -15,6 +15,8 @@ import "../../features/business/product-sales/product-sales.associations";
 import { seedSales } from "../../features/business/sales/sales.seeder";
 import { seedProductSales } from "../../features/business/product-sales/product-sales.seeder";
 import { seedUsers } from "../../features/auth/users/users.seeder";
+import { seedRoles } from "../../features/auth/roles/roles.seeder";
+import { seedResources } from "../../features/auth/resources/resources.seeder";
 import "../../features/auth/users/user.model";
 import "../../features/auth/roles/role.model";
 import "../../features/auth/resources/resource.model";
@@ -56,6 +58,8 @@ export async function runAllSeeders(): Promise<void> {
   await seedSales(counts.sales);
   await seedProductSales(counts.product_sales);
   await seedUsers(counts.users);
+  await seedRoles();
+  await seedResources();
 
   console.log("🌱 SeedersRunner finalizado");
 }

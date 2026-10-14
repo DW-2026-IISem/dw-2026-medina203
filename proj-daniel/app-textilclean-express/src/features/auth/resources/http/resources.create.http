@@ -1,0 +1,20 @@
+### Crear recurso (temporalmente sin auth hasta ISS-13)
+@baseUrl = http://localhost:3000
+@id = 1
+
+POST {{baseUrl}}/api/recursos
+Content-Type: application/json
+
+{ "method": "GET", "path": "/api/reportes", "description": "Listar reportes" }
+
+### Reemplazar recurso
+PUT {{baseUrl}}/api/recursos/{{id}}
+Content-Type: application/json
+
+{ "method": "GET", "path": "/api/reportes", "description": "Reporte" }
+
+### Eliminar lógico
+PATCH {{baseUrl}}/api/recursos/{{id}}/deactivate
+
+### Eliminar físico
+DELETE {{baseUrl}}/api/recursos/{{id}}

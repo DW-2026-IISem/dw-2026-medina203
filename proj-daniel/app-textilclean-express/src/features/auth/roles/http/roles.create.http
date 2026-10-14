@@ -1,0 +1,20 @@
+### Crear rol (temporalmente sin auth hasta ISS-13)
+@baseUrl = http://localhost:3000
+@id = 3
+
+POST {{baseUrl}}/api/roles
+Content-Type: application/json
+
+{ "name": "SUPERVISOR", "description": "Supervisa operaciones" }
+
+### Actualizar
+PUT {{baseUrl}}/api/roles/{{id}}
+Content-Type: application/json
+
+{ "name": "SUPERVISOR", "description": "Supervisor de ventas" }
+
+### Eliminar lógico
+PATCH {{baseUrl}}/api/roles/{{id}}/deactivate
+
+### Eliminar físico
+DELETE {{baseUrl}}/api/roles/{{id}}
