@@ -1,0 +1,14 @@
+### Asignar rol a usuario (temporalmente sin auth hasta ISS-13)
+@baseUrl = http://localhost:3000
+@id = 1
+
+POST {{baseUrl}}/api/asignaciones-rol
+Content-Type: application/json
+
+{ "user_id": 2, "role_id": 2 }
+
+### Retirar rol
+PATCH {{baseUrl}}/api/asignaciones-rol/{{id}}/deactivate
+
+### Reactivar rol
+PATCH {{baseUrl}}/api/asignaciones-rol/{{id}}/reactivate

@@ -1,0 +1,8 @@
+### Asignaciones de rol
+@baseUrl = http://localhost:3000
+@id = 1
+
+GET {{baseUrl}}/api/asignaciones-rol
+
+### Consultar asignación
+GET {{baseUrl}}/api/asignaciones-rol/{{id}}

@@ -57,6 +57,21 @@ export const usersSwagger = {
         responses: { "200": { description: "Contraseña actualizada" }, "400": { description: "Contraseña actual incorrecta o nueva inválida" }, "404": notFoundResponse, ...authResponses },
       },
     },
+    "/api/usuarios/{id}/permisos": {
+      get: {
+        tags: ["Usuarios"],
+        summary: "Consultar permisos efectivos del usuario",
+        security: bearerSecurity,
+        parameters: [idParameter[0]],
+        responses: {
+          "200": { description: "Permisos derivados del grafo RBAC activo" },
+          "400": invalidIdResponse,
+          "401": unauthorizedResponse,
+          "403": forbiddenResponse,
+          "404": notFoundResponse,
+        },
+      },
+    },
   },
   components: {
     securitySchemes: bearerSecurityScheme,

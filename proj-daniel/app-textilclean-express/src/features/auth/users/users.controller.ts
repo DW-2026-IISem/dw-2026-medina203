@@ -20,6 +20,13 @@ export class UsersController extends BaseController {
     });
   }
 
+  public async getEffectivePermissions(req: Request, res: Response): Promise<void> {
+    await this.run(res, async () => {
+      const permissions = await this.service.getEffectivePermissions(this.paramId(req));
+      res.status(200).json({ permissions });
+    });
+  }
+
   public async create(req: Request, res: Response): Promise<void> {
     await this.run(res, async () => {
       res.status(201).json({ user: await this.service.create(req.body as CreateUserDto) });

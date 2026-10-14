@@ -1,0 +1,11 @@
+### Concesiones de recursos por rol
+@baseUrl = http://localhost:3000
+@id = 1
+
+GET {{baseUrl}}/api/concesiones-rol
+
+### Filtrar concesiones
+GET {{baseUrl}}/api/concesiones-rol?role_id=1
+
+### Consultar concesión
+GET {{baseUrl}}/api/concesiones-rol/{{id}}

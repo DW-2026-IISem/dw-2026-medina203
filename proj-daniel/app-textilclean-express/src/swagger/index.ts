@@ -8,6 +8,8 @@ import { productSalesSwagger } from "../features/business/product-sales/product-
 import { usersSwagger } from "../features/auth/users/users.swagger";
 import { rolesSwagger } from "../features/auth/roles/roles.swagger";
 import { resourcesSwagger } from "../features/auth/resources/resources.swagger";
+import { roleUsersSwagger } from "../features/auth/role-users/role-users.swagger";
+import { resourceRolesSwagger } from "../features/auth/resource-roles/resource-roles.swagger";
 
 export type FeatureSwaggerModule = {
   tags: unknown[];
@@ -28,6 +30,8 @@ const featureSwaggerModules: FeatureSwaggerModule[] = [
   usersSwagger,
   rolesSwagger,
   resourcesSwagger,
+  roleUsersSwagger,
+  resourceRolesSwagger,
 ];
 
 export function buildOpenApiDocument() {

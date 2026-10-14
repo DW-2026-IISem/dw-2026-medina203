@@ -6,6 +6,9 @@ export class UsersRoutes {
   public usersController: UsersController = new UsersController();
 
   public routes(app: Application): void {
+    app
+      .route("/api/usuarios/:id/permisos")
+      .get(this.usersController.getEffectivePermissions.bind(this.usersController));
     app.route("/api/usuarios").get(this.usersController.getAll.bind(this.usersController));
     app.route("/api/usuarios/:id").get(this.usersController.getOne.bind(this.usersController));
     app.route("/api/usuarios").post(this.usersController.create.bind(this.usersController));
