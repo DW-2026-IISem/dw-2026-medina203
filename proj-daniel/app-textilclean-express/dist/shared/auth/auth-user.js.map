@@ -1,0 +1,1 @@
+{"version":3,"file":"auth-user.js","sourceRoot":"","sources":["../../../src/shared/auth/auth-user.ts"],"names":[],"mappings":";;AAUA,0CAGC;AAZD,mDAA+C;AAS/C,SAAgB,eAAe,CAAC,GAAY;IAC1C,IAAI,CAAC,GAAG,CAAC,IAAI;QAAE,MAAM,IAAI,oBAAQ,CAAC,GAAG,EAAE,yBAAyB,CAAC,CAAC;IAClE,OAAO,GAAG,CAAC,IAAI,CAAC;AAClB,CAAC"}

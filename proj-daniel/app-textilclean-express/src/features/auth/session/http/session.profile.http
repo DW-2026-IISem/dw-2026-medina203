@@ -1,0 +1,25 @@
+### Perfil y permisos (JWT)
+@baseUrl = http://localhost:3000
+
+# @name loginSeller
+POST {{baseUrl}}/api/sesion/login
+Content-Type: application/json
+
+{ "identifier": "seller", "password": "Seller123!" }
+
+### Perfil
+GET {{baseUrl}}/api/sesion/perfil
+Authorization: Bearer {{loginSeller.response.body.$.access_token}}
+
+### Permisos efectivos
+GET {{baseUrl}}/api/permisos
+Authorization: Bearer {{loginSeller.response.body.$.access_token}}
+
+### Sin token: 401
+GET {{baseUrl}}/api/sesion/perfil
+
+### Logout (OPEN)
+POST {{baseUrl}}/api/sesion/logout
+Content-Type: application/json
+
+{ "refresh_token": "{{loginSeller.response.body.$.refresh_token}}" }

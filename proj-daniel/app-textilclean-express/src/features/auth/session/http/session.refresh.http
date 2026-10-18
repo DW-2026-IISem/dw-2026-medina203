@@ -1,0 +1,20 @@
+### Refresh token (OPEN)
+@baseUrl = http://localhost:3000
+
+# @name login
+POST {{baseUrl}}/api/sesion/login
+Content-Type: application/json
+
+{ "identifier": "admin", "password": "Admin123!" }
+
+# @name refresh
+POST {{baseUrl}}/api/sesion/refresh
+Content-Type: application/json
+
+{ "refresh_token": "{{login.response.body.$.refresh_token}}" }
+
+### Reutilizar refresh anterior: 401 y familia revocada
+POST {{baseUrl}}/api/sesion/refresh
+Content-Type: application/json
+
+{ "refresh_token": "{{login.response.body.$.refresh_token}}" }

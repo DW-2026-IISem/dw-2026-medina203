@@ -38,7 +38,7 @@ export class App {
   }
 
   private settings(): void {
-    this.app.set('port', this.port || process.env.PORT || 4000);
+    this.app.set('port', this.port || process.env.PORT || 3000);
   }
 
   private middlewares(): void {
@@ -61,6 +61,7 @@ export class App {
     this.routePrv.roleUsersRoutes.routes(this.app);
     this.routePrv.resourceRolesRoutes.routes(this.app);
     this.routePrv.refreshTokensRoutes.routes(this.app);
+    this.routePrv.sessionRoutes.routes(this.app);
 
   }
 

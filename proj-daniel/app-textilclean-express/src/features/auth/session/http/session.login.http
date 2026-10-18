@@ -1,0 +1,23 @@
+### Login (OPEN)
+@baseUrl = http://localhost:3000
+
+# @name loginAdmin
+POST {{baseUrl}}/api/sesion/login
+Content-Type: application/json
+
+{ "identifier": "admin", "password": "Admin123!" }
+
+### Login por correo
+POST {{baseUrl}}/api/sesion/login
+Content-Type: application/json
+
+{ "identifier": "admin@textilclean.local", "password": "Admin123!" }
+
+### Credenciales inválidas
+POST {{baseUrl}}/api/sesion/login
+Content-Type: application/json
+
+{ "identifier": "admin", "password": "invalid" }
+
+@adminAccessToken = {{loginAdmin.response.body.$.access_token}}
+@adminRefreshToken = {{loginAdmin.response.body.$.refresh_token}}

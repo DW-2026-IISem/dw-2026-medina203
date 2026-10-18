@@ -1,0 +1,1 @@
+{"version":3,"file":"client-response.dto.js","sourceRoot":"","sources":["../../../../../src/features/business/clients/dto/client-response.dto.ts"],"names":[],"mappings":";;AAcA,4CAGC;AAJD,4EAA4E;AAC5E,SAAgB,gBAAgB,CAAC,MAAc;IAC7C,MAAM,EAAE,QAAQ,EAAE,GAAG,IAAI,EAAE,GAAG,MAAM,CAAC,MAAM,EAAqC,CAAC;IACjF,OAAO,IAAI,CAAC;AACd,CAAC"}
