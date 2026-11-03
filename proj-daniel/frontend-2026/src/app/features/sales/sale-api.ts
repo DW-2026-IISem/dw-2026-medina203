@@ -8,6 +8,7 @@ import {
   SaleUpdatePayload,
 } from '../../core/models/sale.model';
 
+/** /api/ventas — POST es transaccional (cabecera + detalle + stock). */
 @Injectable({ providedIn: 'root' })
 export class SaleApi {
   private readonly http = inject(HttpClient);
@@ -16,32 +17,34 @@ export class SaleApi {
   list(): Observable<Sale[]> {
     return this.http
       .get<{ sales: Sale[] }>(this.base)
-      .pipe(map((r) => r.sales));
+      .pipe(map((response) => response.sales));
   }
 
   get(id: number): Observable<Sale> {
     return this.http
       .get<{ sale: Sale }>(`${this.base}/${id}`)
-      .pipe(map((r) => r.sale));
+      .pipe(map((response) => response.sale));
   }
 
-  /** POST /api/ventas devuelve { sale }. El detalle queda en /api/detalle-ventas. */
+  /** POST transaccional: devuelve `{ sale, items }`; el stock ya está descontado. */
   create(payload: SaleCreatePayload): Observable<Sale> {
     return this.http
-      .post<{ sale: Sale }>(this.base, payload)
-      .pipe(map((r) => r.sale));
+      .post<{ sale: Sale; items: unknown[] }>(this.base, payload)
+      .pipe(map((response) => response.sale));
   }
 
   update(id: number, payload: SaleUpdatePayload): Observable<Sale> {
     return this.http
       .patch<{ sale: Sale }>(`${this.base}/${id}`, payload)
-      .pipe(map((r) => r.sale));
+      .pipe(map((response) => response.sale));
   }
 
+  /** Cancelación: la venta y sus líneas pasan a inactive y el backend restaura el stock. */
   deactivate(id: number): Observable<unknown> {
     return this.http.patch(`${this.base}/${id}/deactivate`, {});
   }
 
+  /** DELETE físico: borra primero product_sales y luego la cabecera. */
   remove(id: number): Observable<unknown> {
     return this.http.delete(`${this.base}/${id}`);
   }

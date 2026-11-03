@@ -1,0 +1,82 @@
+<app-page-header
+  title="Ventas"
+  subtitle="Cada venta es transaccional: cabecera, líneas y stock en una sola operación."
+>
+  <p-tag [value]="rows().length + ' registradas'" severity="info" [rounded]="true" />
+  <button pButton type="button" routerLink="/ventas/nueva">
+    <i pButtonIcon class="pi pi-plus"></i>
+    <span pButtonLabel>Nueva venta</span>
+  </button>
+</app-page-header>
+
+@if (error()) {
+  <p-message severity="error" styleClass="mb-4 w-full">
+    {{ error() }}
+  </p-message>
+}
+
+<div class="rounded-xl border border-slate-200 bg-white">
+  <p-table
+    [value]="rows()"
+    [loading]="loading()"
+    [paginator]="rows().length > 10"
+    [rows]="10"
+    dataKey="id"
+    tableStyleClass="min-w-4xl"
+  >
+    <ng-template #header>
+      <tr>
+        <th>#</th>
+        <th>Fecha</th>
+        <th>Cliente</th>
+        <th class="text-right">Líneas</th>
+        <th class="text-right">Total</th>
+        <th>Estado</th>
+        <th class="w-40 text-right">Acciones</th>
+      </tr>
+    </ng-template>
+
+    <ng-template #body let-sale>
+      <tr>
+        <td class="text-slate-500">#{{ sale.id }}</td>
+        <td class="text-sm text-slate-600">
+          {{ sale.sale_date | date: 'short' }}
+        </td>
+        <td class="text-sm">{{ clientName()(sale.client_id) }}</td>
+        <td class="text-right">{{ sale.items ? items(sale) : '—' }}</td>
+        <td class="text-right font-medium">
+          {{ sale.total | currency: 'USD' : 'symbol' : '1.2-2' }}
+        </td>
+        <td><app-status-tag [status]="sale.status" /></td>
+        <td>
+          <div class="flex justify-end gap-1">
+            <button
+              pButton type="button" text rounded severity="warn" aria-label="Cancelar venta"
+              pTooltip="Cancelar (restaura stock)" (click)="deactivate(sale)"
+            >
+  <i pButtonIcon class="pi pi-ban"></i>
+</button>
+            <button
+              pButton type="button" text rounded severity="danger" aria-label="Eliminar venta"
+              pTooltip="Eliminar (restaura stock)" (click)="remove(sale)"
+            >
+  <i pButtonIcon class="pi pi-trash"></i>
+</button>
+          </div>
+        </td>
+      </tr>
+    </ng-template>
+
+    <ng-template #emptymessage>
+      <tr>
+        <td colspan="7">
+          <app-empty-state
+            icon="pi pi-shopping-cart"
+            title="Sin ventas registradas"
+            message="Crea la primera con «Nueva venta»."
+          />
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
+</div>

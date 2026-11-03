@@ -32,6 +32,22 @@ export const routes: Routes = [
           ),
       },
       {
+        path: 'ventas',
+        title: 'Ventas · TextilClean',
+        loadComponent: () =>
+          import('./features/sales/sale-list/sale-list').then(
+            (m) => m.SaleList,
+          ),
+      },
+      {
+        path: 'ventas/nueva',
+        title: 'Nueva venta · TextilClean',
+        loadComponent: () =>
+          import('./features/sales/sale-form/sale-form').then(
+            (m) => m.SaleForm,
+          ),
+      },
+      {
         path: 'construir',
         title: 'Prototipo · TextilClean',
         loadComponent: () =>

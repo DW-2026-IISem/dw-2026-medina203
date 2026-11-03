@@ -14,6 +14,23 @@ export interface Sale extends Timestamps {
   total: Money;
   client_id: number;
   status: Status;
+  /**
+   * Líneas de la venta. El backend actual **no** las incluye en
+   * `GET /api/ventas`; queda opcional por si se añade el `include`.
+   * El detalle real se consulta en `/api/detalle-ventas` (ISS-07).
+   */
+  items?: SaleItem[];
+}
+
+/** Línea de venta (tabla `product_sales`) tal como llega dentro de una venta. */
+export interface SaleItem {
+  id: number;
+  sale_id: number;
+  product_id: number;
+  quantity: number;
+  unit_price: Money;
+  line_total: Money;
+  status: Status;
 }
 
 export interface SaleItemInput {

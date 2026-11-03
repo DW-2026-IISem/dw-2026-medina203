@@ -44,6 +44,7 @@ export class Shell {
       routerLink: '/tipos-producto',
     },
     { label: 'Productos', icon: 'pi pi-box', routerLink: '/productos' },
+    { label: 'Ventas', icon: 'pi pi-shopping-cart', routerLink: '/ventas' },
     { label: 'Prototipo', icon: 'pi pi-desktop', routerLink: '/construir' },
   ];
 
