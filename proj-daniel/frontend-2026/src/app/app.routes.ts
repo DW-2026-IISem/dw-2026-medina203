@@ -24,6 +24,14 @@ export const routes: Routes = [
           ).then((m) => m.ProductTypeList),
       },
       {
+        path: 'productos',
+        title: 'Productos · TextilClean',
+        loadComponent: () =>
+          import('./features/products/product-list/product-list').then(
+            (m) => m.ProductList,
+          ),
+      },
+      {
         path: 'construir',
         title: 'Prototipo · TextilClean',
         loadComponent: () =>

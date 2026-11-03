@@ -1,0 +1,164 @@
+<app-page-header
+  title="Productos"
+  subtitle="Inventario actual. El semáforo usa el stock mínimo del producto."
+>
+  <p-tag [value]="rows().length + ' activos'" severity="info" [rounded]="true" />
+  @if (lowStockCount() > 0) {
+    <p-tag
+      [value]="lowStockCount() + ' con stock bajo'"
+      severity="warn"
+      [rounded]="true"
+    />
+  }
+  <button pButton type="button" (click)="openCreate()">
+    <i pButtonIcon class="pi pi-plus"></i>
+    <span pButtonLabel>Nuevo producto</span>
+  </button>
+</app-page-header>
+
+@if (error()) {
+  <p-message severity="error" styleClass="mb-4 w-full">
+    {{ error() }}
+  </p-message>
+}
+
+<div class="rounded-xl border border-slate-200 bg-white">
+  <p-table
+    [value]="visibleRows()"
+    [loading]="loading()"
+    [paginator]="visibleRows().length > 10"
+    [rows]="10"
+    dataKey="id"
+    tableStyleClass="min-w-4xl"
+  >
+    <ng-template #caption>
+      <div class="flex items-center gap-2">
+        <i class="pi pi-search text-slate-400"></i>
+        <input
+          pInputText
+          type="search"
+          aria-label="Buscar productos"
+          placeholder="Buscar por nombre, marca o tipo…"
+          [value]="filter()"
+          (input)="filter.set($any($event.target).value)"
+          class="w-full"
+        />
+      </div>
+      @if (filter()) {
+        <p class="mt-2 text-xs text-slate-500">
+          {{ visibleRows().length }} de {{ rows().length }} coinciden con «{{ filter() }}».
+        </p>
+      }
+    </ng-template>
+
+    <ng-template #header>
+      <tr>
+        <th pSortableColumn="name">
+          <div class="flex items-center gap-1">
+            Producto <p-sort-icon field="name" />
+          </div>
+        </th>
+        <th>Tipo</th>
+        <th pSortableColumn="price">
+          <div class="flex items-center gap-1">
+            Precio <p-sort-icon field="price" />
+          </div>
+        </th>
+        <th>Stock</th>
+        <th>Estado</th>
+        <th class="w-40 text-right">Acciones</th>
+      </tr>
+    </ng-template>
+
+    <ng-template #body let-product>
+      <tr>
+        <td>
+          <p class="font-medium text-slate-800">{{ product.name }}</p>
+          <p class="text-xs text-slate-400">
+            {{ product.brand }} · #{{ product.id }}
+          </p>
+        </td>
+        <td>
+          <p-tag
+            [value]="typeName()(product.product_type_id)"
+            severity="secondary"
+            [rounded]="true"
+          />
+        </td>
+        <td class="text-sm font-medium text-slate-700">
+          {{ product.price | currency: 'USD' : 'symbol' : '1.2-2' }}
+        </td>
+        <td>
+          <p-tag
+            [value]="product.quantity.toString()"
+            [severity]="severityFor(product)"
+            [rounded]="true"
+          />
+        </td>
+        <td><app-status-tag [status]="product.status" /></td>
+        <td>
+          <div class="flex justify-end gap-1">
+            <button
+              pButton type="button" text rounded severity="secondary" aria-label="Editar producto"
+              pTooltip="Editar" (click)="openEdit(product)"
+            >
+  <i pButtonIcon class="pi pi-pencil"></i>
+</button>
+            <button
+              pButton type="button" text rounded severity="warn" aria-label="Dar de baja el producto"
+              pTooltip="Baja lógica" (click)="deactivate(product)"
+            >
+  <i pButtonIcon class="pi pi-ban"></i>
+</button>
+            <button
+              pButton type="button" text rounded severity="danger" aria-label="Eliminar producto"
+              pTooltip="Eliminar" (click)="remove(product)"
+            >
+  <i pButtonIcon class="pi pi-trash"></i>
+</button>
+          </div>
+        </td>
+      </tr>
+    </ng-template>
+
+    <ng-template #emptymessage>
+      <tr>
+        <td colspan="6">
+          @if (filter()) {
+            <app-empty-state
+              icon="pi pi-search"
+              title="Sin coincidencias"
+              message="Ningún producto coincide con la búsqueda. Borra el filtro para ver todos."
+            />
+          } @else {
+            <app-empty-state
+              icon="pi pi-box"
+              title="Sin productos activos"
+              message="Crea el primero con «Nuevo producto» o ejecuta el seeder del backend."
+            />
+          }
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
+</div>
+
+<p-dialog
+  [visible]="dialogVisible()"
+  (visibleChange)="dialogVisible.set($event)"
+  [header]="title()"
+  [modal]="true"
+  [draggable]="false"
+  [resizable]="false"
+  [dismissableMask]="true"
+  styleClass="w-full max-w-3xl mx-4"
+>
+  <app-product-form
+    [product]="editing()"
+    [productTypes]="types()"
+    [saving]="saving()"
+    [resetKey]="resetKey()"
+    (saved)="save($event)"
+    (cancelled)="dialogVisible.set(false)"
+  />
+</p-dialog>

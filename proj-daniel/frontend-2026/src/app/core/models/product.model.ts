@@ -32,3 +32,17 @@ export interface ProductUpdatePayload {
   quantity: number;
   product_type_id: number;
 }
+
+/**
+ * Payload que emite `ProductForm` (ISS-05).
+ * En creación incluye `status`; en edición se omite (lo gobierna /deactivate).
+ */
+export interface ProductPayload {
+  name: string;
+  brand: string;
+  price: number;
+  min_stock: number;
+  quantity: number;
+  product_type_id: number;
+  status?: Status;
+}
