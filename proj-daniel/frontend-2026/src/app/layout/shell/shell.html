@@ -1,0 +1,41 @@
+<div class="flex min-h-dvh flex-col bg-slate-50">
+  <app-header (menuRequested)="toggleMenu()" />
+
+  <div class="flex flex-1">
+    @if (isDesktop()) {
+      <aside
+        class="hidden shrink-0 overflow-hidden transition-[width] duration-200 lg:block"
+        [class.w-64]="!sidebarCollapsed()"
+        [class.w-0]="sidebarCollapsed()"
+      >
+        @if (!sidebarCollapsed()) {
+          <app-aside [items]="items" (navigated)="closeMobile()" />
+        }
+      </aside>
+    }
+
+    <main class="min-w-0 flex-1 px-4 py-6 sm:px-6">
+      <router-outlet />
+    </main>
+  </div>
+
+  <app-footer />
+
+  <p-drawer
+    [visible]="mobileOpen()"
+    (visibleChange)="mobileOpen.set($event)"
+    position="left"
+    [style]="{ width: '18rem' }"
+    (onHide)="closeMobile()"
+  >
+    <div class="flex flex-col gap-3">
+      <p class="px-3 text-sm font-semibold text-slate-900">TextilClean Express</p>
+      @if (!isDesktop()) {
+        <app-aside [items]="items" (navigated)="closeMobile()" />
+      }
+    </div>
+  </p-drawer>
+
+  <p-toast position="top-right" />
+  <p-confirmdialog />
+</div>

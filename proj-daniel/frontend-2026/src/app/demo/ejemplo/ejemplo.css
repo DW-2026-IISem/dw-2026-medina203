@@ -1,0 +1,7 @@
+/* src/app/demo/ejemplo/ejemplo.css — únicamente demostrativo. */
+.ejemplo-alcance {
+  border: 2px dashed #0f766e;
+  border-radius: 0.75rem;
+  padding: 0.75rem 1rem;
+  background-color: #f0fdfa;
+}

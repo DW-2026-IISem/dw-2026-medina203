@@ -1,0 +1,56 @@
+<div class="flex flex-col gap-6">
+  <p-card header="Objeto producto">
+    <div class="flex flex-col gap-4">
+      <label class="flex flex-col gap-1 text-sm text-slate-600">
+        Nombre
+        <input pInputText [value]="producto().nombre" (input)="cambiarNombre($event)" />
+      </label>
+
+      <p class="text-sm text-slate-500">
+        Vista previa: <strong>{{ producto().nombre }}</strong>
+      </p>
+
+      <p class="text-2xl font-bold text-slate-900">{{ producto().precio }}</p>
+      <p class="text-sm text-slate-500">
+        Precio final con IVA (19 %): <strong>{{ precioFinal() }}</strong>
+      </p>
+
+      <div class="flex flex-wrap items-center gap-2">
+        <button pButton type="button" (click)="variarPrecio(1000)">
+          <span pButtonLabel>+1000</span>
+        </button>
+        <button pButton type="button" severity="secondary" (click)="variarPrecio(-1000)">
+          <span pButtonLabel>-1000</span>
+        </button>
+        <button pButton type="button" outlined (click)="alternarEstado()">
+          <span pButtonLabel>Cambiar estado</span>
+        </button>
+        <button pButton type="button" text (click)="reiniciar()">
+          <span pButtonLabel>Reiniciar</span>
+        </button>
+      </div>
+
+      <p-tag
+        [value]="estadoTexto()"
+        [severity]="producto().activo ? 'success' : 'danger'"
+      />
+
+      @if (producto().activo) {
+        <p-message severity="success" variant="simple">
+          Producto activo: la API lo devolvería en <code>GET /api/productos</code>.
+        </p-message>
+      } @else {
+        <p-message severity="warn" variant="simple">
+          Producto inactivo: el borrado lógico lo oculta de las listas.
+        </p-message>
+      }
+    </div>
+  </p-card>
+
+  <p-card header="Estilos">
+    <div class="ejemplo-alcance mt-4 text-sm text-slate-700">
+      Esta caja lleva la clase <code>.ejemplo-alcance</code> definida en
+      <code>ejemplo.css</code>. El resto del contenido usa Tailwind.
+    </div>
+  </p-card>
+</div>

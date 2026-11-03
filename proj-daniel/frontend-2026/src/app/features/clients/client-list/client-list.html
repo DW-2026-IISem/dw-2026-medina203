@@ -1,0 +1,134 @@
+<app-page-header
+  title="Clientes"
+  subtitle="El backend solo lista los clientes activos; la baja lógica cambia su estado."
+>
+  <p-tag [value]="rows().length + ' activos'" severity="info" [rounded]="true" />
+  <button pButton type="button" (click)="openCreate()">
+    <i pButtonIcon class="pi pi-plus"></i>
+    <span pButtonLabel>Nuevo cliente</span>
+  </button>
+</app-page-header>
+
+@if (error()) {
+  <p-message severity="error" styleClass="mb-4 w-full">
+    {{ error() }}
+  </p-message>
+}
+
+<div class="rounded-xl border border-slate-200 bg-white">
+  <p-table
+    [value]="visibleRows()"
+    [loading]="loading()"
+    [paginator]="visibleRows().length > 10"
+    [rows]="10"
+    dataKey="id"
+    tableStyleClass="min-w-3xl"
+  >
+    <ng-template #caption>
+      <div class="flex items-center gap-2">
+        <i class="pi pi-search text-slate-400"></i>
+        <input
+          pInputText
+          type="search"
+          aria-label="Buscar clientes"
+          placeholder="Buscar por nombre, email, teléfono o dirección…"
+          [value]="filter()"
+          (input)="filter.set($any($event.target).value)"
+          class="w-full"
+        />
+      </div>
+      @if (filter()) {
+        <p class="mt-2 text-xs text-slate-500">
+          {{ visibleRows().length }} de {{ rows().length }} coinciden con «{{ filter() }}».
+        </p>
+      }
+    </ng-template>
+
+    <ng-template #header>
+      <tr>
+        <th pSortableColumn="name">
+          <div class="flex items-center gap-1">Nombre <p-sort-icon field="name" /></div>
+        </th>
+        <th pSortableColumn="email">
+          <div class="flex items-center gap-1">Contacto <p-sort-icon field="email" /></div>
+        </th>
+        <th>Dirección</th>
+        <th>Estado</th>
+        <th class="w-40 text-right">Acciones</th>
+      </tr>
+    </ng-template>
+
+    <ng-template #body let-client>
+      <tr>
+        <td>
+          <p class="font-medium text-slate-800">{{ client.name }}</p>
+          <p class="text-xs text-slate-400">#{{ client.id }}</p>
+        </td>
+        <td>
+          <p class="text-sm text-slate-700">{{ client.email || '—' }}</p>
+          <p class="text-xs text-slate-400">{{ client.phone || 'Sin teléfono' }}</p>
+        </td>
+        <td class="text-sm text-slate-600">{{ client.address || '—' }}</td>
+        <td><app-status-tag [status]="client.status" /></td>
+        <td>
+          <div class="flex justify-end gap-1">
+            <button
+              pButton type="button" text rounded severity="secondary"
+              icon="pi pi-pencil" aria-label="Editar cliente"
+              pTooltip="Editar" (click)="openEdit(client)"
+            ></button>
+            <button
+              pButton type="button" text rounded severity="warn"
+              icon="pi pi-ban" aria-label="Dar de baja al cliente"
+              pTooltip="Baja lógica" (click)="deactivate(client)"
+            ></button>
+            <button
+              pButton type="button" text rounded severity="danger"
+              icon="pi pi-trash" aria-label="Eliminar cliente"
+              pTooltip="Eliminar" (click)="remove(client)"
+            ></button>
+          </div>
+        </td>
+      </tr>
+    </ng-template>
+
+    <ng-template #emptymessage>
+      <tr>
+        <td colspan="5">
+          @if (filter()) {
+            <app-empty-state
+              icon="pi pi-search"
+              title="Sin coincidencias"
+              message="Ningún cliente coincide con la búsqueda. Borra el filtro para ver todos."
+            />
+          } @else {
+            <app-empty-state
+              icon="pi pi-users"
+              title="Sin clientes activos"
+              message="Crea el primero con el botón «Nuevo cliente» o ejecuta el seeder del backend."
+            />
+          }
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
+</div>
+
+<p-dialog
+  [visible]="dialogVisible()"
+  (visibleChange)="dialogVisible.set($event)"
+  [header]="title()"
+  [modal]="true"
+  [draggable]="false"
+  [resizable]="false"
+  [dismissableMask]="true"
+  styleClass="w-full max-w-2xl mx-4"
+>
+  <app-client-form
+    [client]="editing()"
+    [saving]="saving()"
+    [resetKey]="resetKey()"
+    (saved)="save($event)"
+    (cancelled)="dialogVisible.set(false)"
+  />
+</p-dialog>
