@@ -1,8 +1,11 @@
-import { provideHttpClient } from '@angular/common/http';
 import {
   ApplicationConfig,
   provideBrowserGlobalErrorListeners,
 } from '@angular/core';
+import {
+  provideHttpClient,
+  withInterceptors,
+} from '@angular/common/http';
 import {
   provideRouter,
   withComponentInputBinding,
@@ -12,16 +15,13 @@ import { ConfirmationService, MessageService } from 'primeng/api';
 import { providePrimeNG } from 'primeng/config';
 import Aura from '@primeuix/themes/aura';
 import { environment } from '../environments/environment';
-
 import { routes } from './app.routes';
+import { authInterceptor } from './core/interceptors/auth-interceptor';
+import { errorInterceptor } from './core/interceptors/error-interceptor';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
-
-    // HttpClient sin interceptores: los servicios ya estan listos.
-    // ISS-08 agrega authInterceptor y errorInterceptor junto con la sesion.
-    provideHttpClient(),
 
     provideRouter(
       routes,
@@ -29,7 +29,9 @@ export const appConfig: ApplicationConfig = {
       withInMemoryScrolling({ scrollPositionRestoration: 'top' }),
     ),
 
-    // PrimeNG 22: tema Aura. El modo oscuro se activa con la clase .app-dark.
+    // El orden importa: auth añade el Bearer y reintenta; error traduce fallos.
+    provideHttpClient(withInterceptors([authInterceptor, errorInterceptor])),
+
     providePrimeNG({
       license: environment.primeUiLicense || undefined,
       ripple: true,

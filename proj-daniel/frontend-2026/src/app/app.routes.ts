@@ -2,6 +2,24 @@ import { Routes } from '@angular/router';
 
 export const routes: Routes = [
   {
+    path: 'login',
+    title: 'Iniciar sesión · TextilClean',
+    loadComponent: () =>
+      import('./features/auth/login/login').then((m) => m.Login),
+  },
+  {
+    path: 'forbidden',
+    title: 'Acceso denegado · TextilClean',
+    loadComponent: () =>
+      import('./features/auth/forbidden/forbidden').then((m) => m.Forbidden),
+  },
+  {
+    path: 'construir',
+    title: 'Prototipo · TextilClean',
+    loadComponent: () =>
+      import('./features/construir/construir').then((m) => m.Construir),
+  },
+  {
     path: '',
     loadComponent: () =>
       import('./layout/shell/shell').then((m) => m.Shell),
@@ -12,6 +30,12 @@ export const routes: Routes = [
         title: 'Panel · TextilClean',
         loadComponent: () =>
           import('./features/dashboard/dashboard').then((m) => m.Dashboard),
+      },
+      {
+        path: 'perfil',
+        title: 'Mi perfil · TextilClean',
+        loadComponent: () =>
+          import('./features/auth/profile/profile').then((m) => m.Profile),
       },
       {
         path: 'clientes',
@@ -60,12 +84,6 @@ export const routes: Routes = [
           import(
             './features/product-sales/product-sale-list/product-sale-list'
           ).then((m) => m.ProductSaleList),
-      },
-      {
-        path: 'construir',
-        title: 'Prototipo · TextilClean',
-        loadComponent: () =>
-          import('./features/construir/construir').then((m) => m.Construir),
       },
       { path: '**', redirectTo: 'dashboard' },
     ],

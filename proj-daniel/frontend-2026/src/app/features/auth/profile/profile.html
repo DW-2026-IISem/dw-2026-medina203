@@ -1,0 +1,81 @@
+<app-page-header
+  title="Mi perfil"
+  subtitle="Identidad y permisos efectivos tal como los entrega el backend."
+>
+  <button
+    pButton
+    type="button"
+    severity="secondary"
+    outlined
+    (click)="refresh()"
+    [loading]="refreshing()"
+  >
+    <i pButtonIcon class="pi pi-refresh"></i>
+    <span pButtonLabel>Actualizar permisos</span>
+  </button>
+  <button pButton type="button" severity="danger" outlined (click)="logout()">
+    <i pButtonIcon class="pi pi-sign-out"></i>
+    <span pButtonLabel>Salir</span>
+  </button>
+</app-page-header>
+
+@if (session.user(); as user) {
+  <div class="grid gap-4 lg:grid-cols-3">
+    <p-card header="Identidad" styleClass="lg:col-span-1">
+      <dl class="space-y-2 text-sm">
+        <div class="flex justify-between">
+          <dt class="text-slate-500">Usuario</dt>
+          <dd>{{ user.username }}</dd>
+        </div>
+        <div class="flex justify-between">
+          <dt class="text-slate-500">Email</dt>
+          <dd>{{ user.email || '—' }}</dd>
+        </div>
+        <div class="flex justify-between">
+          <dt class="text-slate-500">Avatar</dt>
+          <dd>{{ user.avatar || '—' }}</dd>
+        </div>
+        <div class="flex justify-between">
+          <dt class="text-slate-500">Estado</dt>
+          <dd><p-tag [value]="user.status" severity="secondary" [rounded]="true" /></dd>
+        </div>
+      </dl>
+    </p-card>
+
+    <p-card header="Roles" styleClass="lg:col-span-2">
+      <div class="flex flex-wrap gap-2">
+        @for (role of session.roleNames(); track role) {
+          <p-tag [value]="role" severity="info" [rounded]="true" />
+        } @empty {
+          <p class="text-sm text-slate-500">Sin roles activos.</p>
+        }
+      </div>
+    </p-card>
+  </div>
+
+  <p-card [header]="'Permisos efectivos (' + session.permissionCount() + ')'" styleClass="mt-4">
+    <p-table [value]="session.permissions()" dataKey="resource_id" tableStyleClass="min-w-4xl">
+      <ng-template #header>
+        <tr>
+          <th>Método</th>
+          <th>Ruta</th>
+          <th>Descripción</th>
+          <th>Rol</th>
+        </tr>
+      </ng-template>
+      <ng-template #body let-permission>
+        <tr>
+          <td><p-tag [value]="permission.method" severity="secondary" [rounded]="true" /></td>
+          <td class="font-mono text-xs">{{ permission.path }}</td>
+          <td class="text-sm text-slate-600">{{ permission.description || '—' }}</td>
+          <td><p-tag [value]="permission.role_name" severity="info" [rounded]="true" /></td>
+        </tr>
+      </ng-template>
+      <ng-template #emptymessage>
+        <tr>
+          <td colspan="4" class="p-4 text-center text-sm text-slate-500">Sin permisos.</td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </p-card>
+}

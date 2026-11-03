@@ -1,0 +1,51 @@
+<main class="flex min-h-screen items-center justify-center bg-slate-100 p-6">
+  <div class="w-full max-w-sm rounded-2xl border border-slate-200 bg-white p-8 shadow-sm">
+    <h1 class="text-2xl font-semibold text-slate-900">Iniciar sesión</h1>
+    <p class="mt-1 text-sm text-slate-500">Accede al panel administrativo de TextilClean.</p>
+
+    @if (error()) {
+      <p-message severity="error" styleClass="mt-4 w-full">
+        {{ error() }}
+      </p-message>
+    }
+
+    <form [formGroup]="form" (ngSubmit)="submit()" class="mt-6 space-y-4">
+      <div>
+        <label for="identifier" class="mb-1 block text-sm font-medium text-slate-700">
+          Usuario o email
+        </label>
+        <input
+          id="identifier"
+          pInputText
+          formControlName="identifier"
+          autocomplete="username"
+          class="w-full"
+        />
+        @if (form.controls.identifier.touched && form.controls.identifier.invalid) {
+          <p class="mt-1 text-xs text-red-600">El usuario es obligatorio.</p>
+        }
+      </div>
+
+      <div>
+        <label for="password" class="mb-1 block text-sm font-medium text-slate-700">
+          Contraseña
+        </label>
+        <p-password
+          inputId="password"
+          formControlName="password"
+          [feedback]="false"
+          [toggleMask]="true"
+          [fluid]="true"
+        />
+        @if (form.controls.password.touched && form.controls.password.invalid) {
+          <p class="mt-1 text-xs text-red-600">La contraseña es obligatoria.</p>
+        }
+      </div>
+
+      <button pButton type="submit" [loading]="loading()" class="w-full">
+        <i pButtonIcon class="pi pi-sign-in"></i>
+        <span pButtonLabel>Entrar</span>
+      </button>
+    </form>
+  </div>
+</main>

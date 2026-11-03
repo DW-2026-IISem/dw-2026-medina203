@@ -1,6 +1,13 @@
 import { HttpMethod } from './resource.model';
+import { User } from './user.model';
 
-/** Respuesta de POST /api/sesion/login y /api/sesion/refresh. */
+/** POST /api/sesion/login — `identifier` acepta username o email. */
+export interface LoginRequest {
+  identifier: string;
+  password: string;
+}
+
+/** Respuesta de login y refresh: SOLO el par de tokens. */
 export interface SessionTokens {
   access_token: string;
   token_type: 'Bearer';
@@ -9,7 +16,12 @@ export interface SessionTokens {
   refresh_expires_in: number;
 }
 
-/** Fila de GET /api/sesion/permisos: un permiso efectivo del usuario. */
+/** GET /api/sesion/perfil */
+export interface ProfilePayload {
+  user: User;
+}
+
+/** Una fila de role_users → roles → resource_roles → resources (todo activo). */
 export interface EffectivePermission {
   resource_id: number;
   method: HttpMethod;
@@ -17,4 +29,15 @@ export interface EffectivePermission {
   description: string | null;
   role_id: number;
   role_name: string;
+}
+
+/** GET /api/permisos · GET /api/usuarios/:id/permisos */
+export interface PermissionsPayload {
+  permissions: EffectivePermission[];
+}
+
+/** Estado compuesto que mantiene SessionStore. */
+export interface AccessPayload {
+  user: User;
+  permissions: EffectivePermission[];
 }

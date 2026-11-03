@@ -51,6 +51,7 @@ export class Shell {
       icon: 'pi pi-list',
       routerLink: '/detalle-ventas',
     },
+    { label: 'Mi perfil', icon: 'pi pi-user', routerLink: '/perfil' },
     { label: 'Prototipo', icon: 'pi pi-desktop', routerLink: '/construir' },
   ];
 
