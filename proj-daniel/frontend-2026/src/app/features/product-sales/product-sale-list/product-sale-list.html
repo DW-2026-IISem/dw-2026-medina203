@@ -2,10 +2,12 @@
   title="Detalle de ventas"
   subtitle="Corrige líneas. Crear, editar o eliminar ajusta el stock y los totales de la venta."
 >
-  <button pButton type="button" (click)="openCreate()">
-    <i pButtonIcon class="pi pi-plus"></i>
-    <span pButtonLabel>Nueva línea</span>
-  </button>
+  <ng-container *appHasPermission="'POST /api/detalle-ventas'">
+    <button pButton type="button" (click)="openCreate()">
+      <i pButtonIcon class="pi pi-plus"></i>
+      <span pButtonLabel>Nueva línea</span>
+    </button>
+  </ng-container>
 </app-page-header>
 
 @if (error()) {
@@ -48,42 +50,48 @@
         <td><app-status-tag [status]="line.status" /></td>
         <td>
           <div class="flex justify-end gap-1">
-            <button
-              pButton
-              type="button"
-              text
-              rounded
-              severity="secondary"
-              aria-label="Editar línea"
-              pTooltip="Editar"
-              (click)="openEdit(line)"
-            >
-              <i pButtonIcon class="pi pi-pencil"></i>
-            </button>
-            <button
-              pButton
-              type="button"
-              text
-              rounded
-              severity="warn"
-              aria-label="Baja lógica"
-              pTooltip="Baja lógica"
-              (click)="deactivate(line)"
-            >
-              <i pButtonIcon class="pi pi-ban"></i>
-            </button>
-            <button
-              pButton
-              type="button"
-              text
-              rounded
-              severity="danger"
-              aria-label="Eliminar línea"
-              pTooltip="Eliminar"
-              (click)="remove(line)"
-            >
-              <i pButtonIcon class="pi pi-trash"></i>
-            </button>
+            <ng-container *appHasPermission="'PATCH /api/detalle-ventas/:id'">
+              <button
+                pButton
+                type="button"
+                text
+                rounded
+                severity="secondary"
+                aria-label="Editar línea"
+                pTooltip="Editar"
+                (click)="openEdit(line)"
+              >
+                <i pButtonIcon class="pi pi-pencil"></i>
+              </button>
+            </ng-container>
+            <ng-container *appHasPermission="'PATCH /api/detalle-ventas/:id/deactivate'">
+              <button
+                pButton
+                type="button"
+                text
+                rounded
+                severity="warn"
+                aria-label="Baja lógica"
+                pTooltip="Baja lógica"
+                (click)="deactivate(line)"
+              >
+                <i pButtonIcon class="pi pi-ban"></i>
+              </button>
+            </ng-container>
+            <ng-container *appHasPermission="'DELETE /api/detalle-ventas/:id'">
+              <button
+                pButton
+                type="button"
+                text
+                rounded
+                severity="danger"
+                aria-label="Eliminar línea"
+                pTooltip="Eliminar"
+                (click)="remove(line)"
+              >
+                <i pButtonIcon class="pi pi-trash"></i>
+              </button>
+            </ng-container>
           </div>
         </td>
       </tr>

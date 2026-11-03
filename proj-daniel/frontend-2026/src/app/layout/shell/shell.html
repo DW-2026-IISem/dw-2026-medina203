@@ -1,5 +1,14 @@
 <div class="flex min-h-dvh flex-col bg-slate-50">
-  <app-header (menuRequested)="toggleMenu()" />
+  <app-header
+    [showSession]="session.authEnabled"
+    [username]="username()"
+    [initials]="initials()"
+    [roleLabel]="roleLabel()"
+    (menuRequested)="toggleMenu()"
+    (profileRequested)="goToProfile()"
+    (reloadPermissionsRequested)="reloadPermissions()"
+    (logoutRequested)="onLogout()"
+  />
 
   <div class="flex flex-1">
     @if (isDesktop()) {
@@ -9,12 +18,20 @@
         [class.w-0]="sidebarCollapsed()"
       >
         @if (!sidebarCollapsed()) {
-          <app-aside [items]="items" (navigated)="closeMobile()" />
+          <app-aside
+            [items]="navGroups()"
+            [showSession]="session.authEnabled"
+            [username]="username()"
+            [roleLabel]="roleLabel()"
+            [permissionCount]="session.permissionCount()"
+            (navigated)="closeMobile()"
+            (logoutRequested)="onLogout()"
+          />
         }
       </aside>
     }
 
-    <main class="min-w-0 flex-1 px-4 py-6 sm:px-6">
+    <main id="contenido" class="min-w-0 flex-1 px-4 py-6 sm:px-6">
       <router-outlet />
     </main>
   </div>
@@ -28,10 +45,18 @@
     [style]="{ width: '18rem' }"
     (onHide)="closeMobile()"
   >
-    <div class="flex flex-col gap-3">
+    <div class="flex h-full flex-col gap-3">
       <p class="px-3 text-sm font-semibold text-slate-900">TextilClean Express</p>
       @if (!isDesktop()) {
-        <app-aside [items]="items" (navigated)="closeMobile()" />
+        <app-aside
+          [items]="navGroups()"
+          [showSession]="session.authEnabled"
+          [username]="username()"
+          [roleLabel]="roleLabel()"
+          [permissionCount]="session.permissionCount()"
+          (navigated)="closeMobile()"
+          (logoutRequested)="onLogout()"
+        />
       }
     </div>
   </p-drawer>

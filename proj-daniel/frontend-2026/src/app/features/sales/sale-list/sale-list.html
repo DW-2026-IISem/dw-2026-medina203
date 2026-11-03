@@ -3,10 +3,12 @@
   subtitle="Cada venta es transaccional: cabecera, líneas y stock en una sola operación."
 >
   <p-tag [value]="rows().length + ' registradas'" severity="info" [rounded]="true" />
-  <button pButton type="button" routerLink="/ventas/nueva">
-    <i pButtonIcon class="pi pi-plus"></i>
-    <span pButtonLabel>Nueva venta</span>
-  </button>
+  <ng-container *appHasPermission="'POST /api/ventas'">
+    <button pButton type="button" routerLink="/ventas/nueva">
+      <i pButtonIcon class="pi pi-plus"></i>
+      <span pButtonLabel>Nueva venta</span>
+    </button>
+  </ng-container>
 </app-page-header>
 
 @if (error()) {
@@ -50,42 +52,48 @@
         <td><app-status-tag [status]="sale.status" /></td>
         <td>
           <div class="flex justify-end gap-1">
-            <button
-              pButton
-              type="button"
-              text
-              rounded
-              severity="info"
-              aria-label="Ver detalle"
-              pTooltip="Ver detalle"
-              (click)="openDetail(sale)"
-            >
-              <i pButtonIcon class="pi pi-eye"></i>
-            </button>
-            <button
-              pButton
-              type="button"
-              text
-              rounded
-              severity="warn"
-              aria-label="Cancelar venta"
-              pTooltip="Cancelar (restaura stock)"
-              (click)="deactivate(sale)"
-            >
-              <i pButtonIcon class="pi pi-ban"></i>
-            </button>
-            <button
-              pButton
-              type="button"
-              text
-              rounded
-              severity="danger"
-              aria-label="Eliminar venta"
-              pTooltip="Eliminar (restaura stock)"
-              (click)="remove(sale)"
-            >
-              <i pButtonIcon class="pi pi-trash"></i>
-            </button>
+            <ng-container *appHasPermission="'GET /api/detalle-ventas'">
+              <button
+                pButton
+                type="button"
+                text
+                rounded
+                severity="info"
+                aria-label="Ver detalle"
+                pTooltip="Ver detalle"
+                (click)="openDetail(sale)"
+              >
+                <i pButtonIcon class="pi pi-eye"></i>
+              </button>
+            </ng-container>
+            <ng-container *appHasPermission="'PATCH /api/ventas/:id/deactivate'">
+              <button
+                pButton
+                type="button"
+                text
+                rounded
+                severity="warn"
+                aria-label="Cancelar venta"
+                pTooltip="Cancelar (restaura stock)"
+                (click)="deactivate(sale)"
+              >
+                <i pButtonIcon class="pi pi-ban"></i>
+              </button>
+            </ng-container>
+            <ng-container *appHasPermission="'DELETE /api/ventas/:id'">
+              <button
+                pButton
+                type="button"
+                text
+                rounded
+                severity="danger"
+                aria-label="Eliminar venta"
+                pTooltip="Eliminar (restaura stock)"
+                (click)="remove(sale)"
+              >
+                <i pButtonIcon class="pi pi-trash"></i>
+              </button>
+            </ng-container>
           </div>
         </td>
       </tr>

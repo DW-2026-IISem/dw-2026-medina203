@@ -8,12 +8,27 @@ import { provideRouter } from '@angular/router';
 import { providePrimeNG } from 'primeng/config';
 import Aura from '@primeuix/themes/aura';
 import { Dashboard } from './dashboard';
+import { EffectivePermission } from '../../core/models/auth.model';
+import { SessionStore } from '../../core/services/session-store';
 import { environment } from '../../../environments/environment';
 
 const CLIENTS_URL = `${environment.apiUrl}/clientes`;
 const TYPES_URL = `${environment.apiUrl}/tipos-producto`;
 const PRODUCTS_URL = `${environment.apiUrl}/productos`;
 const SALES_URL = `${environment.apiUrl}/ventas`;
+
+function permisos(...paths: string[]): EffectivePermission[] {
+  return paths.map((path, i) => ({
+    resource_id: i + 1,
+    method: 'GET',
+    path,
+    description: null,
+    role_id: 1,
+    role_name: 'ADMIN',
+  }));
+}
+
+const TODOS = permisos('/api/clientes', '/api/tipos-producto', '/api/productos', '/api/ventas');
 
 describe('Dashboard', () => {
   let http: HttpTestingController;
@@ -29,11 +44,20 @@ describe('Dashboard', () => {
       ],
     }).compileComponents();
     http = TestBed.inject(HttpTestingController);
+    localStorage.clear();
   });
 
-  afterEach(() => http.verify());
+  afterEach(() => {
+    http.verify();
+    localStorage.clear();
+  });
+
+  function conPermisos(lista: EffectivePermission[]): void {
+    TestBed.inject(SessionStore).setAccess({ user: null as never, permissions: lista });
+  }
 
   async function crear() {
+    conPermisos(TODOS);
     const fixture = TestBed.createComponent(Dashboard);
     fixture.detectChanges();
     http.expectOne(CLIENTS_URL).flush({ clients: [{ id: 1 }] });
@@ -67,5 +91,21 @@ describe('Dashboard', () => {
   it('should sort latest sales by date desc', async () => {
     const dash = await crear();
     expect(dash.latestSales().map((s) => s.id)).toEqual([11, 10]);
+  });
+
+  it('should skip the sources the role cannot read (SELLER without product types)', async () => {
+    conPermisos(permisos('/api/clientes', '/api/productos', '/api/ventas'));
+    const fixture = TestBed.createComponent(Dashboard);
+    fixture.detectChanges();
+    http.expectOne(CLIENTS_URL).flush({ clients: [{ id: 1 }] });
+    http.expectNone(TYPES_URL);
+    http.expectOne(PRODUCTS_URL).flush({ products: [] });
+    http.expectOne(SALES_URL).flush({ sales: [{ id: 1, total: 7, status: 'active' }] });
+    await fixture.whenStable();
+    fixture.detectChanges();
+
+    expect(fixture.componentInstance.error()).toBeNull();
+    expect(fixture.componentInstance.revenue()).toBe(7);
+    expect(fixture.nativeElement.textContent).not.toContain('Tipos');
   });
 });

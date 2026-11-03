@@ -2,17 +2,45 @@
   aria-label="Navegación principal"
   class="flex h-full flex-col gap-1 border-r border-slate-200 bg-white p-3"
 >
-  <p class="px-3 pb-2 text-xs font-semibold uppercase tracking-wide text-slate-400">Módulos</p>
+  @for (entry of items(); track entry.label) {
+    @if (entry.items) {
+      <p class="px-3 pt-3 pb-2 text-xs font-semibold tracking-wide text-slate-400 uppercase">
+        {{ entry.label }}
+      </p>
+      @for (item of entry.items; track item.label) {
+        <ng-container
+          *ngTemplateOutlet="link; context: { $implicit: item }"
+        ></ng-container>
+      }
+    } @else {
+      <ng-container *ngTemplateOutlet="link; context: { $implicit: entry }"></ng-container>
+    }
+  }
 
-  @for (item of items(); track item.label) {
-    <a
-      [routerLink]="item.routerLink"
-      routerLinkActive="bg-teal-50 text-teal-700"
-      class="flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-100"
-      (click)="navigated.emit()"
-    >
-      <i [class]="item.icon ?? 'pi pi-angle-right'"></i>
-      <span>{{ item.label }}</span>
-    </a>
+  @if (showSession()) {
+    <div class="mt-auto border-t border-slate-100 px-3 pt-3 text-sm">
+      <p class="font-medium text-slate-800">{{ username() }}</p>
+      <p class="text-xs text-slate-500">{{ roleLabel() }} · {{ permissionCount() }} permisos</p>
+      <button
+        type="button"
+        class="mt-2 flex items-center gap-2 text-xs font-medium text-red-600 hover:underline"
+        (click)="logoutRequested.emit()"
+      >
+        <i class="pi pi-sign-out"></i> Cerrar sesión
+      </button>
+    </div>
   }
 </nav>
+
+<ng-template #link let-item>
+  <a
+    [routerLink]="item.routerLink"
+    routerLinkActive="bg-teal-50 text-teal-700"
+    [routerLinkActiveOptions]="item.routerLinkActiveOptions ?? { exact: false }"
+    class="flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-100"
+    (click)="navigated.emit()"
+  >
+    <i [class]="item.icon ?? 'pi pi-angle-right'"></i>
+    <span>{{ item.label }}</span>
+  </a>
+</ng-template>

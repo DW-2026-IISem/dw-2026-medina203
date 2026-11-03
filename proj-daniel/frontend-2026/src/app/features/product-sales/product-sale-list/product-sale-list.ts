@@ -24,10 +24,13 @@ import { SaleApi } from '../../sales/sale-api';
 import { ProductSaleApi } from '../product-sale-api';
 import { ProductSaleForm } from '../product-sale-form/product-sale-form';
 
+import { HasPermission } from '../../../shared/directives/has-permission';
+
 @Component({
   host: { class: 'block' },
   selector: 'app-product-sale-list',
   imports: [
+    HasPermission,
     ButtonModule,
     CurrencyPipe,
     DialogModule,

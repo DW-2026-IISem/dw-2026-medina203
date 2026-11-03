@@ -1,5 +1,5 @@
-import { Component } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { Component, inject } from '@angular/core';
+import { ActivatedRoute, RouterLink } from '@angular/router';
 import { ButtonModule } from 'primeng/button';
 
 @Component({
@@ -9,4 +9,8 @@ import { ButtonModule } from 'primeng/button';
   templateUrl: './forbidden.html',
   styleUrl: './forbidden.css',
 })
-export class Forbidden {}
+export class Forbidden {
+  private readonly route = inject(ActivatedRoute);
+  readonly permission =
+    this.route.snapshot.queryParamMap.get('permission');
+}

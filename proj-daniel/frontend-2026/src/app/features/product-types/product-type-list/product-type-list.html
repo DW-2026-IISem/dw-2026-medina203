@@ -3,10 +3,12 @@
   subtitle="Catálogo base de los productos. El backend solo lista los activos."
 >
   <p-tag [value]="rows().length + ' activos'" severity="info" [rounded]="true" />
-  <button pButton type="button" (click)="openCreate()">
-    <i pButtonIcon class="pi pi-plus"></i>
-    <span pButtonLabel>Nuevo tipo</span>
-  </button>
+  <ng-container *appHasPermission="'POST /api/tipos-producto'">
+    <button pButton type="button" (click)="openCreate()">
+      <i pButtonIcon class="pi pi-plus"></i>
+      <span pButtonLabel>Nuevo tipo</span>
+    </button>
+  </ng-container>
 </app-page-header>
 
 @if (error()) {
@@ -65,42 +67,48 @@
         <td><app-status-tag [status]="type.status" /></td>
         <td>
           <div class="flex justify-end gap-1">
-            <button
-              pButton
-              type="button"
-              text
-              rounded
-              severity="secondary"
-              aria-label="Editar tipo"
-              pTooltip="Editar"
-              (click)="openEdit(type)"
-            >
-              <i pButtonIcon class="pi pi-pencil"></i>
-            </button>
-            <button
-              pButton
-              type="button"
-              text
-              rounded
-              severity="warn"
-              aria-label="Dar de baja el tipo"
-              pTooltip="Baja lógica"
-              (click)="deactivate(type)"
-            >
-              <i pButtonIcon class="pi pi-ban"></i>
-            </button>
-            <button
-              pButton
-              type="button"
-              text
-              rounded
-              severity="danger"
-              aria-label="Eliminar tipo"
-              pTooltip="Eliminar"
-              (click)="remove(type)"
-            >
-              <i pButtonIcon class="pi pi-trash"></i>
-            </button>
+            <ng-container *appHasPermission="'PATCH /api/tipos-producto/:id'">
+              <button
+                pButton
+                type="button"
+                text
+                rounded
+                severity="secondary"
+                aria-label="Editar tipo"
+                pTooltip="Editar"
+                (click)="openEdit(type)"
+              >
+                <i pButtonIcon class="pi pi-pencil"></i>
+              </button>
+            </ng-container>
+            <ng-container *appHasPermission="'PATCH /api/tipos-producto/:id/deactivate'">
+              <button
+                pButton
+                type="button"
+                text
+                rounded
+                severity="warn"
+                aria-label="Dar de baja el tipo"
+                pTooltip="Baja lógica"
+                (click)="deactivate(type)"
+              >
+                <i pButtonIcon class="pi pi-ban"></i>
+              </button>
+            </ng-container>
+            <ng-container *appHasPermission="'DELETE /api/tipos-producto/:id'">
+              <button
+                pButton
+                type="button"
+                text
+                rounded
+                severity="danger"
+                aria-label="Eliminar tipo"
+                pTooltip="Eliminar"
+                (click)="remove(type)"
+              >
+                <i pButtonIcon class="pi pi-trash"></i>
+              </button>
+            </ng-container>
           </div>
         </td>
       </tr>

@@ -20,10 +20,13 @@ import { StatusTag } from '../../../shared/ui/status-tag/status-tag';
 import { ProductTypeApi } from '../product-type-api';
 import { ProductTypeForm } from '../product-type-form/product-type-form';
 
+import { HasPermission } from '../../../shared/directives/has-permission';
+
 @Component({
   host: { class: 'block' },
   selector: 'app-product-type-list',
   imports: [
+    HasPermission,
     ButtonModule,
     DialogModule,
     EmptyState,

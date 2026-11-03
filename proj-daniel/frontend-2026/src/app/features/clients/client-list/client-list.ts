@@ -17,10 +17,13 @@ import { StatusTag } from '../../../shared/ui/status-tag/status-tag';
 import { ClientApi } from '../client-api';
 import { ClientForm } from '../client-form/client-form';
 
+import { HasPermission } from '../../../shared/directives/has-permission';
+
 @Component({
   host: { class: 'block' },
   selector: 'app-client-list',
   imports: [
+    HasPermission,
     ButtonModule,
     DialogModule,
     EmptyState,

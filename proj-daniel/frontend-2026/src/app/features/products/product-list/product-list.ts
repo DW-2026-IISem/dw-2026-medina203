@@ -21,10 +21,13 @@ import { ProductTypeApi } from '../../product-types/product-type-api';
 import { ProductApi } from '../product-api';
 import { ProductForm } from '../product-form/product-form';
 
+import { HasPermission } from '../../../shared/directives/has-permission';
+
 @Component({
   host: { class: 'block' },
   selector: 'app-product-list',
   imports: [
+    HasPermission,
     ButtonModule,
     CurrencyPipe,
     DialogModule,

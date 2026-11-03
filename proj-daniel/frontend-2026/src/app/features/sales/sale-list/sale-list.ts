@@ -23,10 +23,13 @@ import { ProductApi } from '../../products/product-api';
 import { SaleApi } from '../sale-api';
 import { SaleDetail } from '../sale-detail/sale-detail';
 
+import { HasPermission } from '../../../shared/directives/has-permission';
+
 @Component({
   host: { class: 'block' },
   selector: 'app-sale-list',
   imports: [
+    HasPermission,
     ButtonModule,
     CurrencyPipe,
     DatePipe,

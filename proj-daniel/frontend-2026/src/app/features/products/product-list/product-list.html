@@ -6,10 +6,12 @@
   @if (lowStockCount() > 0) {
     <p-tag [value]="lowStockCount() + ' con stock bajo'" severity="warn" [rounded]="true" />
   }
-  <button pButton type="button" (click)="openCreate()">
-    <i pButtonIcon class="pi pi-plus"></i>
-    <span pButtonLabel>Nuevo producto</span>
-  </button>
+  <ng-container *appHasPermission="'POST /api/productos'">
+    <button pButton type="button" (click)="openCreate()">
+      <i pButtonIcon class="pi pi-plus"></i>
+      <span pButtonLabel>Nuevo producto</span>
+    </button>
+  </ng-container>
 </app-page-header>
 
 @if (error()) {
@@ -88,42 +90,48 @@
         <td><app-status-tag [status]="product.status" /></td>
         <td>
           <div class="flex justify-end gap-1">
-            <button
-              pButton
-              type="button"
-              text
-              rounded
-              severity="secondary"
-              aria-label="Editar producto"
-              pTooltip="Editar"
-              (click)="openEdit(product)"
-            >
-              <i pButtonIcon class="pi pi-pencil"></i>
-            </button>
-            <button
-              pButton
-              type="button"
-              text
-              rounded
-              severity="warn"
-              aria-label="Dar de baja el producto"
-              pTooltip="Baja lógica"
-              (click)="deactivate(product)"
-            >
-              <i pButtonIcon class="pi pi-ban"></i>
-            </button>
-            <button
-              pButton
-              type="button"
-              text
-              rounded
-              severity="danger"
-              aria-label="Eliminar producto"
-              pTooltip="Eliminar"
-              (click)="remove(product)"
-            >
-              <i pButtonIcon class="pi pi-trash"></i>
-            </button>
+            <ng-container *appHasPermission="'PATCH /api/productos/:id'">
+              <button
+                pButton
+                type="button"
+                text
+                rounded
+                severity="secondary"
+                aria-label="Editar producto"
+                pTooltip="Editar"
+                (click)="openEdit(product)"
+              >
+                <i pButtonIcon class="pi pi-pencil"></i>
+              </button>
+            </ng-container>
+            <ng-container *appHasPermission="'PATCH /api/productos/:id/deactivate'">
+              <button
+                pButton
+                type="button"
+                text
+                rounded
+                severity="warn"
+                aria-label="Dar de baja el producto"
+                pTooltip="Baja lógica"
+                (click)="deactivate(product)"
+              >
+                <i pButtonIcon class="pi pi-ban"></i>
+              </button>
+            </ng-container>
+            <ng-container *appHasPermission="'DELETE /api/productos/:id'">
+              <button
+                pButton
+                type="button"
+                text
+                rounded
+                severity="danger"
+                aria-label="Eliminar producto"
+                pTooltip="Eliminar"
+                (click)="remove(product)"
+              >
+                <i pButtonIcon class="pi pi-trash"></i>
+              </button>
+            </ng-container>
           </div>
         </td>
       </tr>
