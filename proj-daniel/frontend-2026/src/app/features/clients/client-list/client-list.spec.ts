@@ -5,8 +5,9 @@ import { providePrimeNG } from 'primeng/config';
 import Aura from '@primeuix/themes/aura';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { ClientList } from './client-list';
+import { environment } from '../../../../environments/environment';
 
-const BASE = '/api/clientes';
+const BASE = `${environment.apiUrl}/clientes`;
 
 const CLIENTES = [
   { id: 1, name: 'Tienda Sur', email: 'sur@x.com', phone: null, address: 'Calle 1', status: 'active' as const },
@@ -81,10 +82,10 @@ describe('ClientList', () => {
   it('should PATCH without status', async () => {
     const { lista } = await crearLista();
     lista.openEdit(CLIENTES[0]);
-    lista.save({ name: 'Tienda Sur', phone: '3100000000' });
+    lista.save({ name: 'Tienda Sur', address: null, phone: '3100000000', email: null });
     const patch = http.expectOne(`${BASE}/1`);
     expect(patch.request.method).toBe('PATCH');
-    expect(patch.request.body).toEqual({ name: 'Tienda Sur', phone: '3100000000' });
+    expect(patch.request.body).toEqual({ name: 'Tienda Sur', address: null, phone: '3100000000', email: null });
     patch.flush({ client: CLIENTES[0] });
     http.expectOne(BASE).flush({ clients: CLIENTES });
   });
@@ -92,7 +93,7 @@ describe('ClientList', () => {
   it('should call deactivate after confirmation', async () => {
     const { lista } = await crearLista();
     const confirmacion = TestBed.inject(ConfirmationService);
-    spyOn(confirmacion, 'confirm').and.callFake((opts: any) => {
+    vi.spyOn(confirmacion, 'confirm').mockImplementation((opts: any) => {
       opts.accept?.();
       return confirmacion;
     });
@@ -106,7 +107,7 @@ describe('ClientList', () => {
   it('should call DELETE for physical removal', async () => {
     const { lista } = await crearLista();
     const confirmacion = TestBed.inject(ConfirmationService);
-    spyOn(confirmacion, 'confirm').and.callFake((opts: any) => {
+    vi.spyOn(confirmacion, 'confirm').mockImplementation((opts: any) => {
       opts.accept?.();
       return confirmacion;
     });
@@ -129,7 +130,7 @@ describe('ClientList', () => {
   it('should show a toast on operation error', async () => {
     const { lista } = await crearLista();
     const mensajes = TestBed.inject(MessageService);
-    spyOn(mensajes, 'add');
+    vi.spyOn(mensajes, 'add');
     lista.openCreate();
     lista.save({ name: 'X', phone: null, email: null, address: null });
     http.expectOne(BASE).flush(

@@ -16,6 +16,14 @@ export const routes: Routes = [
           ),
       },
       {
+        path: 'tipos-producto',
+        title: 'Tipos de producto · TextilClean',
+        loadComponent: () =>
+          import(
+            './features/product-types/product-type-list/product-type-list'
+          ).then((m) => m.ProductTypeList),
+      },
+      {
         path: 'construir',
         title: 'Prototipo · TextilClean',
         loadComponent: () =>

@@ -2,7 +2,11 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { Observable, map } from 'rxjs';
 import { environment } from '../../../environments/environment';
-import { Client, ClientCreatePayload, ClientUpdatePayload } from '../../core/models/client.model';
+import {
+  Client,
+  ClientPayload,
+  ClientUpdatePayload,
+} from '../../core/models/client.model';
 
 /** Contrato exacto de `features/business/clients` en Express. */
 @Injectable({ providedIn: 'root' })
@@ -22,14 +26,14 @@ export class ClientApi {
       .pipe(map((response) => response.client));
   }
 
-  create(payload: ClientCreatePayload): Observable<Client> {
+  create(payload: ClientPayload): Observable<Client> {
     return this.http
       .post<{ client: Client }>(this.base, payload)
       .pipe(map((response) => response.client));
   }
 
   /** PATCH /api/clientes/:id — actualización parcial (la que usa el formulario). */
-  update(id: number, payload: Partial<ClientUpdatePayload>): Observable<Client> {
+  update(id: number, payload: Partial<ClientPayload>): Observable<Client> {
     return this.http
       .patch<{ client: Client }>(`${this.base}/${id}`, payload)
       .pipe(map((response) => response.client));

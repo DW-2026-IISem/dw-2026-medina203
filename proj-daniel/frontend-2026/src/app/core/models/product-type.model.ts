@@ -20,3 +20,13 @@ export interface ProductTypeUpdatePayload {
   name: string;
   description?: string | null;
 }
+
+/**
+ * Payload que emite `ProductTypeForm` (ISS-04).
+ * En creación incluye `status`; en edición se omite (lo gobierna /deactivate).
+ */
+export interface ProductTypePayload {
+  name: string;
+  description: string | null;
+  status?: Status;
+}
