@@ -8,7 +8,7 @@ import { MessageModule } from 'primeng/message';
 import { TableModule } from 'primeng/table';
 import { TagModule } from 'primeng/tag';
 import { TooltipModule } from 'primeng/tooltip';
-import { forkJoin } from 'rxjs';
+import { forkJoin, of } from 'rxjs';
 import { Product, ProductPayload } from '../../../core/models/product.model';
 import { ProductType } from '../../../core/models/product-type.model';
 import { NotificationService } from '../../../core/services/notification';
@@ -22,6 +22,8 @@ import { ProductApi } from '../product-api';
 import { ProductForm } from '../product-form/product-form';
 
 import { HasPermission } from '../../../shared/directives/has-permission';
+
+import { SessionStore } from '../../../core/services/session-store';
 
 @Component({
   host: { class: 'block' },
@@ -48,6 +50,7 @@ export class ProductList {
   private readonly api = inject(ProductApi);
   private readonly typesApi = inject(ProductTypeApi);
   private readonly notify = inject(NotificationService);
+  private readonly session = inject(SessionStore);
   private readonly confirmation = inject(ConfirmationService);
 
   readonly rows = signal<Product[]>([]);
@@ -90,7 +93,9 @@ export class ProductList {
 
     forkJoin({
       products: this.api.list(),
-      types: this.typesApi.list(),
+      // Catálogo auxiliar: un rol sin `GET /api/tipos-producto` (SELLER) ve
+      // el id del tipo en vez de un 403 que vacíe toda la lista (ISS-11).
+      types: this.session.canPermission('GET /api/tipos-producto') ? this.typesApi.list() : of([]),
     }).subscribe({
       next: ({ products, types }) => {
         this.rows.set(products);

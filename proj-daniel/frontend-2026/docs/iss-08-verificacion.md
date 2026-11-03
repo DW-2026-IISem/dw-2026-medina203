@@ -13,11 +13,11 @@
 
 ## 8.1 · Contrato real (comprobado con curl)
 
-| Endpoint                   | Respuesta observada                                                               |
-| -------------------------- | --------------------------------------------------------------------------------- |
-| `POST /api/sesion/login`   | `{ access_token, token_type: "Bearer", expires_in: 900, refresh_token, refresh_expires_in }` (cuerpo `{ identifier, password }`) |
-| `GET /api/sesion/perfil`   | `{"user":{"id":1,"username":"admin","email":"admin@textilclean.local","avatar":null,"status":"active"}}` |
-| `GET /api/permisos`        | `{ permissions: [ { resource_id, method, path, description, role_id, role_name } ] }` — 58 para admin |
+| Endpoint                 | Respuesta observada                                                                                                              |
+| ------------------------ | -------------------------------------------------------------------------------------------------------------------------------- |
+| `POST /api/sesion/login` | `{ access_token, token_type: "Bearer", expires_in: 900, refresh_token, refresh_expires_in }` (cuerpo `{ identifier, password }`) |
+| `GET /api/sesion/perfil` | `{"user":{"id":1,"username":"admin","email":"admin@textilclean.local","avatar":null,"status":"active"}}`                         |
+| `GET /api/permisos`      | `{ permissions: [ { resource_id, method, path, description, role_id, role_name } ] }` — 58 para admin                            |
 
 ## 8.2 · Activar Fase II
 
@@ -37,13 +37,13 @@
 
 ## 8.4 – 8.7 · Servicios e interceptores
 
-| Archivo                                  | Estado                                                                  |
-| ---------------------------------------- | ----------------------------------------------------------------------- |
+| Archivo                                  | Estado                                                                        |
+| ---------------------------------------- | ----------------------------------------------------------------------------- |
 | `app.config.ts`                          | ✅ `provideHttpClient(withInterceptors([authInterceptor, errorInterceptor]))` |
-| `core/services/session-store.ts`         | ✅ signals + `localStorage['textilclean.session.v1']`                    |
-| `core/services/auth.ts`                  | ✅ login → `forkJoin(perfil, permisos)` → `setAccess`                   |
-| `core/interceptors/auth-interceptor.ts`  | ✅ `Bearer`, `refreshInFlight ??=`, `shareReplay`, `finalize`           |
-| `core/interceptors/error-interceptor.ts` | ✅ toast 0/403/5xx                                                      |
+| `core/services/session-store.ts`         | ✅ signals + `localStorage['textilclean.session.v1']`                         |
+| `core/services/auth.ts`                  | ✅ login → `forkJoin(perfil, permisos)` → `setAccess`                         |
+| `core/interceptors/auth-interceptor.ts`  | ✅ `Bearer`, `refreshInFlight ??=`, `shareReplay`, `finalize`                 |
+| `core/interceptors/error-interceptor.ts` | ✅ toast 0/403/5xx                                                            |
 
 ## 8.8 – 8.10 · Login, perfil, forbidden y rutas
 
@@ -84,10 +84,10 @@ src/environments/environment.ts:17:  requireAuth: true,
 
 La guía no trae pruebas para la sesión; se añadieron dos archivos:
 
-| Archivo                                    | Casos | Qué cubre                                                                 |
-| ------------------------------------------ | ----- | ------------------------------------------------------------------------- |
-| `core/services/session-store.spec.ts`      | 4     | persistencia con 4 claves, `can()` con `:id`, restore/clear, JSON corrupto |
-| `core/interceptors/auth-interceptor.spec.ts` | 4   | `Bearer` (no en login), **un solo refresh para 3×401** y reintento, sin refresh → `/login`, refresh fallido → `/login` |
+| Archivo                                      | Casos | Qué cubre                                                                                                              |
+| -------------------------------------------- | ----- | ---------------------------------------------------------------------------------------------------------------------- |
+| `core/services/session-store.spec.ts`        | 4     | persistencia con 4 claves, `can()` con `:id`, restore/clear, JSON corrupto                                             |
+| `core/interceptors/auth-interceptor.spec.ts` | 4     | `Bearer` (no en login), **un solo refresh para 3×401** y reintento, sin refresh → `/login`, refresh fallido → `/login` |
 
 ```
  Test Files  25 passed (25)
@@ -103,11 +103,11 @@ BUILD_EXIT=0
 
 ## Correcciones respecto al código de la guía
 
-| #   | Error / problema                                                    | Corrección                                                                 |
-| --- | ------------------------------------------------------------------- | -------------------------------------------------------------------------- |
-| 1   | `TS2339: Property 'first_name' does not exist on type 'User'` (profile.html) | la fila «Nombre» pasa a «Avatar» (`user.avatar`), campo real del backend |
-| 2   | `environment*.ts` con `:4000`                                       | no se sobrescribieron (`:3000`)                                            |
-| 3   | §8.10.2 reemplaza `shell.ts` por una versión sin `isDesktop`/Toast/ConfirmDialog | solo se añadió «Mi perfil» al array                              |
+| #   | Error / problema                                                                 | Corrección                                                               |
+| --- | -------------------------------------------------------------------------------- | ------------------------------------------------------------------------ |
+| 1   | `TS2339: Property 'first_name' does not exist on type 'User'` (profile.html)     | la fila «Nombre» pasa a «Avatar» (`user.avatar`), campo real del backend |
+| 2   | `environment*.ts` con `:4000`                                                    | no se sobrescribieron (`:3000`)                                          |
+| 3   | §8.10.2 reemplaza `shell.ts` por una versión sin `isDesktop`/Toast/ConfirmDialog | solo se añadió «Mi perfil» al array                                      |
 
 ### Incidencia: `ng serve` con build roto
 
@@ -121,22 +121,22 @@ mirar el log de `ng serve` antes de depurar el código.
 
 ## Comprobación funcional (navegador real, sin inyección)
 
-| Criterio                                                     | Resultado observado                                                                                               |
-| ------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------- |
-| `/construir` sin sesión                                      | abre; **0 peticiones** al backend (ni perfil, ni permisos, ni refresh)                                            |
-| `/dashboard` sin sesión                                      | 4×`401` → `/login?returnUrl=%2Fdashboard`                                                                         |
-| Credenciales malas                                           | `POST /api/sesion/login` → `401`; mensaje «Invalid credentials»                                                   |
+| Criterio                                                     | Resultado observado                                                                                                |
+| ------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------ |
+| `/construir` sin sesión                                      | abre; **0 peticiones** al backend (ni perfil, ni permisos, ni refresh)                                             |
+| `/dashboard` sin sesión                                      | 4×`401` → `/login?returnUrl=%2Fdashboard`                                                                          |
+| Credenciales malas                                           | `POST /api/sesion/login` → `401`; mensaje «Invalid credentials»                                                    |
 | Login `admin / Admin123!`                                    | `POST login` → `GET perfil [Bearer]` + `GET permisos [Bearer]` → vuelve a `/dashboard` y sus 4 GET llevan `Bearer` |
-| Local Storage `textilclean.session.v1`                       | claves `accessToken`, `refreshToken`, `user`, `permissions` (58)                                                  |
-| `/perfil`                                                    | usuario, email, rol **ADMIN** y tabla «Permisos efectivos (58)»                                                   |
-| Access vencido (token corrompido) + 4 peticiones simultáneas | 4×`401` → **1** `POST /api/sesion/refresh` → 4 reintentos con `Bearer` nuevo; refresh rotado en storage           |
-| Logout («Salir» en perfil)                                   | `POST /api/sesion/logout` → `/login`; `localStorage.getItem(...)` = `null`                                        |
+| Local Storage `textilclean.session.v1`                       | claves `accessToken`, `refreshToken`, `user`, `permissions` (58)                                                   |
+| `/perfil`                                                    | usuario, email, rol **ADMIN** y tabla «Permisos efectivos (58)»                                                    |
+| Access vencido (token corrompido) + 4 peticiones simultáneas | 4×`401` → **1** `POST /api/sesion/refresh` → 4 reintentos con `Bearer` nuevo; refresh rotado en storage            |
+| Logout («Salir» en perfil)                                   | `POST /api/sesion/logout` → `/login`; `localStorage.getItem(...)` = `null`                                         |
 
 > La clave se llama `textilclean.session.v1` (la guía menciona
 > `storelab.session.v1` en los criterios, pero su propio `session-store.ts`
 > usa `textilclean.session.v1`).
 
-### Refresh, *reuse detection* y logout (curl)
+### Refresh, _reuse detection_ y logout (curl)
 
 ```text
 1) login → refresh R0=_lW2aY9z…
@@ -152,15 +152,15 @@ mirar el log de `ng serve` antes de depurar el código.
 
 ## Evidencias (capturas)
 
-| #   | Archivo                                                                                  | Bloque                         |
-| --- | ---------------------------------------------------------------------------------------- | ------------------------------ |
-| 1   | [`imagenes/iss-08-01-construir-sin-sesion.png`](imagenes/iss-08-01-construir-sin-sesion.png) | `/construir` sin sesión    |
-| 2   | [`imagenes/iss-08-02-redirige-login.png`](imagenes/iss-08-02-redirige-login.png)         | redirección con `returnUrl`    |
-| 3   | [`imagenes/iss-08-03-login-error.png`](imagenes/iss-08-03-login-error.png)               | credenciales inválidas         |
-| 4   | [`imagenes/iss-08-04-login-ok.png`](imagenes/iss-08-04-login-ok.png)                     | dashboard tras login           |
-| 5   | [`imagenes/iss-08-05-perfil.png`](imagenes/iss-08-05-perfil.png)                         | perfil y permisos efectivos    |
-| 6   | [`imagenes/iss-08-06-refresh.png`](imagenes/iss-08-06-refresh.png)                       | dashboard tras refresh único   |
-| 7   | [`imagenes/iss-08-07-logout.png`](imagenes/iss-08-07-logout.png)                         | login tras logout              |
+| #   | Archivo                                                                                      | Bloque                       |
+| --- | -------------------------------------------------------------------------------------------- | ---------------------------- |
+| 1   | [`imagenes/iss-08-01-construir-sin-sesion.png`](imagenes/iss-08-01-construir-sin-sesion.png) | `/construir` sin sesión      |
+| 2   | [`imagenes/iss-08-02-redirige-login.png`](imagenes/iss-08-02-redirige-login.png)             | redirección con `returnUrl`  |
+| 3   | [`imagenes/iss-08-03-login-error.png`](imagenes/iss-08-03-login-error.png)                   | credenciales inválidas       |
+| 4   | [`imagenes/iss-08-04-login-ok.png`](imagenes/iss-08-04-login-ok.png)                         | dashboard tras login         |
+| 5   | [`imagenes/iss-08-05-perfil.png`](imagenes/iss-08-05-perfil.png)                             | perfil y permisos efectivos  |
+| 6   | [`imagenes/iss-08-06-refresh.png`](imagenes/iss-08-06-refresh.png)                           | dashboard tras refresh único |
+| 7   | [`imagenes/iss-08-07-logout.png`](imagenes/iss-08-07-logout.png)                             | login tras logout            |
 
 ---
 

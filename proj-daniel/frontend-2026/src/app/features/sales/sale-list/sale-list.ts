@@ -8,7 +8,7 @@ import { MessageModule } from 'primeng/message';
 import { TableModule } from 'primeng/table';
 import { TagModule } from 'primeng/tag';
 import { TooltipModule } from 'primeng/tooltip';
-import { forkJoin } from 'rxjs';
+import { forkJoin, of } from 'rxjs';
 import { Client } from '../../../core/models/client.model';
 import { Product } from '../../../core/models/product.model';
 import { Sale } from '../../../core/models/sale.model';
@@ -24,6 +24,8 @@ import { SaleApi } from '../sale-api';
 import { SaleDetail } from '../sale-detail/sale-detail';
 
 import { HasPermission } from '../../../shared/directives/has-permission';
+
+import { SessionStore } from '../../../core/services/session-store';
 
 @Component({
   host: { class: 'block' },
@@ -53,6 +55,7 @@ export class SaleList {
   private readonly productsApi = inject(ProductApi);
   private readonly linesApi = inject(ProductSaleApi);
   private readonly notify = inject(NotificationService);
+  private readonly session = inject(SessionStore);
   private readonly confirmation = inject(ConfirmationService);
 
   readonly rows = signal<Sale[]>([]);
@@ -109,8 +112,9 @@ export class SaleList {
 
     forkJoin({
       sales: this.api.list(),
-      clients: this.clientsApi.list(),
-      products: this.productsApi.list(),
+      // Catálogos auxiliares: solo si el rol puede leerlos (ISS-11).
+      clients: this.session.canPermission('GET /api/clientes') ? this.clientsApi.list() : of([]),
+      products: this.session.canPermission('GET /api/productos') ? this.productsApi.list() : of([]),
     }).subscribe({
       next: ({ sales, clients, products }) => {
         this.rows.set(sales);

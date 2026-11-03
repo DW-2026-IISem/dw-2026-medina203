@@ -94,21 +94,19 @@ describe('ClientList', () => {
     const post = http.expectOne(BASE);
     expect(post.request.method).toBe('POST');
     post.flush({ client: { id: 4, name: 'Cafetería Central', status: 'active' } });
-    http
-      .expectOne(BASE)
-      .flush({
-        clients: [
-          ...CLIENTES,
-          {
-            id: 4,
-            name: 'Cafetería Central',
-            status: 'active',
-            email: null,
-            phone: null,
-            address: null,
-          },
-        ],
-      });
+    http.expectOne(BASE).flush({
+      clients: [
+        ...CLIENTES,
+        {
+          id: 4,
+          name: 'Cafetería Central',
+          status: 'active',
+          email: null,
+          phone: null,
+          address: null,
+        },
+      ],
+    });
   });
 
   it('should PATCH without status', async () => {

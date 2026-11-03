@@ -61,13 +61,22 @@ evidencia de cada bloque.
 
 ## Índice
 
-| ISS     | Título                                           | Estado    |
-| ------- | ------------------------------------------------ | --------- |
-| ISS-00  | Requisitos previos                               | ✅        |
-| ISS-01  | Bootstrap Angular 22 con CLI, Tailwind y PrimeNG | ✅        |
-| ISS-01A | —                                                | pendiente |
-| ISS-01B | —                                                | pendiente |
-| ISS-02  | Modelos, servicios y layout                      | ✅        |
+| ISS     | Título                                           | Estado                                    |
+| ------- | ------------------------------------------------ | ----------------------------------------- |
+| ISS-00  | Requisitos previos                               | ✅                                        |
+| ISS-01  | Bootstrap Angular 22 con CLI, Tailwind y PrimeNG | ✅                                        |
+| ISS-01A | —                                                | pendiente                                 |
+| ISS-01B | —                                                | pendiente                                 |
+| ISS-02  | Modelos, servicios y layout                      | ✅                                        |
+| ISS-03  | CRUD de clientes con Signals                     | ✅ (corregido en ISS-04)                  |
+| ISS-04  | CRUD de tipos de producto                        | ✅ [verificación](iss-04-verificacion.md) |
+| ISS-05  | Productos con relación a tipos                   | ✅ [verificación](iss-05-verificacion.md) |
+| ISS-06  | Ventas transaccionales                           | ✅ [verificación](iss-06-verificacion.md) |
+| ISS-07  | Detalle de ventas, dashboard y cierre de Fase I  | ✅ [verificación](iss-07-verificacion.md) |
+| ISS-08  | Autenticación JWT, perfil y permisos efectivos   | ✅ [verificación](iss-08-verificacion.md) |
+| ISS-09  | Guards y RBAC estructural en la UI               | ✅ [verificación](iss-09-verificacion.md) |
+| ISS-10  | Administración RBAC                              | ✅ [verificación](iss-10-verificacion.md) |
+| ISS-11  | Build, calidad y cierre                          | ✅ [verificación](iss-11-verificacion.md) |
 
 ---
 
@@ -1931,15 +1940,45 @@ botón de menú, Aside con los cinco módulos, la tarjeta de prototipo y el Foot
 
 ---
 
+# ISS-03 a ISS-11 · Resumen de la construcción
+
+> Ejecutadas el 03-nov-2026 en un **contenedor Linux en la nube** (Node 22.23,
+> backend `app-textilclean-express` sobre **PostgreSQL 16** local, capturas con
+> Chromium headless). Cada ISS tiene su registro detallado en
+> `docs/iss-NN-verificacion.md` con comandos, salidas, correcciones y capturas.
+
+| ISS | Qué se construyó                                                          | Correcciones clave respecto a la guía                                                                                                          |
+| --- | ------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
+| 03  | (estado heredado)                                                         | `shell.ts` desalineado, `ClientApi` con `password` obligatorio, `spyOn` de Jasmine → `vi.spyOn`, `BASE` relativa en specs, iconos de `pButton` |
+| 04  | `features/product-types/*`, ruta `/tipos-producto`                        | `ProductTypePayload` añadido sin pisar el modelo de ISS-02                                                                                     |
+| 05  | `features/products/*`, `forkJoin` + mapa de tipos                         | spec de error adaptado a la cancelación de `forkJoin`                                                                                          |
+| 06  | `features/sales/sale-form` + `sale-list`, `/ventas`, `/ventas/nueva`      | `CardModule`, `sale_date` en vez de `created_at`, `items?` opcional, ruta en el spec                                                           |
+| 07  | `product-sales/*`, `sale-detail`, `dashboard`, `to-number`                | `openDetail()` carga las líneas de `/detalle-ventas` (la venta no las trae)                                                                    |
+| 08  | `SessionStore`, `AuthService`, interceptores, login, perfil, forbidden    | `profile.html` sin `first_name`; entornos en `:3000`; +8 pruebas de sesión e interceptor                                                       |
+| 09  | guards, `*appHasPermission`, `NAV` + `navGroups`, Header/Aside con sesión | Shell integrado sobre el layout de ISS-02; dashboard pide solo fuentes permitidas; +6 pruebas                                                  |
+| 10  | `/admin/*`: usuarios, roles, recursos, asignaciones y concesiones         | `</ng-table>`, `FormsModule`, **`HasPermission` faltante en `user-list`**, avatar borrado en PATCH; +6 pruebas                                 |
+| 11  | `vitest-base.config.mts`, `runnerConfig`, humo 15/15, publicación SPA     | listas que fallaban para SELLER por catálogos auxiliares; aviso de sesión expirada; tooltips                                                   |
+
+---
+
 ## Estado de las ISS
 
-| ISS     | Criterios  | Estado                                                   |
-| ------- | ---------- | -------------------------------------------------------- |
-| ISS-00  | 0.1 – 0.6  | ✅ verificado                                            |
-| ISS-01  | 1.1 – 1.9  | ✅ build `0`, 7/7 pruebas, `4200` → `200`, 5 capturas    |
-| ISS-01A | —          | pendiente                                                |
-| ISS-01B | —          | pendiente                                                |
-| ISS-02  | 2.1 – 2.11 | ✅ build `0`, 19/19 pruebas, `4200` → `200`, 12 capturas |
+| ISS     | Criterios   | Estado                                                     |
+| ------- | ----------- | ---------------------------------------------------------- |
+| ISS-00  | 0.1 – 0.6   | ✅ verificado                                              |
+| ISS-01  | 1.1 – 1.9   | ✅ build `0`, 7/7 pruebas, `4200` → `200`, 5 capturas      |
+| ISS-01A | —           | pendiente                                                  |
+| ISS-01B | —           | pendiente                                                  |
+| ISS-02  | 2.1 – 2.11  | ✅ build `0`, 19/19 pruebas, `4200` → `200`, 12 capturas   |
+| ISS-03  | 3.1 – 3.6   | ✅ corregido: build `0`, 41/41 pruebas                     |
+| ISS-04  | 4.1 – 4.7   | ✅ build `0`, 63/63 pruebas, 8 capturas                    |
+| ISS-05  | 5.1 – 5.8   | ✅ build `0`, 86/86 pruebas, 6 capturas                    |
+| ISS-06  | 6.1 – 6.6   | ✅ build `0`, 100/100 pruebas, stock 30 → 27, 5 capturas   |
+| ISS-07  | 7.1 – 7.9   | ✅ build `0`, 115/115 pruebas, KPIs = BD, 6 capturas       |
+| ISS-08  | 8.1 – 8.10  | ✅ build `0`, 123/123 pruebas, refresh único, 7 capturas   |
+| ISS-09  | 9.0 – 9.9   | ✅ build `0`, 130/130 pruebas, admin vs seller, 9 capturas |
+| ISS-10  | 10.1 – 10.9 | ✅ build `0`, 136/136 pruebas, cadena RBAC, 11 capturas    |
+| ISS-11  | 11.1 – 11.7 | ✅ build `0`, 137/137 pruebas, humo 15/15, 13 capturas     |
 
 ---
 
@@ -1965,6 +2004,8 @@ botón de menú, Aside con los cinco módulos, la tarjeta de prototipo y el Foot
 | `iss-02-10-serve.png`                 | 02  | 2.10 `ng serve` + `200`             |
 | `iss-02-11-pantalla.png`              | 02  | 2.11 Shell en el navegador          |
 
+| `iss-04-*` … `iss-11-*` (65 archivos) | 04–11 | ver la tabla «Evidencias» de cada `iss-NN-verificacion.md` |
+
 > ISS-00 se verificó sin capturas: el detalle está en
 > [`iss-00-verificacion.md`](iss-00-verificacion.md).
 
@@ -1972,10 +2013,14 @@ botón de menú, Aside con los cinco módulos, la tarjeta de prototipo y el Foot
 
 ## Problemas encontrados y soluciones
 
-| Síntoma                                                    | Causa                                                        | Solución                                                |
-| ---------------------------------------------------------- | ------------------------------------------------------------ | ------------------------------------------------------- |
-| `ng` abre un editor / `panic: terminal initialize failure` | `/usr/bin/ng` (editor Debian) gana en shells no interactivos | cargar `nvm` desde `~/.profile`                         |
-| `ng new .` falla                                           | `.` no es nombre npm válido                                  | `ng new <nombre> --directory .`                         |
-| WSL deja de aceptar shells (`0x8007274c`)                  | VM de WSL bloqueada, poca memoria                            | `wsl --shutdown` y relanzar backend y `ng serve`        |
-| `[PrimeUI] No license key configured`                      | falta la clave Community                                     | aviso esperado; pegar la clave en `environment*.ts`     |
-| 401 en Swagger con token válido                            | token expirado (900 s) o `Bearer` duplicado                  | volver a hacer login y pegar solo `eyJ...` en Authorize |
+| Síntoma                                                    | Causa                                                               | Solución                                                |
+| ---------------------------------------------------------- | ------------------------------------------------------------------- | ------------------------------------------------------- |
+| `ng` abre un editor / `panic: terminal initialize failure` | `/usr/bin/ng` (editor Debian) gana en shells no interactivos        | cargar `nvm` desde `~/.profile`                         |
+| `ng new .` falla                                           | `.` no es nombre npm válido                                         | `ng new <nombre> --directory .`                         |
+| WSL deja de aceptar shells (`0x8007274c`)                  | VM de WSL bloqueada, poca memoria                                   | `wsl --shutdown` y relanzar backend y `ng serve`        |
+| `[PrimeUI] No license key configured`                      | falta la clave Community                                            | aviso esperado; pegar la clave en `environment*.ts`     |
+| 401 en Swagger con token válido                            | token expirado (900 s) o `Bearer` duplicado                         | volver a hacer login y pegar solo `eyJ...` en Authorize |
+| `ng serve` sigue mostrando el comportamiento viejo         | el build incremental falló y no se recuperó tras corregir           | mirar el log de `ng serve`; reiniciarlo                 |
+| Botones con `*appHasPermission` invisibles para todos      | el componente no importa `HasPermission` (solo `NG0303` en consola) | añadir `HasPermission` a `imports`; ver ISS-10          |
+| Pantalla vacía para SELLER con 403 de un catálogo auxiliar | `forkJoin` con una fuente que el rol no puede leer                  | pedir solo lo permitido (`canPermission`) — ISS-09/11   |
+| «Cannot configure the test module…» en muchos specs        | un spec falla en `beforeEach` y deja el TestBed instanciado         | arreglar el primer spec que falla; el resto es cascada  |

@@ -20,15 +20,15 @@
 
 ## 5.2 – 5.3 · Componentes y servicio
 
-| Archivo                                  | Estado                                                    |
-| ---------------------------------------- | --------------------------------------------------------- |
-| `products/product-api.ts`                | ✅ `/productos`, envolturas `products` / `product`        |
-| `products/product-api.spec.ts`           | ✅ 6 casos                                                |
-| `product-form/product-form.{ts,html}`    | ✅ `p-select` de tipos con `optionValue="id"`, `p-inputnumber` |
-| `product-form/product-form.spec.ts`      | ✅ 7 casos                                                |
-| `product-list/product-list.{ts,html}`    | ✅ `forkJoin` + `typeName` (Map) + `lowStockCount`        |
-| `product-list/product-list.spec.ts`      | ✅ 10 casos                                               |
-| `*.css`                                  | ✅ vacíos                                                 |
+| Archivo                               | Estado                                                         |
+| ------------------------------------- | -------------------------------------------------------------- |
+| `products/product-api.ts`             | ✅ `/productos`, envolturas `products` / `product`             |
+| `products/product-api.spec.ts`        | ✅ 6 casos                                                     |
+| `product-form/product-form.{ts,html}` | ✅ `p-select` de tipos con `optionValue="id"`, `p-inputnumber` |
+| `product-form/product-form.spec.ts`   | ✅ 7 casos                                                     |
+| `product-list/product-list.{ts,html}` | ✅ `forkJoin` + `typeName` (Map) + `lowStockCount`             |
+| `product-list/product-list.spec.ts`   | ✅ 10 casos                                                    |
+| `*.css`                               | ✅ vacíos                                                      |
 
 ## 5.4 – 5.5 · Carga paralela, mapa de nombres y stock bajo
 
@@ -97,17 +97,17 @@ expect(productos.cancelled).toBe(true);
 
 ## Comprobación funcional
 
-| Comprobación                           | Resultado observado                                                                 |
-| -------------------------------------- | ----------------------------------------------------------------------------------- |
-| `/productos` por URL directa           | `GET /api/productos` + `GET /api/tipos-producto`; «15 activos», «2 con stock bajo»  |
-| Columna Tipo                           | **nombre** del tipo (`Movies`, `Grocery`…), no el id                                |
-| Precio                                 | formateado con `currency` (`$45,900.00`)                                            |
-| Crear «Detergente Textil 5L» (stock 2/4) | `POST /api/productos` → «16 activos», «3 con stock bajo»                         |
-| Editar                                 | el `p-select` abre con «Grocery» seleccionado; `status` bloqueado                   |
-| Guardar cantidad 30                    | `PATCH /api/productos/16` → «2 con stock bajo» (el contador sigue al semáforo)      |
-| Tipo inactivo (curl, tipo 26)          | `400 {"error":"Product type must be active"}`                                       |
-| Solo tipos activos en el select        | el tipo 26 (dado de baja en ISS-04) no aparece como opción                         |
-| Móvil 390 px                           | encabezado apilado, tabla con scroll horizontal                                    |
+| Comprobación                             | Resultado observado                                                                |
+| ---------------------------------------- | ---------------------------------------------------------------------------------- |
+| `/productos` por URL directa             | `GET /api/productos` + `GET /api/tipos-producto`; «15 activos», «2 con stock bajo» |
+| Columna Tipo                             | **nombre** del tipo (`Movies`, `Grocery`…), no el id                               |
+| Precio                                   | formateado con `currency` (`$45,900.00`)                                           |
+| Crear «Detergente Textil 5L» (stock 2/4) | `POST /api/productos` → «16 activos», «3 con stock bajo»                           |
+| Editar                                   | el `p-select` abre con «Grocery» seleccionado; `status` bloqueado                  |
+| Guardar cantidad 30                      | `PATCH /api/productos/16` → «2 con stock bajo» (el contador sigue al semáforo)     |
+| Tipo inactivo (curl, tipo 26)            | `400 {"error":"Product type must be active"}`                                      |
+| Solo tipos activos en el select          | el tipo 26 (dado de baja en ISS-04) no aparece como opción                         |
+| Móvil 390 px                             | encabezado apilado, tabla con scroll horizontal                                    |
 
 ```bash
 curl -s -X POST localhost:3000/api/productos -H "$AUTH" -H 'Content-Type: application/json' \
@@ -134,25 +134,25 @@ prueba (id 17) se borró. Queda anotado para el backend.
 
 ## Evidencias (capturas)
 
-| #   | Archivo                                                                                    | Bloque                         |
-| --- | ------------------------------------------------------------------------------------------ | ------------------------------ |
-| 1   | [`imagenes/iss-05-01-lista.png`](imagenes/iss-05-01-lista.png)                             | lista con tipo, precio y stock |
-| 2   | [`imagenes/iss-05-02-formulario.png`](imagenes/iss-05-02-formulario.png)                   | alta con `p-select` de tipos   |
-| 3   | [`imagenes/iss-05-03-creado.png`](imagenes/iss-05-03-creado.png)                           | creado con stock bajo          |
-| 4   | [`imagenes/iss-05-04-editar-conserva-tipo.png`](imagenes/iss-05-04-editar-conserva-tipo.png) | edición conserva el tipo     |
-| 5   | [`imagenes/iss-05-05-editado.png`](imagenes/iss-05-05-editado.png)                         | `PATCH` y contador actualizado |
-| 6   | [`imagenes/iss-05-06-movil.png`](imagenes/iss-05-06-movil.png)                             | vista móvil                    |
+| #   | Archivo                                                                                      | Bloque                         |
+| --- | -------------------------------------------------------------------------------------------- | ------------------------------ |
+| 1   | [`imagenes/iss-05-01-lista.png`](imagenes/iss-05-01-lista.png)                               | lista con tipo, precio y stock |
+| 2   | [`imagenes/iss-05-02-formulario.png`](imagenes/iss-05-02-formulario.png)                     | alta con `p-select` de tipos   |
+| 3   | [`imagenes/iss-05-03-creado.png`](imagenes/iss-05-03-creado.png)                             | creado con stock bajo          |
+| 4   | [`imagenes/iss-05-04-editar-conserva-tipo.png`](imagenes/iss-05-04-editar-conserva-tipo.png) | edición conserva el tipo       |
+| 5   | [`imagenes/iss-05-05-editado.png`](imagenes/iss-05-05-editado.png)                           | `PATCH` y contador actualizado |
+| 6   | [`imagenes/iss-05-06-movil.png`](imagenes/iss-05-06-movil.png)                               | vista móvil                    |
 
 ---
 
 ## Diferencias respecto a la guía
 
-| #   | Guía                                         | Este proyecto                                | Motivo                                   |
-| --- | -------------------------------------------- | -------------------------------------------- | ---------------------------------------- |
-| 1   | modelo redefine `Money` y `Timestamps`       | se reutilizan los de `api.model.ts`          | evitar tipos duplicados                  |
-| 2   | spec de error responde a las dos peticiones  | verifica que `forkJoin` cancela la segunda   | comportamiento real de `forkJoin`        |
-| 3   | reemplazar `shell.ts`                        | se añade la entrada al array                 | conservar el Shell de ISS-02             |
-| 4   | `spyOn` / `icon="pi …"`                      | `vi.spyOn` / `<i pButtonIcon>`               | igual que en ISS-04                      |
+| #   | Guía                                        | Este proyecto                              | Motivo                            |
+| --- | ------------------------------------------- | ------------------------------------------ | --------------------------------- |
+| 1   | modelo redefine `Money` y `Timestamps`      | se reutilizan los de `api.model.ts`        | evitar tipos duplicados           |
+| 2   | spec de error responde a las dos peticiones | verifica que `forkJoin` cancela la segunda | comportamiento real de `forkJoin` |
+| 3   | reemplazar `shell.ts`                       | se añade la entrada al array               | conservar el Shell de ISS-02      |
+| 4   | `spyOn` / `icon="pi …"`                     | `vi.spyOn` / `<i pButtonIcon>`             | igual que en ISS-04               |
 
 ---
 

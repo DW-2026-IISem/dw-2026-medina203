@@ -1,4 +1,5 @@
 import { TestBed } from '@angular/core/testing';
+import { SessionStore } from '../../../core/services/session-store';
 import { provideHttpClient } from '@angular/common/http';
 import { provideHttpClientTesting, HttpTestingController } from '@angular/common/http/testing';
 import { providePrimeNG } from 'primeng/config';
@@ -63,9 +64,35 @@ describe('ProductList', () => {
       ],
     }).compileComponents();
     http = TestBed.inject(HttpTestingController);
+    // Las listas solo piden catálogos auxiliares que el rol puede leer.
+    localStorage.clear();
+    TestBed.inject(SessionStore).setAccess({
+      user: null as never,
+      permissions: [
+        {
+          resource_id: 1,
+          method: 'GET' as const,
+          path: '/api/productos',
+          description: null,
+          role_id: 1,
+          role_name: 'ADMIN',
+        },
+        {
+          resource_id: 2,
+          method: 'GET' as const,
+          path: '/api/tipos-producto',
+          description: null,
+          role_id: 1,
+          role_name: 'ADMIN',
+        },
+      ],
+    });
   });
 
-  afterEach(() => http.verify());
+  afterEach(() => {
+    http.verify();
+    localStorage.clear();
+  });
 
   async function crearLista() {
     const fixture = TestBed.createComponent(ProductList);
@@ -207,5 +234,33 @@ describe('ProductList', () => {
       .expectOne(PRODUCTS_URL)
       .flush({ error: 'forbidden' }, { status: 403, statusText: 'Forbidden' });
     expect(mensajes.add).toHaveBeenCalled();
+  });
+
+  it('should list products without asking for types when the role cannot read them', async () => {
+    TestBed.inject(SessionStore).setAccess({
+      user: null as never,
+      permissions: [
+        {
+          resource_id: 1,
+          method: 'GET',
+          path: '/api/productos',
+          description: null,
+          role_id: 2,
+          role_name: 'SELLER',
+        },
+      ],
+    });
+    const fixture = TestBed.createComponent(ProductList);
+    fixture.detectChanges();
+    http.expectOne(PRODUCTS_URL).flush({ products: PRODUCTS });
+    http.expectNone(TYPES_URL);
+    await fixture.whenStable();
+
+    const lista = fixture.componentInstance;
+    expect(lista.error()).toBeNull();
+    expect(lista.rows().length).toBe(PRODUCTS.length);
+    expect(lista.typeName()(PRODUCTS[0].product_type_id)).toBe(
+      `Tipo #${PRODUCTS[0].product_type_id}`,
+    );
   });
 });

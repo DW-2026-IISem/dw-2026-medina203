@@ -9,6 +9,7 @@ import { MessageModule } from 'primeng/message';
 import { SelectModule } from 'primeng/select';
 import { TableModule } from 'primeng/table';
 import { TagModule } from 'primeng/tag';
+import { TooltipModule } from 'primeng/tooltip';
 import { forkJoin } from 'rxjs';
 import { Client } from '../../../core/models/client.model';
 import { Product } from '../../../core/models/product.model';
@@ -38,6 +39,7 @@ interface DraftLine {
     SelectModule,
     TableModule,
     TagModule,
+    TooltipModule,
   ],
   templateUrl: './sale-form.html',
   styleUrl: './sale-form.css',

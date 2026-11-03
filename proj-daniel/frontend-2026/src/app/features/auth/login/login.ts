@@ -24,6 +24,9 @@ export class Login {
   readonly loading = signal(false);
   readonly error = signal<string | null>(null);
 
+  /** El interceptor añade `?reason=expired` cuando el refresh falla. */
+  readonly expired = this.route.snapshot.queryParamMap.get('reason') === 'expired';
+
   readonly form = this.fb.group({
     identifier: ['', [Validators.required]],
     password: ['', [Validators.required]],

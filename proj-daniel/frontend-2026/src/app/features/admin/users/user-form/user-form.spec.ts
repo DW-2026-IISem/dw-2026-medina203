@@ -30,7 +30,13 @@ describe('UserForm', () => {
     });
     form.submit();
     expect(out).toEqual([
-      { username: 'nuevo', email: 'n@x.co', avatar: null, status: 'active', password: 'Secreta123' },
+      {
+        username: 'nuevo',
+        email: 'n@x.co',
+        avatar: null,
+        status: 'active',
+        password: 'Secreta123',
+      },
     ]);
   });
 
@@ -47,8 +53,6 @@ describe('UserForm', () => {
     expect(form.form.controls.status.disabled).toBe(true);
     form.form.patchValue({ email: 'otro@x.co' });
     form.submit();
-    expect(out).toEqual([
-      { username: 'seller', email: 'otro@x.co', avatar: 'https://x/a.png' },
-    ]);
+    expect(out).toEqual([{ username: 'seller', email: 'otro@x.co', avatar: 'https://x/a.png' }]);
   });
 });

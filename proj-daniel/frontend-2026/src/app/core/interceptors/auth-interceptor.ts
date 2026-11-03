@@ -47,7 +47,7 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
 
       refreshInFlight ??= auth.refresh().pipe(
         catchError((refreshError: unknown) => {
-          redirectToLogin(session, router);
+          redirectToLogin(session, router, 'expired');
           return throwError(() => refreshError);
         }),
         finalize(() => {
@@ -69,8 +69,15 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
   );
 };
 
-function redirectToLogin(session: SessionStore, router: Router): void {
+/**
+ * Limpia la sesión y abre /login conservando la URL pedida.
+ * `reason = 'expired'` (el refresh falló: caducado, revocado o reusado) hace
+ * que el login muestre «Tu sesión expiró» en lugar de un formulario mudo.
+ */
+function redirectToLogin(session: SessionStore, router: Router, reason?: 'expired'): void {
   session.clear();
   const returnUrl = router.url.startsWith('/login') ? '/dashboard' : router.url;
-  void router.navigate(['/login'], { queryParams: { returnUrl } });
+  void router.navigate(['/login'], {
+    queryParams: reason ? { returnUrl, reason } : { returnUrl },
+  });
 }

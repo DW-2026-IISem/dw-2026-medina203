@@ -102,7 +102,9 @@ describe('authInterceptor', () => {
       .expectOne(`${API}/sesion/refresh`)
       .flush({ error: 'reuse' }, { status: 401, statusText: 'Unauthorized' });
 
-    expect(navigate).toHaveBeenCalled();
+    expect(navigate).toHaveBeenCalledWith(['/login'], {
+      queryParams: expect.objectContaining({ reason: 'expired' }),
+    });
     expect(session.isAuthenticated()).toBe(false);
   });
 });

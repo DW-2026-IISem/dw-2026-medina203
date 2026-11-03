@@ -1,4 +1,5 @@
 import { TestBed } from '@angular/core/testing';
+import { SessionStore } from '../../../core/services/session-store';
 import { provideHttpClient } from '@angular/common/http';
 import { provideHttpClientTesting, HttpTestingController } from '@angular/common/http/testing';
 import { provideRouter } from '@angular/router';
@@ -55,9 +56,51 @@ describe('SaleList', () => {
       ],
     }).compileComponents();
     http = TestBed.inject(HttpTestingController);
+    // Las listas solo piden catálogos auxiliares que el rol puede leer.
+    localStorage.clear();
+    TestBed.inject(SessionStore).setAccess({
+      user: null as never,
+      permissions: [
+        {
+          resource_id: 1,
+          method: 'GET' as const,
+          path: '/api/ventas',
+          description: null,
+          role_id: 1,
+          role_name: 'ADMIN',
+        },
+        {
+          resource_id: 2,
+          method: 'GET' as const,
+          path: '/api/clientes',
+          description: null,
+          role_id: 1,
+          role_name: 'ADMIN',
+        },
+        {
+          resource_id: 3,
+          method: 'GET' as const,
+          path: '/api/productos',
+          description: null,
+          role_id: 1,
+          role_name: 'ADMIN',
+        },
+        {
+          resource_id: 4,
+          method: 'GET' as const,
+          path: '/api/detalle-ventas',
+          description: null,
+          role_id: 1,
+          role_name: 'ADMIN',
+        },
+      ],
+    });
   });
 
-  afterEach(() => http.verify());
+  afterEach(() => {
+    http.verify();
+    localStorage.clear();
+  });
 
   async function crearLista() {
     const fixture = TestBed.createComponent(SaleList);
