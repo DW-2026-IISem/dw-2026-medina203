@@ -43,19 +43,17 @@ export class AuthService {
   private readonly permissionsUrl = `${environment.apiUrl}/permisos`;
 
   login(credentials: LoginRequest): Observable<AccessPayload> {
-    return this.http
-      .post<SessionTokens>(`${this.base}/login`, credentials)
-      .pipe(
-        tap((tokens) => this.session.setTokens(tokens)),
-        switchMap(() =>
-          this.me().pipe(
-            catchError((error: unknown) => {
-              this.session.clear();
-              return throwError(() => error);
-            }),
-          ),
+    return this.http.post<SessionTokens>(`${this.base}/login`, credentials).pipe(
+      tap((tokens) => this.session.setTokens(tokens)),
+      switchMap(() =>
+        this.me().pipe(
+          catchError((error: unknown) => {
+            this.session.clear();
+            return throwError(() => error);
+          }),
         ),
-      );
+      ),
+    );
   }
 
   me(): Observable<AccessPayload> {

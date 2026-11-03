@@ -1,9 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { provideHttpClient } from '@angular/common/http';
-import {
-  provideHttpClientTesting,
-  HttpTestingController,
-} from '@angular/common/http/testing';
+import { provideHttpClientTesting, HttpTestingController } from '@angular/common/http/testing';
 import { provideRouter } from '@angular/router';
 import { providePrimeNG } from 'primeng/config';
 import Aura from '@primeuix/themes/aura';
@@ -28,7 +25,17 @@ const SALES = [
     total: 24,
     status: 'active' as const,
     sale_date: '2026-01-01T00:00:00Z',
-    items: [{ id: 1, sale_id: 10, product_id: 1, quantity: 2, unit_price: 10, line_total: 20, status: 'active' as const }],
+    items: [
+      {
+        id: 1,
+        sale_id: 10,
+        product_id: 1,
+        quantity: 2,
+        unit_price: 10,
+        line_total: 20,
+        status: 'active' as const,
+      },
+    ],
   },
 ];
 
@@ -76,8 +83,24 @@ describe('SaleList', () => {
     expect(lista.detailLoading()).toBe(true);
     http.expectOne(LINES_URL).flush({
       product_sales: [
-        { id: 1, sale_id: 10, product_id: 1, quantity: 2, unit_price: 10, line_total: 20, status: 'active' },
-        { id: 2, sale_id: 99, product_id: 1, quantity: 5, unit_price: 10, line_total: 50, status: 'active' },
+        {
+          id: 1,
+          sale_id: 10,
+          product_id: 1,
+          quantity: 2,
+          unit_price: 10,
+          line_total: 20,
+          status: 'active',
+        },
+        {
+          id: 2,
+          sale_id: 99,
+          product_id: 1,
+          quantity: 5,
+          unit_price: 10,
+          line_total: 50,
+          status: 'active',
+        },
       ],
     });
     expect(lista.detailLoading()).toBe(false);

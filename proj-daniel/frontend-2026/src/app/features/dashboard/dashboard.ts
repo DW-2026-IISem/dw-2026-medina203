@@ -59,9 +59,7 @@ export class Dashboard {
   readonly products = signal<Product[]>([]);
   readonly sales = signal<Sale[]>([]);
 
-  readonly lowStock = computed(() =>
-    this.products().filter((p) => p.quantity <= p.min_stock),
-  );
+  readonly lowStock = computed(() => this.products().filter((p) => p.quantity <= p.min_stock));
 
   readonly revenue = computed(() =>
     this.sales().reduce((sum, sale) => sum + toNumber(sale.total), 0),
@@ -69,11 +67,7 @@ export class Dashboard {
 
   readonly latestSales = computed(() =>
     [...this.sales()]
-      .sort(
-        (a, b) =>
-          new Date(b.sale_date ?? 0).getTime() -
-          new Date(a.sale_date ?? 0).getTime(),
-      )
+      .sort((a, b) => new Date(b.sale_date ?? 0).getTime() - new Date(a.sale_date ?? 0).getTime())
       .slice(0, 5),
   );
 

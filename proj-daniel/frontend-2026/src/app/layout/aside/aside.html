@@ -8,9 +8,7 @@
         {{ entry.label }}
       </p>
       @for (item of entry.items; track item.label) {
-        <ng-container
-          *ngTemplateOutlet="link; context: { $implicit: item }"
-        ></ng-container>
+        <ng-container *ngTemplateOutlet="link; context: { $implicit: item }"></ng-container>
       }
     } @else {
       <ng-container *ngTemplateOutlet="link; context: { $implicit: entry }"></ng-container>

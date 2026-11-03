@@ -25,7 +25,14 @@ describe('HasPermission', () => {
     session.setAccess({
       user: null as never,
       permissions: [
-        { resource_id: 1, method: 'POST', path: '/api/clientes', description: null, role_id: 1, role_name: 'X' },
+        {
+          resource_id: 1,
+          method: 'POST',
+          path: '/api/clientes',
+          description: null,
+          role_id: 1,
+          role_name: 'X',
+        },
       ],
     });
     await fixture.whenStable();

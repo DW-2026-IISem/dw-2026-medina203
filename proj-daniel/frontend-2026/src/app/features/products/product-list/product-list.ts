@@ -78,9 +78,7 @@ export class ProductList {
   readonly editing = signal<Product | null>(null);
   readonly resetKey = signal(0);
 
-  readonly title = computed(() =>
-    this.editing() ? 'Editar producto' : 'Nuevo producto',
-  );
+  readonly title = computed(() => (this.editing() ? 'Editar producto' : 'Nuevo producto'));
 
   constructor() {
     this.load();
@@ -124,9 +122,7 @@ export class ProductList {
     const current = this.editing();
     this.saving.set(true);
 
-    const request = current
-      ? this.api.update(current.id, payload)
-      : this.api.create(payload);
+    const request = current ? this.api.update(current.id, payload) : this.api.create(payload);
 
     request.subscribe({
       next: () => {

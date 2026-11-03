@@ -43,7 +43,14 @@ describe('guards', () => {
       user: null as never,
       permissions: paths.map((p, i) => {
         const [method, path] = p.split(' ');
-        return { resource_id: i, method: method as 'GET', path, description: null, role_id: 2, role_name: 'SELLER' };
+        return {
+          resource_id: i,
+          method: method as 'GET',
+          path,
+          description: null,
+          role_id: 2,
+          role_name: 'SELLER',
+        };
       }),
     });
   }

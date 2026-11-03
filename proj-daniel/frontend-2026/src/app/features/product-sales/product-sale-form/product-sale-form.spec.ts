@@ -8,8 +8,13 @@ const PRODUCTS = [
 ] as any[];
 
 const LINE = {
-  id: 1, sale_id: 10, product_id: 1, quantity: 2,
-  unit_price: 10, line_total: 20, status: 'active' as const,
+  id: 1,
+  sale_id: 10,
+  product_id: 1,
+  quantity: 2,
+  unit_price: 10,
+  line_total: 20,
+  status: 'active' as const,
 };
 
 describe('ProductSaleForm', () => {
@@ -47,13 +52,14 @@ describe('ProductSaleForm', () => {
     fixture.componentInstance.saved.subscribe((p) => out.push(p));
 
     fixture.componentInstance.form.patchValue({
-      sale_id: 10, product_id: 1, quantity: 2, status: 'active',
+      sale_id: 10,
+      product_id: 1,
+      quantity: 2,
+      status: 'active',
     });
     fixture.componentInstance.submit();
 
-    expect(out).toEqual([
-      { sale_id: 10, product_id: 1, quantity: 2, status: 'active' },
-    ]);
+    expect(out).toEqual([{ sale_id: 10, product_id: 1, quantity: 2, status: 'active' }]);
   });
 
   it('should emit edit payload without status', () => {

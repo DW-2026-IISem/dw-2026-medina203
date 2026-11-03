@@ -1,9 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { provideHttpClient } from '@angular/common/http';
-import {
-  provideHttpClientTesting,
-  HttpTestingController,
-} from '@angular/common/http/testing';
+import { provideHttpClientTesting, HttpTestingController } from '@angular/common/http/testing';
 import { provideRouter } from '@angular/router';
 import { providePrimeNG } from 'primeng/config';
 import Aura from '@primeuix/themes/aura';
@@ -16,7 +13,15 @@ const SALES_URL = `${environment.apiUrl}/ventas`;
 const PRODUCTS_URL = `${environment.apiUrl}/productos`;
 
 const LINES = [
-  { id: 1, sale_id: 10, product_id: 1, quantity: 2, unit_price: 10, line_total: 20, status: 'active' as const },
+  {
+    id: 1,
+    sale_id: 10,
+    product_id: 1,
+    quantity: 2,
+    unit_price: 10,
+    line_total: 20,
+    status: 'active' as const,
+  },
 ];
 const SALES = [{ id: 10, total: 20, status: 'active' as const }];
 const PRODUCTS = [{ id: 1, name: 'Detergente', price: 10, status: 'active' as const }];

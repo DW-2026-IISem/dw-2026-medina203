@@ -1,9 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { provideHttpClient } from '@angular/common/http';
-import {
-  provideHttpClientTesting,
-  HttpTestingController,
-} from '@angular/common/http/testing';
+import { provideHttpClientTesting, HttpTestingController } from '@angular/common/http/testing';
 import { providePrimeNG } from 'primeng/config';
 import Aura from '@primeuix/themes/aura';
 import { ConfirmationService, MessageService } from 'primeng/api';
@@ -47,17 +44,13 @@ describe('ProductTypeList', () => {
 
   it('should load the table with types', async () => {
     const { fixture } = await crearLista();
-    expect(fixture.nativeElement.querySelectorAll('tbody tr').length).toBe(
-      TIPOS.length,
-    );
+    expect(fixture.nativeElement.querySelectorAll('tbody tr').length).toBe(TIPOS.length);
   });
 
   it('should show an error message when GET fails', async () => {
     const fixture = TestBed.createComponent(ProductTypeList);
     fixture.detectChanges();
-    http
-      .expectOne(BASE)
-      .flush({ error: 'boom' }, { status: 500, statusText: 'Server Error' });
+    http.expectOne(BASE).flush({ error: 'boom' }, { status: 500, statusText: 'Server Error' });
     fixture.detectChanges();
     expect(fixture.componentInstance.error()).toBeTruthy();
   });
@@ -131,9 +124,7 @@ describe('ProductTypeList', () => {
     vi.spyOn(mensajes, 'add');
     lista.openCreate();
     lista.save({ name: 'X', description: null });
-    http
-      .expectOne(BASE)
-      .flush({ error: 'forbidden' }, { status: 403, statusText: 'Forbidden' });
+    http.expectOne(BASE).flush({ error: 'forbidden' }, { status: 403, statusText: 'Forbidden' });
     expect(mensajes.add).toHaveBeenCalled();
   });
 });

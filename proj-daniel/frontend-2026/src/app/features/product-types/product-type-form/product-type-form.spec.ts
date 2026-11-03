@@ -53,9 +53,7 @@ describe('ProductTypeForm', () => {
     });
     fixture.componentInstance.submit();
 
-    expect(out).toEqual([
-      { name: 'Congelados', description: null, status: 'active' },
-    ]);
+    expect(out).toEqual([{ name: 'Congelados', description: null, status: 'active' }]);
   });
 
   it('should load type data and disable status in edit mode', () => {
@@ -73,9 +71,7 @@ describe('ProductTypeForm', () => {
     fixture.componentInstance.form.patchValue({ name: 'Aseo y limpieza' });
     fixture.componentInstance.submit();
 
-    expect(out).toEqual([
-      { name: 'Aseo y limpieza', description: 'Limpieza' },
-    ]);
+    expect(out).toEqual([{ name: 'Aseo y limpieza', description: 'Limpieza' }]);
   });
 
   it('should not emit when invalid', () => {

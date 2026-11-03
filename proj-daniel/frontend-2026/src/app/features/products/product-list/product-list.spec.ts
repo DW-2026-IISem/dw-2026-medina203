@@ -1,9 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { provideHttpClient } from '@angular/common/http';
-import {
-  provideHttpClientTesting,
-  HttpTestingController,
-} from '@angular/common/http/testing';
+import { provideHttpClientTesting, HttpTestingController } from '@angular/common/http/testing';
 import { providePrimeNG } from 'primeng/config';
 import Aura from '@primeuix/themes/aura';
 import { ConfirmationService, MessageService } from 'primeng/api';
@@ -19,9 +16,36 @@ const TYPES = [
 ];
 
 const PRODUCTS = [
-  { id: 1, name: 'Detergente', brand: 'Marca', price: 10, min_stock: 2, quantity: 5, product_type_id: 1, status: 'active' as const },
-  { id: 2, name: 'Helado', brand: 'Frío', price: 5, min_stock: 3, quantity: 0, product_type_id: 2, status: 'active' as const },
-  { id: 3, name: 'Jabón', brand: 'Marca', price: 3, min_stock: 4, quantity: 4, product_type_id: 1, status: 'active' as const },
+  {
+    id: 1,
+    name: 'Detergente',
+    brand: 'Marca',
+    price: 10,
+    min_stock: 2,
+    quantity: 5,
+    product_type_id: 1,
+    status: 'active' as const,
+  },
+  {
+    id: 2,
+    name: 'Helado',
+    brand: 'Frío',
+    price: 5,
+    min_stock: 3,
+    quantity: 0,
+    product_type_id: 2,
+    status: 'active' as const,
+  },
+  {
+    id: 3,
+    name: 'Jabón',
+    brand: 'Marca',
+    price: 3,
+    min_stock: 4,
+    quantity: 4,
+    product_type_id: 1,
+    status: 'active' as const,
+  },
 ];
 
 describe('ProductList', () => {
@@ -54,9 +78,7 @@ describe('ProductList', () => {
 
   it('should load products and types in parallel', async () => {
     const { fixture } = await crearLista();
-    expect(fixture.nativeElement.querySelectorAll('tbody tr').length).toBe(
-      PRODUCTS.length,
-    );
+    expect(fixture.nativeElement.querySelectorAll('tbody tr').length).toBe(PRODUCTS.length);
   });
 
   it('should resolve product_type_id to its name', async () => {

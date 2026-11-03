@@ -44,8 +44,12 @@ describe('authInterceptor', () => {
     http.get(`${API}/clientes`).subscribe();
     http.post(`${API}/sesion/login`, {}).subscribe();
 
-    expect(backend.expectOne(`${API}/clientes`).request.headers.get('Authorization')).toBe('Bearer acc-1');
-    expect(backend.expectOne(`${API}/sesion/login`).request.headers.has('Authorization')).toBe(false);
+    expect(backend.expectOne(`${API}/clientes`).request.headers.get('Authorization')).toBe(
+      'Bearer acc-1',
+    );
+    expect(backend.expectOne(`${API}/sesion/login`).request.headers.has('Authorization')).toBe(
+      false,
+    );
   });
 
   it('should share ONE refresh among concurrent 401s and retry them all', () => {
@@ -55,7 +59,9 @@ describe('authInterceptor', () => {
     urls.forEach((url) => http.get(url).subscribe(() => ok.push(url)));
 
     urls.forEach((url) =>
-      backend.expectOne(url).flush({ error: 'expired' }, { status: 401, statusText: 'Unauthorized' }),
+      backend
+        .expectOne(url)
+        .flush({ error: 'expired' }, { status: 401, statusText: 'Unauthorized' }),
     );
 
     const refresh = backend.match(`${API}/sesion/refresh`);
@@ -80,7 +86,10 @@ describe('authInterceptor', () => {
     backend.expectOne(`${API}/clientes`).flush({}, { status: 401, statusText: 'Unauthorized' });
 
     expect(failed).toBe(true);
-    expect(navigate).toHaveBeenCalledWith(['/login'], expect.objectContaining({ queryParams: expect.any(Object) }));
+    expect(navigate).toHaveBeenCalledWith(
+      ['/login'],
+      expect.objectContaining({ queryParams: expect.any(Object) }),
+    );
   });
 
   it('should go to /login when the refresh itself fails', () => {

@@ -1,9 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { provideHttpClient } from '@angular/common/http';
-import {
-  provideHttpClientTesting,
-  HttpTestingController,
-} from '@angular/common/http/testing';
+import { provideHttpClientTesting, HttpTestingController } from '@angular/common/http/testing';
 import { ProductTypeApi } from './product-type-api';
 import { environment } from '../../../environments/environment';
 
@@ -39,9 +36,7 @@ describe('ProductTypeApi', () => {
 
   it('POSTs a new type', () => {
     let out: unknown;
-    api.create({ name: 'Congelados', description: null }).subscribe(
-      (r) => (out = r),
-    );
+    api.create({ name: 'Congelados', description: null }).subscribe((r) => (out = r));
     const req = http.expectOne(BASE);
     expect(req.request.method).toBe('POST');
     req.flush({ product_type: { id: 9, name: 'Congelados' } });

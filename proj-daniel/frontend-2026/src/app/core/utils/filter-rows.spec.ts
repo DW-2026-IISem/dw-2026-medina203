@@ -6,7 +6,7 @@ const ROWS = [
   { nombre: 'Kiosco Centro', email: null as string | null, phone: null as string | null },
 ];
 
-const pick = (row: typeof ROWS[number]) => [row.nombre, row.email, row.phone];
+const pick = (row: (typeof ROWS)[number]) => [row.nombre, row.email, row.phone];
 
 describe('filterRows', () => {
   it('returns a copy when query is empty', () => {
@@ -16,9 +16,7 @@ describe('filterRows', () => {
   });
 
   it('ignores surrounding whitespace and case', () => {
-    expect(filterRows(ROWS, '  SUR  ', pick).map((r) => r.nombre)).toEqual([
-      'Tienda Sur',
-    ]);
+    expect(filterRows(ROWS, '  SUR  ', pick).map((r) => r.nombre)).toEqual(['Tienda Sur']);
   });
 
   it('matches by email', () => {

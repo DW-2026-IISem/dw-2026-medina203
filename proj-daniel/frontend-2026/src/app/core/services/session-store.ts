@@ -1,10 +1,6 @@
 import { Injectable, computed, signal } from '@angular/core';
 import { environment } from '../../../environments/environment';
-import {
-  AccessPayload,
-  EffectivePermission,
-  SessionTokens,
-} from '../models/auth.model';
+import { AccessPayload, EffectivePermission, SessionTokens } from '../models/auth.model';
 import { HttpMethod, Resource } from '../models/resource.model';
 import { Role } from '../models/role.model';
 import { User } from '../models/user.model';
@@ -115,9 +111,7 @@ export class SessionStore {
     }
     const verb = method.toUpperCase();
     const requestPath = path.split('?')[0];
-    return this._permissions().some(
-      (p) => p.method === verb && pathMatches(p.path, requestPath),
-    );
+    return this._permissions().some((p) => p.method === verb && pathMatches(p.path, requestPath));
   }
 
   canPermission(permission: string): boolean {
@@ -128,10 +122,7 @@ export class SessionStore {
     if (separator < 0) {
       return false;
     }
-    return this.can(
-      permission.slice(0, separator),
-      permission.slice(separator + 1),
-    );
+    return this.can(permission.slice(0, separator), permission.slice(separator + 1));
   }
 
   hasRole(name: string): boolean {
@@ -172,8 +163,6 @@ export class SessionStore {
 }
 
 function pathMatches(pattern: string, path: string): boolean {
-  const escaped = pattern
-    .replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
-    .replace(/\/:[^/]+/g, '/[^/]+');
+  const escaped = pattern.replace(/[.*+?^${}()|[\]\\]/g, '\\$&').replace(/\/:[^/]+/g, '/[^/]+');
   return new RegExp(`^${escaped}$`).test(path);
 }

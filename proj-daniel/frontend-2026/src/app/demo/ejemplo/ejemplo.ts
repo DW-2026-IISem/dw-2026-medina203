@@ -21,19 +21,13 @@ export interface Producto {
 export class Ejemplo {
   protected readonly producto = signal<Producto>(productoInicial());
 
-  protected readonly precioFinal = computed(() =>
-    Math.round(this.producto().precio * 1.19),
-  );
+  protected readonly precioFinal = computed(() => Math.round(this.producto().precio * 1.19));
 
-  protected readonly estadoTexto = computed(() =>
-    this.producto().activo ? 'Activo' : 'Inactivo',
-  );
+  protected readonly estadoTexto = computed(() => (this.producto().activo ? 'Activo' : 'Inactivo'));
 
   private readonly registro = effect(() => {
     const { nombre, precio, activo } = this.producto();
-    console.log(
-      `[ejemplo] ${nombre} · precio ${precio} · ${activo ? 'activo' : 'inactivo'}`,
-    );
+    console.log(`[ejemplo] ${nombre} · precio ${precio} · ${activo ? 'activo' : 'inactivo'}`);
   });
 
   protected cambiarNombre(event: Event): void {

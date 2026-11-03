@@ -11,10 +11,6 @@ export interface NavGroup {
   items: NavItem[];
 }
 
-/**
- * Catálogo estático de rutas. La visibilidad de cada item se decide en
- * `Shell.navGroups()` a partir de `SessionStore.canPermission()`.
- */
 export const NAV: NavGroup[] = [
   {
     label: 'Operación',
@@ -59,19 +55,42 @@ export const NAV: NavGroup[] = [
   },
   {
     label: 'Cuenta',
-    items: [
-      {
-        label: 'Mi perfil',
-        icon: 'pi pi-user',
-        routerLink: '/perfil',
-      },
-    ],
+    items: [{ label: 'Mi perfil', icon: 'pi pi-user', routerLink: '/perfil' }],
   },
   {
     label: 'Seguridad',
     authOnly: true,
     items: [
-      // Los items /admin/* se añaden en ISS-10 con sus permisos.
+      {
+        label: 'Usuarios',
+        icon: 'pi pi-id-card',
+        routerLink: '/admin/usuarios',
+        permission: 'GET /api/usuarios',
+      },
+      {
+        label: 'Roles',
+        icon: 'pi pi-shield',
+        routerLink: '/admin/roles',
+        permission: 'GET /api/roles',
+      },
+      {
+        label: 'Recursos',
+        icon: 'pi pi-database',
+        routerLink: '/admin/recursos',
+        permission: 'GET /api/recursos',
+      },
+      {
+        label: 'Asignaciones',
+        icon: 'pi pi-link',
+        routerLink: '/admin/asignaciones',
+        permission: 'GET /api/asignaciones-rol',
+      },
+      {
+        label: 'Concesiones',
+        icon: 'pi pi-key',
+        routerLink: '/admin/permisos',
+        permission: 'GET /api/concesiones-rol',
+      },
     ],
   },
 ];

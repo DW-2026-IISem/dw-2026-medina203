@@ -77,8 +77,7 @@ export class SaleForm {
   );
 
   readonly total = computed(
-    () =>
-      this.subtotal() + Number(this.tax() ?? 0) - Number(this.discounts() ?? 0),
+    () => this.subtotal() + Number(this.tax() ?? 0) - Number(this.discounts() ?? 0),
   );
 
   constructor() {
@@ -146,9 +145,7 @@ export class SaleForm {
         return [...lines, { product_id: productId, quantity: requested }];
       }
       return lines.map((line) =>
-        line.product_id === productId
-          ? { ...line, quantity: line.quantity + requested }
-          : line,
+        line.product_id === productId ? { ...line, quantity: line.quantity + requested } : line,
       );
     });
 
@@ -184,10 +181,7 @@ export class SaleForm {
       .subscribe({
         next: (sale) => {
           this.saving.set(false);
-          this.notify.success(
-            `Venta #${sale.id} registrada`,
-            'Stock y totales actualizados.',
-          );
+          this.notify.success(`Venta #${sale.id} registrada`, 'Stock y totales actualizados.');
           void this.router.navigate(['/ventas']);
         },
         error: (error: unknown) => {

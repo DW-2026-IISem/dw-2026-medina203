@@ -10,9 +10,30 @@ import { environment } from '../../../../environments/environment';
 const BASE = `${environment.apiUrl}/clientes`;
 
 const CLIENTES = [
-  { id: 1, name: 'Tienda Sur', email: 'sur@x.com', phone: null, address: 'Calle 1', status: 'active' as const },
-  { id: 2, name: 'Bodega Norte', email: 'norte@x.com', phone: '3001234567', address: null, status: 'active' as const },
-  { id: 3, name: 'Kiosco Centro', email: null, phone: null, address: null, status: 'active' as const },
+  {
+    id: 1,
+    name: 'Tienda Sur',
+    email: 'sur@x.com',
+    phone: null,
+    address: 'Calle 1',
+    status: 'active' as const,
+  },
+  {
+    id: 2,
+    name: 'Bodega Norte',
+    email: 'norte@x.com',
+    phone: '3001234567',
+    address: null,
+    status: 'active' as const,
+  },
+  {
+    id: 3,
+    name: 'Kiosco Centro',
+    email: null,
+    phone: null,
+    address: null,
+    status: 'active' as const,
+  },
 ];
 
 describe('ClientList', () => {
@@ -53,10 +74,7 @@ describe('ClientList', () => {
   it('should show an error message when GET fails', async () => {
     const fixture = TestBed.createComponent(ClientList);
     fixture.detectChanges();
-    http.expectOne(BASE).flush(
-      { error: 'boom' },
-      { status: 500, statusText: 'Server Error' },
-    );
+    http.expectOne(BASE).flush({ error: 'boom' }, { status: 500, statusText: 'Server Error' });
     fixture.detectChanges();
     expect(fixture.componentInstance.error()).toBeTruthy();
   });
@@ -76,7 +94,21 @@ describe('ClientList', () => {
     const post = http.expectOne(BASE);
     expect(post.request.method).toBe('POST');
     post.flush({ client: { id: 4, name: 'Cafetería Central', status: 'active' } });
-    http.expectOne(BASE).flush({ clients: [...CLIENTES, { id: 4, name: 'Cafetería Central', status: 'active', email: null, phone: null, address: null }] });
+    http
+      .expectOne(BASE)
+      .flush({
+        clients: [
+          ...CLIENTES,
+          {
+            id: 4,
+            name: 'Cafetería Central',
+            status: 'active',
+            email: null,
+            phone: null,
+            address: null,
+          },
+        ],
+      });
   });
 
   it('should PATCH without status', async () => {
@@ -85,7 +117,12 @@ describe('ClientList', () => {
     lista.save({ name: 'Tienda Sur', address: null, phone: '3100000000', email: null });
     const patch = http.expectOne(`${BASE}/1`);
     expect(patch.request.method).toBe('PATCH');
-    expect(patch.request.body).toEqual({ name: 'Tienda Sur', address: null, phone: '3100000000', email: null });
+    expect(patch.request.body).toEqual({
+      name: 'Tienda Sur',
+      address: null,
+      phone: '3100000000',
+      email: null,
+    });
     patch.flush({ client: CLIENTES[0] });
     http.expectOne(BASE).flush({ clients: CLIENTES });
   });
@@ -133,10 +170,7 @@ describe('ClientList', () => {
     vi.spyOn(mensajes, 'add');
     lista.openCreate();
     lista.save({ name: 'X', phone: null, email: null, address: null });
-    http.expectOne(BASE).flush(
-      { error: 'forbidden' },
-      { status: 403, statusText: 'Forbidden' },
-    );
+    http.expectOne(BASE).flush({ error: 'forbidden' }, { status: 403, statusText: 'Forbidden' });
     expect(mensajes.add).toHaveBeenCalled();
   });
 });

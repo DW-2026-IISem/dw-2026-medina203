@@ -2,11 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { Observable, map } from 'rxjs';
 import { environment } from '../../../environments/environment';
-import {
-  Sale,
-  SaleCreatePayload,
-  SaleUpdatePayload,
-} from '../../core/models/sale.model';
+import { Sale, SaleCreatePayload, SaleUpdatePayload } from '../../core/models/sale.model';
 
 /** /api/ventas — POST es transaccional (cabecera + detalle + stock). */
 @Injectable({ providedIn: 'root' })
@@ -15,9 +11,7 @@ export class SaleApi {
   private readonly base = `${environment.apiUrl}/ventas`;
 
   list(): Observable<Sale[]> {
-    return this.http
-      .get<{ sales: Sale[] }>(this.base)
-      .pipe(map((response) => response.sales));
+    return this.http.get<{ sales: Sale[] }>(this.base).pipe(map((response) => response.sales));
   }
 
   get(id: number): Observable<Sale> {

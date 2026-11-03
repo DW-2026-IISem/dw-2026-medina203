@@ -2,10 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { Observable, map } from 'rxjs';
 import { environment } from '../../../environments/environment';
-import {
-  ProductType,
-  ProductTypePayload,
-} from '../../core/models/product-type.model';
+import { ProductType, ProductTypePayload } from '../../core/models/product-type.model';
 
 /** /api/tipos-producto — la respuesta usa snake_case `product_types`. */
 @Injectable({ providedIn: 'root' })
@@ -31,10 +28,7 @@ export class ProductTypeApi {
       .pipe(map((response) => response.product_type));
   }
 
-  update(
-    id: number,
-    payload: Partial<ProductTypePayload>,
-  ): Observable<ProductType> {
+  update(id: number, payload: Partial<ProductTypePayload>): Observable<ProductType> {
     return this.http
       .patch<{ product_type: ProductType }>(`${this.base}/${id}`, payload)
       .pipe(map((response) => response.product_type));

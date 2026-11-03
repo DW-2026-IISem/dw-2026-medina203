@@ -7,10 +7,7 @@ import { MessageModule } from 'primeng/message';
 import { TableModule } from 'primeng/table';
 import { TagModule } from 'primeng/tag';
 import { TooltipModule } from 'primeng/tooltip';
-import {
-  ProductType,
-  ProductTypePayload,
-} from '../../../core/models/product-type.model';
+import { ProductType, ProductTypePayload } from '../../../core/models/product-type.model';
 import { NotificationService } from '../../../core/services/notification';
 import { toApiMessage } from '../../../core/utils/api-error';
 import { filterRows } from '../../../core/utils/filter-rows';
@@ -61,9 +58,7 @@ export class ProductTypeList {
   readonly editing = signal<ProductType | null>(null);
   readonly resetKey = signal(0);
 
-  readonly title = computed(() =>
-    this.editing() ? 'Editar tipo' : 'Nuevo tipo',
-  );
+  readonly title = computed(() => (this.editing() ? 'Editar tipo' : 'Nuevo tipo'));
 
   constructor() {
     this.load();
@@ -102,9 +97,7 @@ export class ProductTypeList {
     const current = this.editing();
     this.saving.set(true);
 
-    const request = current
-      ? this.api.update(current.id, payload)
-      : this.api.create(payload);
+    const request = current ? this.api.update(current.id, payload) : this.api.create(payload);
 
     request.subscribe({
       next: () => {

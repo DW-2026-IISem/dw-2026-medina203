@@ -2,11 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { Observable, map } from 'rxjs';
 import { environment } from '../../../environments/environment';
-import {
-  Client,
-  ClientPayload,
-  ClientUpdatePayload,
-} from '../../core/models/client.model';
+import { Client, ClientPayload, ClientUpdatePayload } from '../../core/models/client.model';
 
 /** Contrato exacto de `features/business/clients` en Express. */
 @Injectable({ providedIn: 'root' })

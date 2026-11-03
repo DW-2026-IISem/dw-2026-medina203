@@ -13,14 +13,7 @@ import { PageHeader } from '../../../shared/ui/page-header/page-header';
 @Component({
   host: { class: 'block' },
   selector: 'app-profile',
-  imports: [
-    ButtonModule,
-    CardModule,
-    MessageModule,
-    PageHeader,
-    TableModule,
-    TagModule,
-  ],
+  imports: [ButtonModule, CardModule, MessageModule, PageHeader, TableModule, TagModule],
   templateUrl: './profile.html',
   styleUrl: './profile.css',
 })

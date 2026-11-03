@@ -5,8 +5,22 @@ import { SessionStore } from './session-store';
 const KEY = 'textilclean.session.v1';
 
 const PERMISOS: EffectivePermission[] = [
-  { resource_id: 1, method: 'GET', path: '/api/clientes', description: null, role_id: 2, role_name: 'SELLER' },
-  { resource_id: 2, method: 'PATCH', path: '/api/clientes/:id', description: null, role_id: 2, role_name: 'SELLER' },
+  {
+    resource_id: 1,
+    method: 'GET',
+    path: '/api/clientes',
+    description: null,
+    role_id: 2,
+    role_name: 'SELLER',
+  },
+  {
+    resource_id: 2,
+    method: 'PATCH',
+    path: '/api/clientes/:id',
+    description: null,
+    role_id: 2,
+    role_name: 'SELLER',
+  },
 ];
 
 describe('SessionStore', () => {
@@ -33,7 +47,12 @@ describe('SessionStore', () => {
     });
 
     const saved = JSON.parse(localStorage.getItem(KEY) ?? '{}');
-    expect(Object.keys(saved).sort()).toEqual(['accessToken', 'permissions', 'refreshToken', 'user']);
+    expect(Object.keys(saved).sort()).toEqual([
+      'accessToken',
+      'permissions',
+      'refreshToken',
+      'user',
+    ]);
     expect(store.isAuthenticated()).toBe(true);
     expect(store.roleNames()).toEqual(['SELLER']);
     expect(store.permissionCount()).toBe(2);

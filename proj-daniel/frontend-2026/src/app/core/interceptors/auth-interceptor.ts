@@ -1,14 +1,7 @@
 import { HttpErrorResponse, HttpInterceptorFn } from '@angular/common/http';
 import { inject } from '@angular/core';
 import { Router } from '@angular/router';
-import {
-  Observable,
-  catchError,
-  finalize,
-  shareReplay,
-  switchMap,
-  throwError,
-} from 'rxjs';
+import { Observable, catchError, finalize, shareReplay, switchMap, throwError } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { SessionTokens } from '../models/auth.model';
 import { AuthService } from '../services/auth';
@@ -39,11 +32,7 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
 
   return next(request).pipe(
     catchError((error: unknown) => {
-      if (
-        !(error instanceof HttpErrorResponse) ||
-        error.status !== 401 ||
-        isPublicAuthCall
-      ) {
+      if (!(error instanceof HttpErrorResponse) || error.status !== 401 || isPublicAuthCall) {
         return throwError(() => error);
       }
 
@@ -71,9 +60,7 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
         switchMap(() => {
           const renewed = session.accessToken();
           const retried = req.clone({
-            setHeaders: renewed
-              ? { Authorization: `Bearer ${renewed}` }
-              : {},
+            setHeaders: renewed ? { Authorization: `Bearer ${renewed}` } : {},
           });
           return next(retried);
         }),
@@ -84,8 +71,6 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
 
 function redirectToLogin(session: SessionStore, router: Router): void {
   session.clear();
-  const returnUrl = router.url.startsWith('/login')
-    ? '/dashboard'
-    : router.url;
+  const returnUrl = router.url.startsWith('/login') ? '/dashboard' : router.url;
   void router.navigate(['/login'], { queryParams: { returnUrl } });
 }

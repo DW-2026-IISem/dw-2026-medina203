@@ -25,15 +25,7 @@ import { NAV } from './nav.config';
 @Component({
   host: { class: 'block' },
   selector: 'app-shell',
-  imports: [
-    Aside,
-    ConfirmDialogModule,
-    DrawerModule,
-    Footer,
-    Header,
-    RouterOutlet,
-    ToastModule,
-  ],
+  imports: [Aside, ConfirmDialogModule, DrawerModule, Footer, Header, RouterOutlet, ToastModule],
   templateUrl: './shell.html',
   styleUrl: './shell.css',
 })
@@ -53,10 +45,7 @@ export class Shell {
       .map((group) => ({
         label: group.label,
         items: group.items
-          .filter(
-            (item) =>
-              !item.permission || this.session.canPermission(item.permission),
-          )
+          .filter((item) => !item.permission || this.session.canPermission(item.permission))
           .map<MenuItem>((item) => ({
             label: item.label,
             icon: item.icon,
@@ -69,17 +58,14 @@ export class Shell {
 
   readonly username = computed(() => this.session.user()?.username ?? '');
 
-  readonly roleLabel = computed(
-    () => this.session.roleNames().join(', ') || 'Sin rol',
-  );
+  readonly roleLabel = computed(() => this.session.roleNames().join(', ') || 'Sin rol');
 
   /** El backend no envía nombre/apellido: las iniciales salen del username. */
   readonly initials = computed(() => {
     const name = this.username();
     if (!name) return 'IN';
     const parts = name.split(/[._\s-]+/).filter(Boolean);
-    const letters =
-      parts.length > 1 ? parts[0][0] + parts[1][0] : name.slice(0, 2);
+    const letters = parts.length > 1 ? parts[0][0] + parts[1][0] : name.slice(0, 2);
     return letters.toUpperCase();
   });
 

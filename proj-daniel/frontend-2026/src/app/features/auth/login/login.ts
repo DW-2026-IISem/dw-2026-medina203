@@ -1,9 +1,5 @@
 import { Component, inject, signal } from '@angular/core';
-import {
-  NonNullableFormBuilder,
-  ReactiveFormsModule,
-  Validators,
-} from '@angular/forms';
+import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
@@ -15,13 +11,7 @@ import { toApiMessage } from '../../../core/utils/api-error';
 @Component({
   host: { class: 'block' },
   selector: 'app-login',
-  imports: [
-    ButtonModule,
-    InputTextModule,
-    MessageModule,
-    PasswordModule,
-    ReactiveFormsModule,
-  ],
+  imports: [ButtonModule, InputTextModule, MessageModule, PasswordModule, ReactiveFormsModule],
   templateUrl: './login.html',
   styleUrl: './login.css',
 })
@@ -51,12 +41,9 @@ export class Login {
     const { identifier, password } = this.form.getRawValue();
     this.auth.login({ identifier, password }).subscribe({
       next: () => {
-        const requested =
-          this.route.snapshot.queryParamMap.get('returnUrl') ?? '/dashboard';
+        const requested = this.route.snapshot.queryParamMap.get('returnUrl') ?? '/dashboard';
         const returnUrl =
-          requested.startsWith('/') && !requested.startsWith('/login')
-            ? requested
-            : '/dashboard';
+          requested.startsWith('/') && !requested.startsWith('/login') ? requested : '/dashboard';
         void this.router.navigateByUrl(returnUrl);
       },
       error: (error: unknown) => {

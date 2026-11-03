@@ -3,9 +3,7 @@ import { watchMediaQuery } from './media-query';
 
 describe('watchMediaQuery', () => {
   it('should return false when matchMedia is not available (jsdom)', () => {
-    const matches = TestBed.runInInjectionContext(() =>
-      watchMediaQuery('(min-width: 1024px)'),
-    );
+    const matches = TestBed.runInInjectionContext(() => watchMediaQuery('(min-width: 1024px)'));
     expect(matches()).toBe(false);
   });
 
@@ -23,9 +21,7 @@ describe('watchMediaQuery', () => {
         removeEventListener: () => undefined,
       }) as unknown as MediaQueryList) as typeof window.matchMedia;
 
-    const matches = TestBed.runInInjectionContext(() =>
-      watchMediaQuery('(min-width: 1024px)'),
-    );
+    const matches = TestBed.runInInjectionContext(() => watchMediaQuery('(min-width: 1024px)'));
     expect(matches()).toBe(true);
 
     listener?.({ matches: false } as MediaQueryListEvent);

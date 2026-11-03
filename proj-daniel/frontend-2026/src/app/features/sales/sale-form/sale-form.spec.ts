@@ -1,9 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { provideHttpClient } from '@angular/common/http';
-import {
-  provideHttpClientTesting,
-  HttpTestingController,
-} from '@angular/common/http/testing';
+import { provideHttpClientTesting, HttpTestingController } from '@angular/common/http/testing';
 import { provideRouter } from '@angular/router';
 import { providePrimeNG } from 'primeng/config';
 import Aura from '@primeuix/themes/aura';
@@ -15,13 +12,29 @@ const CLIENTS_URL = `${environment.apiUrl}/clientes`;
 const PRODUCTS_URL = `${environment.apiUrl}/productos`;
 const SALES_URL = `${environment.apiUrl}/ventas`;
 
-const CLIENTS = [
-  { id: 1, name: 'Tienda Sur', status: 'active' as const },
-];
+const CLIENTS = [{ id: 1, name: 'Tienda Sur', status: 'active' as const }];
 
 const PRODUCTS = [
-  { id: 1, name: 'Detergente', brand: 'M', price: 10, min_stock: 2, quantity: 5, product_type_id: 1, status: 'active' as const },
-  { id: 2, name: 'Jabón', brand: 'M', price: 3, min_stock: 1, quantity: 2, product_type_id: 1, status: 'active' as const },
+  {
+    id: 1,
+    name: 'Detergente',
+    brand: 'M',
+    price: 10,
+    min_stock: 2,
+    quantity: 5,
+    product_type_id: 1,
+    status: 'active' as const,
+  },
+  {
+    id: 2,
+    name: 'Jabón',
+    brand: 'M',
+    price: 3,
+    min_stock: 1,
+    quantity: 2,
+    product_type_id: 1,
+    status: 'active' as const,
+  },
 ];
 
 describe('SaleForm', () => {

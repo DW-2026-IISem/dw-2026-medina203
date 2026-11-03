@@ -9,10 +9,7 @@ import { TagModule } from 'primeng/tag';
 import { TooltipModule } from 'primeng/tooltip';
 import { forkJoin } from 'rxjs';
 import { Product } from '../../../core/models/product.model';
-import {
-  ProductSale,
-  ProductSalePayload,
-} from '../../../core/models/product-sale.model';
+import { ProductSale, ProductSalePayload } from '../../../core/models/product-sale.model';
 import { Sale } from '../../../core/models/sale.model';
 import { NotificationService } from '../../../core/services/notification';
 import { toApiMessage } from '../../../core/utils/api-error';
@@ -64,9 +61,7 @@ export class ProductSaleList {
   readonly editing = signal<ProductSale | null>(null);
   readonly resetKey = signal(0);
 
-  readonly title = computed(() =>
-    this.editing() ? 'Editar línea' : 'Nueva línea',
-  );
+  readonly title = computed(() => (this.editing() ? 'Editar línea' : 'Nueva línea'));
 
   readonly productName = computed(() => {
     const map = new Map(this.products().map((p) => [p.id, p.name]));
@@ -123,9 +118,7 @@ export class ProductSaleList {
       next: () => {
         this.saving.set(false);
         this.dialogVisible.set(false);
-        this.notify.success(
-          current ? 'Línea actualizada' : 'Línea creada',
-        );
+        this.notify.success(current ? 'Línea actualizada' : 'Línea creada');
         this.load();
       },
       error: (error: unknown) => {

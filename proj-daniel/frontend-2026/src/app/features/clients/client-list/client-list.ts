@@ -63,9 +63,7 @@ export class ClientList {
   readonly editing = signal<Client | null>(null);
   readonly resetKey = signal(0);
 
-  readonly title = computed(() =>
-    this.editing() ? 'Editar cliente' : 'Nuevo cliente',
-  );
+  readonly title = computed(() => (this.editing() ? 'Editar cliente' : 'Nuevo cliente'));
 
   constructor() {
     this.load();
@@ -104,9 +102,7 @@ export class ClientList {
     const current = this.editing();
     this.saving.set(true);
 
-    const request = current
-      ? this.api.update(current.id, payload)
-      : this.api.create(payload);
+    const request = current ? this.api.update(current.id, payload) : this.api.create(payload);
 
     request.subscribe({
       next: () => {

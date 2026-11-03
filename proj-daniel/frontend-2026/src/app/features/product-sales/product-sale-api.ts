@@ -2,10 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { Observable, map } from 'rxjs';
 import { environment } from '../../../environments/environment';
-import {
-  ProductSale,
-  ProductSalePayload,
-} from '../../core/models/product-sale.model';
+import { ProductSale, ProductSalePayload } from '../../core/models/product-sale.model';
 
 /** /api/detalle-ventas — agregar/editar líneas ajusta stock y totales. */
 @Injectable({ providedIn: 'root' })

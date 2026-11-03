@@ -9,26 +9,22 @@ export const routes: Routes = [
     path: 'login',
     title: 'Iniciar sesión · TextilClean',
     canActivate: [guestGuard],
-    loadComponent: () =>
-      import('./features/auth/login/login').then((m) => m.Login),
+    loadComponent: () => import('./features/auth/login/login').then((m) => m.Login),
   },
   {
     path: 'forbidden',
     title: 'Acceso denegado · TextilClean',
-    loadComponent: () =>
-      import('./features/auth/forbidden/forbidden').then((m) => m.Forbidden),
+    loadComponent: () => import('./features/auth/forbidden/forbidden').then((m) => m.Forbidden),
   },
   {
     path: 'construir',
     title: 'Prototipo · TextilClean',
-    loadComponent: () =>
-      import('./features/construir/construir').then((m) => m.Construir),
+    loadComponent: () => import('./features/construir/construir').then((m) => m.Construir),
   },
   {
     path: '',
     canActivate: [authGuard],
-    loadComponent: () =>
-      import('./layout/shell/shell').then((m) => m.Shell),
+    loadComponent: () => import('./layout/shell/shell').then((m) => m.Shell),
     children: [
       { path: '', pathMatch: 'full', redirectTo: 'dashboard' },
       {
@@ -36,15 +32,13 @@ export const routes: Routes = [
         title: 'Panel · TextilClean',
         canActivate: [permissionGuard],
         data: { permission: 'GET /api/ventas' },
-        loadComponent: () =>
-          import('./features/dashboard/dashboard').then((m) => m.Dashboard),
+        loadComponent: () => import('./features/dashboard/dashboard').then((m) => m.Dashboard),
       },
       {
         path: 'perfil',
         title: 'Mi perfil · TextilClean',
         canActivate: [authOnlyGuard],
-        loadComponent: () =>
-          import('./features/auth/profile/profile').then((m) => m.Profile),
+        loadComponent: () => import('./features/auth/profile/profile').then((m) => m.Profile),
       },
       {
         path: 'clientes',
@@ -52,9 +46,7 @@ export const routes: Routes = [
         canActivate: [permissionGuard],
         data: { permission: 'GET /api/clientes' },
         loadComponent: () =>
-          import('./features/clients/client-list/client-list').then(
-            (m) => m.ClientList,
-          ),
+          import('./features/clients/client-list/client-list').then((m) => m.ClientList),
       },
       {
         path: 'tipos-producto',
@@ -62,9 +54,9 @@ export const routes: Routes = [
         canActivate: [permissionGuard],
         data: { permission: 'GET /api/tipos-producto' },
         loadComponent: () =>
-          import(
-            './features/product-types/product-type-list/product-type-list'
-          ).then((m) => m.ProductTypeList),
+          import('./features/product-types/product-type-list/product-type-list').then(
+            (m) => m.ProductTypeList,
+          ),
       },
       {
         path: 'productos',
@@ -72,29 +64,21 @@ export const routes: Routes = [
         canActivate: [permissionGuard],
         data: { permission: 'GET /api/productos' },
         loadComponent: () =>
-          import('./features/products/product-list/product-list').then(
-            (m) => m.ProductList,
-          ),
+          import('./features/products/product-list/product-list').then((m) => m.ProductList),
       },
       {
         path: 'ventas',
         title: 'Ventas · TextilClean',
         canActivate: [permissionGuard],
         data: { permission: 'GET /api/ventas' },
-        loadComponent: () =>
-          import('./features/sales/sale-list/sale-list').then(
-            (m) => m.SaleList,
-          ),
+        loadComponent: () => import('./features/sales/sale-list/sale-list').then((m) => m.SaleList),
       },
       {
         path: 'ventas/nueva',
         title: 'Nueva venta · TextilClean',
         canActivate: [permissionGuard],
         data: { permission: 'POST /api/ventas' },
-        loadComponent: () =>
-          import('./features/sales/sale-form/sale-form').then(
-            (m) => m.SaleForm,
-          ),
+        loadComponent: () => import('./features/sales/sale-form/sale-form').then((m) => m.SaleForm),
       },
       {
         path: 'detalle-ventas',
@@ -102,10 +86,58 @@ export const routes: Routes = [
         canActivate: [permissionGuard],
         data: { permission: 'GET /api/detalle-ventas' },
         loadComponent: () =>
-          import(
-            './features/product-sales/product-sale-list/product-sale-list'
-          ).then((m) => m.ProductSaleList),
+          import('./features/product-sales/product-sale-list/product-sale-list').then(
+            (m) => m.ProductSaleList,
+          ),
       },
+      // --- Administración RBAC ---
+      {
+        path: 'admin/usuarios',
+        title: 'Usuarios · TextilClean',
+        canActivate: [authOnlyGuard, permissionGuard],
+        data: { permission: 'GET /api/usuarios' },
+        loadComponent: () =>
+          import('./features/admin/users/user-list/user-list').then((m) => m.UserList),
+      },
+      {
+        path: 'admin/roles',
+        title: 'Roles · TextilClean',
+        canActivate: [authOnlyGuard, permissionGuard],
+        data: { permission: 'GET /api/roles' },
+        loadComponent: () =>
+          import('./features/admin/roles/role-list/role-list').then((m) => m.RoleList),
+      },
+      {
+        path: 'admin/recursos',
+        title: 'Recursos · TextilClean',
+        canActivate: [authOnlyGuard, permissionGuard],
+        data: { permission: 'GET /api/recursos' },
+        loadComponent: () =>
+          import('./features/admin/resources/resource-list/resource-list').then(
+            (m) => m.ResourceList,
+          ),
+      },
+      {
+        path: 'admin/asignaciones',
+        title: 'Asignaciones · TextilClean',
+        canActivate: [authOnlyGuard, permissionGuard],
+        data: { permission: 'GET /api/asignaciones-rol' },
+        loadComponent: () =>
+          import('./features/admin/role-users/role-user-list/role-user-list').then(
+            (m) => m.RoleUserList,
+          ),
+      },
+      {
+        path: 'admin/permisos',
+        title: 'Concesiones · TextilClean',
+        canActivate: [authOnlyGuard, permissionGuard],
+        data: { permission: 'GET /api/concesiones-rol' },
+        loadComponent: () =>
+          import('./features/admin/resource-roles/resource-role-list/resource-role-list').then(
+            (m) => m.ResourceRoleList,
+          ),
+      },
+
       { path: '**', redirectTo: 'dashboard' },
     ],
   },

@@ -1,31 +1,18 @@
 import { Component, effect, inject, input, output } from '@angular/core';
-import {
-  NonNullableFormBuilder,
-  ReactiveFormsModule,
-  Validators,
-} from '@angular/forms';
+import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { MessageModule } from 'primeng/message';
 import { SelectModule } from 'primeng/select';
 import { Status } from '../../../core/models/api.model';
 import { Product } from '../../../core/models/product.model';
-import {
-  ProductSale,
-  ProductSalePayload,
-} from '../../../core/models/product-sale.model';
+import { ProductSale, ProductSalePayload } from '../../../core/models/product-sale.model';
 import { Sale } from '../../../core/models/sale.model';
 
 @Component({
   host: { class: 'block' },
   selector: 'app-product-sale-form',
-  imports: [
-    ButtonModule,
-    InputNumberModule,
-    MessageModule,
-    ReactiveFormsModule,
-    SelectModule,
-  ],
+  imports: [ButtonModule, InputNumberModule, MessageModule, ReactiveFormsModule, SelectModule],
   templateUrl: './product-sale-form.html',
   styleUrl: './product-sale-form.css',
 })
