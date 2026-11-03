@@ -3,6 +3,7 @@ import { Component, computed, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { ConfirmationService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
+import { DialogModule } from 'primeng/dialog';
 import { MessageModule } from 'primeng/message';
 import { TableModule } from 'primeng/table';
 import { TagModule } from 'primeng/tag';
@@ -17,8 +18,10 @@ import { EmptyState } from '../../../shared/ui/empty-state/empty-state';
 import { PageHeader } from '../../../shared/ui/page-header/page-header';
 import { StatusTag } from '../../../shared/ui/status-tag/status-tag';
 import { ClientApi } from '../../clients/client-api';
+import { ProductSaleApi } from '../../product-sales/product-sale-api';
 import { ProductApi } from '../../products/product-api';
 import { SaleApi } from '../sale-api';
+import { SaleDetail } from '../sale-detail/sale-detail';
 
 @Component({
   host: { class: 'block' },
@@ -27,10 +30,12 @@ import { SaleApi } from '../sale-api';
     ButtonModule,
     CurrencyPipe,
     DatePipe,
+    DialogModule,
     EmptyState,
     MessageModule,
     PageHeader,
     RouterLink,
+    SaleDetail,
     StatusTag,
     TableModule,
     TagModule,
@@ -43,6 +48,7 @@ export class SaleList {
   private readonly api = inject(SaleApi);
   private readonly clientsApi = inject(ClientApi);
   private readonly productsApi = inject(ProductApi);
+  private readonly linesApi = inject(ProductSaleApi);
   private readonly notify = inject(NotificationService);
   private readonly confirmation = inject(ConfirmationService);
 
@@ -57,8 +63,41 @@ export class SaleList {
     return (id: number) => map.get(id) ?? `Cliente #${id}`;
   });
 
+  readonly detailVisible = signal(false);
+  readonly selected = signal<Sale | null>(null);
+  readonly detailLoading = signal(false);
+
+  readonly detailTitle = computed(() => {
+    const s = this.selected();
+    return s ? `Venta #${s.id}` : 'Detalle';
+  });
+
   constructor() {
     this.load();
+  }
+
+  /**
+   * `GET /api/ventas` no incluye las líneas, así que el detalle las pide a
+   * `/api/detalle-ventas` y filtra por `sale_id` antes de pasarlas a
+   * `SaleDetail` (que sigue siendo presentacional).
+   */
+  openDetail(sale: Sale): void {
+    this.selected.set(sale);
+    this.detailVisible.set(true);
+    if (sale.items) return;
+
+    this.detailLoading.set(true);
+    this.linesApi.list().subscribe({
+      next: (lines) => {
+        const items = lines.filter((line) => line.sale_id === sale.id);
+        this.selected.set({ ...sale, items });
+        this.detailLoading.set(false);
+      },
+      error: (error: unknown) => {
+        this.detailLoading.set(false);
+        this.notify.error('No se pudo cargar el detalle', toApiMessage(error));
+      },
+    });
   }
 
   load(): void {

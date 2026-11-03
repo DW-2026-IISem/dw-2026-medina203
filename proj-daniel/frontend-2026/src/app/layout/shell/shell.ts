@@ -37,6 +37,7 @@ export class Shell {
   readonly mobileOpen = signal(false);
 
   readonly items: MenuItem[] = [
+    { label: 'Panel', icon: 'pi pi-chart-line', routerLink: '/dashboard' },
     { label: 'Clientes', icon: 'pi pi-users', routerLink: '/clientes' },
     {
       label: 'Tipos de producto',
@@ -45,6 +46,11 @@ export class Shell {
     },
     { label: 'Productos', icon: 'pi pi-box', routerLink: '/productos' },
     { label: 'Ventas', icon: 'pi pi-shopping-cart', routerLink: '/ventas' },
+    {
+      label: 'Detalle de ventas',
+      icon: 'pi pi-list',
+      routerLink: '/detalle-ventas',
+    },
     { label: 'Prototipo', icon: 'pi pi-desktop', routerLink: '/construir' },
   ];
 

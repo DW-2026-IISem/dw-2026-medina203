@@ -4,11 +4,7 @@
 >
   <p-tag [value]="rows().length + ' activos'" severity="info" [rounded]="true" />
   @if (lowStockCount() > 0) {
-    <p-tag
-      [value]="lowStockCount() + ' con stock bajo'"
-      severity="warn"
-      [rounded]="true"
-    />
+    <p-tag [value]="lowStockCount() + ' con stock bajo'" severity="warn" [rounded]="true" />
   }
   <button pButton type="button" (click)="openCreate()">
     <i pButtonIcon class="pi pi-plus"></i>
@@ -54,15 +50,11 @@
     <ng-template #header>
       <tr>
         <th pSortableColumn="name">
-          <div class="flex items-center gap-1">
-            Producto <p-sort-icon field="name" />
-          </div>
+          <div class="flex items-center gap-1">Producto <p-sort-icon field="name" /></div>
         </th>
         <th>Tipo</th>
         <th pSortableColumn="price">
-          <div class="flex items-center gap-1">
-            Precio <p-sort-icon field="price" />
-          </div>
+          <div class="flex items-center gap-1">Precio <p-sort-icon field="price" /></div>
         </th>
         <th>Stock</th>
         <th>Estado</th>
@@ -74,9 +66,7 @@
       <tr>
         <td>
           <p class="font-medium text-slate-800">{{ product.name }}</p>
-          <p class="text-xs text-slate-400">
-            {{ product.brand }} · #{{ product.id }}
-          </p>
+          <p class="text-xs text-slate-400">{{ product.brand }} · #{{ product.id }}</p>
         </td>
         <td>
           <p-tag
@@ -99,23 +89,41 @@
         <td>
           <div class="flex justify-end gap-1">
             <button
-              pButton type="button" text rounded severity="secondary" aria-label="Editar producto"
-              pTooltip="Editar" (click)="openEdit(product)"
+              pButton
+              type="button"
+              text
+              rounded
+              severity="secondary"
+              aria-label="Editar producto"
+              pTooltip="Editar"
+              (click)="openEdit(product)"
             >
-  <i pButtonIcon class="pi pi-pencil"></i>
-</button>
+              <i pButtonIcon class="pi pi-pencil"></i>
+            </button>
             <button
-              pButton type="button" text rounded severity="warn" aria-label="Dar de baja el producto"
-              pTooltip="Baja lógica" (click)="deactivate(product)"
+              pButton
+              type="button"
+              text
+              rounded
+              severity="warn"
+              aria-label="Dar de baja el producto"
+              pTooltip="Baja lógica"
+              (click)="deactivate(product)"
             >
-  <i pButtonIcon class="pi pi-ban"></i>
-</button>
+              <i pButtonIcon class="pi pi-ban"></i>
+            </button>
             <button
-              pButton type="button" text rounded severity="danger" aria-label="Eliminar producto"
-              pTooltip="Eliminar" (click)="remove(product)"
+              pButton
+              type="button"
+              text
+              rounded
+              severity="danger"
+              aria-label="Eliminar producto"
+              pTooltip="Eliminar"
+              (click)="remove(product)"
             >
-  <i pButtonIcon class="pi pi-trash"></i>
-</button>
+              <i pButtonIcon class="pi pi-trash"></i>
+            </button>
           </div>
         </td>
       </tr>

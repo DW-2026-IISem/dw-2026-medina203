@@ -22,3 +22,14 @@ export interface ProductSaleCreatePayload {
 export interface ProductSaleUpdatePayload {
   quantity: number;
 }
+
+/**
+ * Payload que emite `ProductSaleForm` (ISS-07). En edición solo se envía
+ * `{ quantity }`; el estado lo gobierna /deactivate.
+ */
+export interface ProductSalePayload {
+  sale_id: number;
+  product_id: number;
+  quantity: number;
+  status?: Status;
+}

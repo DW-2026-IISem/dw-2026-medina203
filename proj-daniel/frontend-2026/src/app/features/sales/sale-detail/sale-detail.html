@@ -1,0 +1,71 @@
+<div class="space-y-4">
+  <div class="grid gap-2 sm:grid-cols-2">
+    <p class="text-sm text-slate-500">
+      Venta <strong>#{{ sale().id }}</strong>
+    </p>
+    <p class="text-sm text-slate-500 sm:text-right">
+      {{ sale().sale_date | date: 'short' }}
+    </p>
+    <p class="text-sm text-slate-500">
+      Cliente <strong>#{{ sale().client_id }}</strong>
+    </p>
+    <p class="text-sm text-slate-500 sm:text-right">
+      <p-tag [value]="sale().status" severity="secondary" [rounded]="true" />
+    </p>
+  </div>
+
+  <div class="rounded-xl border border-slate-200">
+    <p-table [value]="sale().items ?? []" dataKey="id" tableStyleClass="min-w-2xl">
+      <ng-template #header>
+        <tr>
+          <th>Producto</th>
+          <th class="text-right">Cantidad</th>
+          <th class="text-right">Precio</th>
+          <th class="text-right">Línea</th>
+        </tr>
+      </ng-template>
+      <ng-template #body let-item>
+        <tr>
+          <td>{{ productName()(item.product_id) }}</td>
+          <td class="text-right">{{ item.quantity }}</td>
+          <td class="text-right">
+            {{ item.unit_price | currency: 'USD' : 'symbol' : '1.2-2' }}
+          </td>
+          <td class="text-right font-medium">
+            {{ item.line_total | currency: 'USD' : 'symbol' : '1.2-2' }}
+          </td>
+        </tr>
+      </ng-template>
+      <ng-template #emptymessage>
+        <tr>
+          <td colspan="4" class="p-4 text-center text-sm text-slate-500">
+            Esta venta no tiene líneas activas.
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </div>
+
+  <dl class="space-y-1 text-sm">
+    <div class="flex justify-between">
+      <dt class="text-slate-500">Subtotal</dt>
+      <dd>{{ sale().subtotal | currency: 'USD' : 'symbol' : '1.2-2' }}</dd>
+    </div>
+    <div class="flex justify-between">
+      <dt class="text-slate-500">Impuesto</dt>
+      <dd>{{ sale().tax | currency: 'USD' : 'symbol' : '1.2-2' }}</dd>
+    </div>
+    <div class="flex justify-between">
+      <dt class="text-slate-500">Descuento</dt>
+      <dd>-{{ sale().discounts | currency: 'USD' : 'symbol' : '1.2-2' }}</dd>
+    </div>
+    <div class="flex justify-between border-t border-slate-200 pt-2 text-base font-semibold">
+      <dt>Total</dt>
+      <dd>{{ sale().total | currency: 'USD' : 'symbol' : '1.2-2' }}</dd>
+    </div>
+  </dl>
+
+  <p class="text-xs text-slate-400">
+    {{ itemCount() }} unidades en {{ (sale().items ?? []).length }} líneas.
+  </p>
+</div>

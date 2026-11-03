@@ -57,12 +57,7 @@
         [showButtons]="true"
       />
     </div>
-    <button
-      pButton
-      type="button"
-      (click)="addLine()"
-      [disabled]="loading()"
-    >
+    <button pButton type="button" (click)="addLine()" [disabled]="loading()">
       <i pButtonIcon class="pi pi-plus"></i>
       <span pButtonLabel>Agregar</span>
     </button>
@@ -82,7 +77,7 @@
       <ng-template #body let-line let-index="rowIndex">
         <tr>
           <td>
-            {{ productById().get(line.product_id)?.name || ('Producto #' + line.product_id) }}
+            {{ productById().get(line.product_id)?.name || 'Producto #' + line.product_id }}
           </td>
           <td class="text-right">
             {{ productById().get(line.product_id)?.price | currency: 'USD' : 'symbol' : '1.2-2' }}
@@ -101,8 +96,8 @@
               aria-label="Quitar línea"
               (click)="removeLine(index)"
             >
-  <i pButtonIcon class="pi pi-times"></i>
-</button>
+              <i pButtonIcon class="pi pi-times"></i>
+            </button>
           </td>
         </tr>
       </ng-template>
@@ -132,7 +127,9 @@
       />
     </div>
     <div>
-      <label class="mb-1 block text-sm font-medium text-slate-700">Descuento (valor absoluto)</label>
+      <label class="mb-1 block text-sm font-medium text-slate-700"
+        >Descuento (valor absoluto)</label
+      >
       <p-inputnumber
         [fluid]="true"
         [ngModel]="discounts()"

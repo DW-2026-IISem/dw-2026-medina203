@@ -6,7 +6,13 @@ export const routes: Routes = [
     loadComponent: () =>
       import('./layout/shell/shell').then((m) => m.Shell),
     children: [
-      { path: '', pathMatch: 'full', redirectTo: 'clientes' },
+      { path: '', pathMatch: 'full', redirectTo: 'dashboard' },
+      {
+        path: 'dashboard',
+        title: 'Panel · TextilClean',
+        loadComponent: () =>
+          import('./features/dashboard/dashboard').then((m) => m.Dashboard),
+      },
       {
         path: 'clientes',
         title: 'Clientes · TextilClean',
@@ -48,12 +54,20 @@ export const routes: Routes = [
           ),
       },
       {
+        path: 'detalle-ventas',
+        title: 'Detalle de ventas · TextilClean',
+        loadComponent: () =>
+          import(
+            './features/product-sales/product-sale-list/product-sale-list'
+          ).then((m) => m.ProductSaleList),
+      },
+      {
         path: 'construir',
         title: 'Prototipo · TextilClean',
         loadComponent: () =>
           import('./features/construir/construir').then((m) => m.Construir),
       },
-      { path: '**', redirectTo: 'clientes' },
+      { path: '**', redirectTo: 'dashboard' },
     ],
   },
 ];

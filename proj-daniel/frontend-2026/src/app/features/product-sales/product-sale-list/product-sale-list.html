@@ -1,0 +1,124 @@
+<app-page-header
+  title="Detalle de ventas"
+  subtitle="Corrige líneas. Crear, editar o eliminar ajusta el stock y los totales de la venta."
+>
+  <button pButton type="button" (click)="openCreate()">
+    <i pButtonIcon class="pi pi-plus"></i>
+    <span pButtonLabel>Nueva línea</span>
+  </button>
+</app-page-header>
+
+@if (error()) {
+  <p-message severity="error" styleClass="mb-4 w-full">{{ error() }}</p-message>
+}
+
+<div class="rounded-xl border border-slate-200 bg-white">
+  <p-table
+    [value]="rows()"
+    [loading]="loading()"
+    [paginator]="rows().length > 10"
+    [rows]="10"
+    dataKey="id"
+    tableStyleClass="min-w-4xl"
+  >
+    <ng-template #header>
+      <tr>
+        <th>#</th>
+        <th>Venta</th>
+        <th>Producto</th>
+        <th class="text-right">Cantidad</th>
+        <th class="text-right">Precio</th>
+        <th class="text-right">Total línea</th>
+        <th>Estado</th>
+        <th class="w-40 text-right">Acciones</th>
+      </tr>
+    </ng-template>
+    <ng-template #body let-line>
+      <tr>
+        <td class="text-slate-500">#{{ line.id }}</td>
+        <td>#{{ line.sale_id }}</td>
+        <td>{{ productName()(line.product_id) }}</td>
+        <td class="text-right">{{ line.quantity }}</td>
+        <td class="text-right">
+          {{ line.unit_price | currency: 'USD' : 'symbol' : '1.2-2' }}
+        </td>
+        <td class="text-right font-medium">
+          {{ line.line_total | currency: 'USD' : 'symbol' : '1.2-2' }}
+        </td>
+        <td><app-status-tag [status]="line.status" /></td>
+        <td>
+          <div class="flex justify-end gap-1">
+            <button
+              pButton
+              type="button"
+              text
+              rounded
+              severity="secondary"
+              aria-label="Editar línea"
+              pTooltip="Editar"
+              (click)="openEdit(line)"
+            >
+              <i pButtonIcon class="pi pi-pencil"></i>
+            </button>
+            <button
+              pButton
+              type="button"
+              text
+              rounded
+              severity="warn"
+              aria-label="Baja lógica"
+              pTooltip="Baja lógica"
+              (click)="deactivate(line)"
+            >
+              <i pButtonIcon class="pi pi-ban"></i>
+            </button>
+            <button
+              pButton
+              type="button"
+              text
+              rounded
+              severity="danger"
+              aria-label="Eliminar línea"
+              pTooltip="Eliminar"
+              (click)="remove(line)"
+            >
+              <i pButtonIcon class="pi pi-trash"></i>
+            </button>
+          </div>
+        </td>
+      </tr>
+    </ng-template>
+    <ng-template #emptymessage>
+      <tr>
+        <td colspan="8">
+          <app-empty-state
+            icon="pi pi-list"
+            title="Sin líneas"
+            message="Crea la primera con «Nueva línea»."
+          />
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
+</div>
+
+<p-dialog
+  [visible]="dialogVisible()"
+  (visibleChange)="dialogVisible.set($event)"
+  [header]="title()"
+  [modal]="true"
+  [draggable]="false"
+  [resizable]="false"
+  [dismissableMask]="true"
+  styleClass="w-full max-w-2xl mx-4"
+>
+  <app-product-sale-form
+    [line]="editing()"
+    [sales]="sales()"
+    [products]="products()"
+    [saving]="saving()"
+    [resetKey]="resetKey()"
+    (saved)="save($event)"
+    (cancelled)="dialogVisible.set(false)"
+  />
+</p-dialog>

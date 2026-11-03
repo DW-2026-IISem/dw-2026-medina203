@@ -51,17 +51,41 @@
         <td>
           <div class="flex justify-end gap-1">
             <button
-              pButton type="button" text rounded severity="warn" aria-label="Cancelar venta"
-              pTooltip="Cancelar (restaura stock)" (click)="deactivate(sale)"
+              pButton
+              type="button"
+              text
+              rounded
+              severity="info"
+              aria-label="Ver detalle"
+              pTooltip="Ver detalle"
+              (click)="openDetail(sale)"
             >
-  <i pButtonIcon class="pi pi-ban"></i>
-</button>
+              <i pButtonIcon class="pi pi-eye"></i>
+            </button>
             <button
-              pButton type="button" text rounded severity="danger" aria-label="Eliminar venta"
-              pTooltip="Eliminar (restaura stock)" (click)="remove(sale)"
+              pButton
+              type="button"
+              text
+              rounded
+              severity="warn"
+              aria-label="Cancelar venta"
+              pTooltip="Cancelar (restaura stock)"
+              (click)="deactivate(sale)"
             >
-  <i pButtonIcon class="pi pi-trash"></i>
-</button>
+              <i pButtonIcon class="pi pi-ban"></i>
+            </button>
+            <button
+              pButton
+              type="button"
+              text
+              rounded
+              severity="danger"
+              aria-label="Eliminar venta"
+              pTooltip="Eliminar (restaura stock)"
+              (click)="remove(sale)"
+            >
+              <i pButtonIcon class="pi pi-trash"></i>
+            </button>
           </div>
         </td>
       </tr>
@@ -80,3 +104,18 @@
     </ng-template>
   </p-table>
 </div>
+
+<p-dialog
+  [visible]="detailVisible()"
+  (visibleChange)="detailVisible.set($event)"
+  [header]="detailTitle()"
+  [modal]="true"
+  [dismissableMask]="true"
+  styleClass="w-full max-w-2xl mx-4"
+>
+  @if (detailLoading()) {
+    <p class="py-6 text-center text-sm text-slate-500">Cargando líneas…</p>
+  } @else if (selected(); as sale) {
+    <app-sale-detail [sale]="sale" [products]="products()" />
+  }
+</p-dialog>

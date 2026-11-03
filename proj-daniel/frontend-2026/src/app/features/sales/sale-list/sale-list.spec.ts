@@ -14,6 +14,7 @@ import { environment } from '../../../../environments/environment';
 const CLIENTS_URL = `${environment.apiUrl}/clientes`;
 const PRODUCTS_URL = `${environment.apiUrl}/productos`;
 const SALES_URL = `${environment.apiUrl}/ventas`;
+const LINES_URL = `${environment.apiUrl}/detalle-ventas`;
 
 const CLIENTS = [{ id: 1, name: 'Tienda Sur', status: 'active' as const }];
 const PRODUCTS = [{ id: 1, name: 'Detergente', price: 10, status: 'active' as const }];
@@ -65,6 +66,22 @@ describe('SaleList', () => {
     const { lista } = await crearLista();
     expect(lista.clientName()(1)).toBe('Tienda Sur');
     expect(lista.items(SALES[0])).toBe(2);
+  });
+
+  it('should load the lines of a sale without items from /detalle-ventas', async () => {
+    const { lista } = await crearLista();
+    const { items: _omit, ...sinLineas } = SALES[0];
+    lista.openDetail(sinLineas);
+    expect(lista.detailVisible()).toBe(true);
+    expect(lista.detailLoading()).toBe(true);
+    http.expectOne(LINES_URL).flush({
+      product_sales: [
+        { id: 1, sale_id: 10, product_id: 1, quantity: 2, unit_price: 10, line_total: 20, status: 'active' },
+        { id: 2, sale_id: 99, product_id: 1, quantity: 5, unit_price: 10, line_total: 50, status: 'active' },
+      ],
+    });
+    expect(lista.detailLoading()).toBe(false);
+    expect(lista.selected()?.items?.map((line) => line.id)).toEqual([1]);
   });
 
   it('should call deactivate after confirmation', async () => {

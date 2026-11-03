@@ -30,10 +30,7 @@
         </button>
       </div>
 
-      <p-tag
-        [value]="estadoTexto()"
-        [severity]="producto().activo ? 'success' : 'danger'"
-      />
+      <p-tag [value]="estadoTexto()" [severity]="producto().activo ? 'success' : 'danger'" />
 
       @if (producto().activo) {
         <p-message severity="success" variant="simple">
@@ -49,8 +46,8 @@
 
   <p-card header="Estilos">
     <div class="ejemplo-alcance mt-4 text-sm text-slate-700">
-      Esta caja lleva la clase <code>.ejemplo-alcance</code> definida en
-      <code>ejemplo.css</code>. El resto del contenido usa Tailwind.
+      Esta caja lleva la clase <code>.ejemplo-alcance</code> definida en <code>ejemplo.css</code>.
+      El resto del contenido usa Tailwind.
     </div>
   </p-card>
 </div>
