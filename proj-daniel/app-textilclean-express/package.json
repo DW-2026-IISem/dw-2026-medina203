@@ -10,7 +10,8 @@
     "start": "node dist/server.js",
     "db:seed": "ts-node -- src/database/seeders/index.ts",
     "typecheck": "tsc --noEmit",
-    "dev:token": "ts-node -- src/scripts/dev-token.ts"
+    "dev:token": "ts-node -- src/scripts/dev-token.ts",
+    "smoke": "ts-node -- src/scripts/smoke-e2e.ts"
   },
   "keywords": [
     "textilclean",
