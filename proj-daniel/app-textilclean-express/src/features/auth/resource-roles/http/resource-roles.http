@@ -1,0 +1,36 @@
+### Feature ResourceRoles — concesiones rol-recurso (sin auth hasta ISS-13)
+@baseUrl = http://localhost:4000
+
+### Listar concesiones activas
+GET {{baseUrl}}/api/concesiones-rol
+
+### Concesiones del rol OPERATOR (id 2)
+GET {{baseUrl}}/api/concesiones-rol?role_id=2
+
+### Obtener concesión
+GET {{baseUrl}}/api/concesiones-rol/1
+
+### Alta en caliente: 1) registrar recurso
+POST {{baseUrl}}/api/recursos
+Content-Type: application/json
+
+{
+  "method": "GET",
+  "path": "/api/reportes/ordenes",
+  "description": "Reporte de órdenes por cliente"
+}
+
+### Alta en caliente: 2) conceder ese recurso a OPERATOR (usa el id devuelto)
+POST {{baseUrl}}/api/concesiones-rol
+Content-Type: application/json
+
+{
+  "role_id": 2,
+  "resource_id": 70
+}
+
+### Retirar concesión
+PATCH {{baseUrl}}/api/concesiones-rol/1/deactivate
+
+### Reactivar concesión
+PATCH {{baseUrl}}/api/concesiones-rol/1/reactivate

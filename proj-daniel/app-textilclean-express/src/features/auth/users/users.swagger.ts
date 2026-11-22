@@ -76,9 +76,33 @@ export const usersSwagger = {
         responses: { "200": { description: "Contraseña actualizada" }, "400": badRequestResponse, "404": notFoundResponse },
       },
     },
+    "/api/usuarios/{id}/permisos": {
+      get: {
+        tags: [TAG],
+        summary: "Permisos efectivos del usuario",
+        description: "Recursos activos concedidos a los roles activos del usuario.",
+        parameters: [idParam],
+        responses: {
+          "200": { description: "Permisos", content: wrapped("permissions", "EffectivePermission", true) },
+          "400": invalidIdResponse,
+          "404": notFoundResponse,
+        },
+      },
+    },
   },
   components: {
     schemas: {
+      EffectivePermission: {
+        type: "object",
+        properties: {
+          resource_id: { type: "integer" },
+          method: { type: "string", example: "PATCH" },
+          path: { type: "string", example: "/api/ordenes/:id/estado" },
+          description: { type: "string", nullable: true },
+          role_id: { type: "integer" },
+          role_name: { type: "string", example: "OPERATOR" },
+        },
+      },
       User: {
         type: "object",
         properties: {

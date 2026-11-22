@@ -66,6 +66,8 @@ export class App {
     this.routePrv.usersRoutes.routes(this.app);
     this.routePrv.rolesRoutes.routes(this.app);
     this.routePrv.resourcesRoutes.routes(this.app);
+    this.routePrv.roleUsersRoutes.routes(this.app);
+    this.routePrv.resourceRolesRoutes.routes(this.app);
   }
 
   private docs(): void {

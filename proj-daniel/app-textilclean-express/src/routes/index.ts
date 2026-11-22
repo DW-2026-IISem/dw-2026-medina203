@@ -6,6 +6,8 @@ import { ServiceOrderItemsRoutes } from "../features/business/service-order-item
 import { UsersRoutes } from "../features/auth/users/users.routes";
 import { RolesRoutes } from "../features/auth/roles/roles.routes";
 import { ResourcesRoutes } from "../features/auth/resources/resources.routes";
+import { RoleUsersRoutes } from "../features/auth/role-users/role-users.routes";
+import { ResourceRolesRoutes } from "../features/auth/resource-roles/resource-roles.routes";
 
 /**
  * Agregador de rutas de TextilClean.
@@ -21,4 +23,6 @@ export class Routes {
   public usersRoutes: UsersRoutes = new UsersRoutes();
   public rolesRoutes: RolesRoutes = new RolesRoutes();
   public resourcesRoutes: ResourcesRoutes = new ResourcesRoutes();
+  public roleUsersRoutes: RoleUsersRoutes = new RoleUsersRoutes();
+  public resourceRolesRoutes: ResourceRolesRoutes = new ResourceRolesRoutes();
 }

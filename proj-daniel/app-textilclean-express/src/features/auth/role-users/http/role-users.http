@@ -1,0 +1,35 @@
+### Feature RoleUsers — asignaciones usuario-rol (sin auth hasta ISS-13)
+@baseUrl = http://localhost:4000
+
+### Listar asignaciones activas
+GET {{baseUrl}}/api/asignaciones-rol
+
+### Obtener asignación
+GET {{baseUrl}}/api/asignaciones-rol/1
+
+### Asignar rol OPERATOR (id 2) al usuario 3
+POST {{baseUrl}}/api/asignaciones-rol
+Content-Type: application/json
+
+{
+  "user_id": 3,
+  "role_id": 2
+}
+
+### Asignación repetida → 409
+POST {{baseUrl}}/api/asignaciones-rol
+Content-Type: application/json
+
+{
+  "user_id": 1,
+  "role_id": 1
+}
+
+### Retirar rol
+PATCH {{baseUrl}}/api/asignaciones-rol/3/deactivate
+
+### Reactivar rol
+PATCH {{baseUrl}}/api/asignaciones-rol/3/reactivate
+
+### Permisos efectivos del usuario 2 (operador)
+GET {{baseUrl}}/api/usuarios/2/permisos

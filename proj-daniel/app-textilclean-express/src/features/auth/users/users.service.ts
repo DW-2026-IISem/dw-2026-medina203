@@ -10,6 +10,8 @@ import {
 } from "./dto";
 import { User } from "./user.model";
 import { UsersRepository } from "./users.repository";
+import { ResourceRolesService } from "../resource-roles/resource-roles.service";
+import { EffectivePermissionDto } from "../resource-roles/dto";
 
 /**
  * Service de Users (personal de TextilClean).
@@ -20,7 +22,10 @@ import { UsersRepository } from "./users.repository";
  * - `status` solo cambia con el borrado lógico.
  */
 export class UsersService {
-  public constructor(private readonly repository: UsersRepository = new UsersRepository()) {}
+  public constructor(
+    private readonly repository: UsersRepository = new UsersRepository(),
+    private readonly resourceRolesService: ResourceRolesService = new ResourceRolesService()
+  ) {}
 
   public async getAll(): Promise<UserResponseDto[]> {
     return (await this.repository.findAllActive()).map(toUserResponse);
@@ -28,6 +33,12 @@ export class UsersService {
 
   public async getOne(id: number): Promise<UserResponseDto> {
     return toUserResponse(await this.findOrFail(id));
+  }
+
+  /** Permisos efectivos: unión de los recursos activos de sus roles activos. */
+  public async getEffectivePermissions(id: number): Promise<EffectivePermissionDto[]> {
+    await this.findOrFail(id);
+    return this.resourceRolesService.findEffectiveForUser(id);
   }
 
   public async create(body: CreateUserDto): Promise<UserResponseDto> {

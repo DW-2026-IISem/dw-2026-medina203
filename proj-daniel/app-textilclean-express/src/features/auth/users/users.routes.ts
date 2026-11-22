@@ -23,5 +23,6 @@ export class UsersRoutes {
 
     app.route("/api/usuarios/:id/deactivate").patch(c.deleteLogical.bind(c));
     app.route("/api/usuarios/:id/password").patch(c.changePassword.bind(c));
+    app.route("/api/usuarios/:id/permisos").get(c.getEffectivePermissions.bind(c));
   }
 }
