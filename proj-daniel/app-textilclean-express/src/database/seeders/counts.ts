@@ -5,6 +5,7 @@
  * Al agregar un feature, suma su clave aquí (y su variable SEED_*).
  */
 export type SeedCounts = {
+  users: number;
   customers: number;
   garment_types: number;
   laundry_services: number;
@@ -13,6 +14,7 @@ export type SeedCounts = {
 };
 
 export const DEFAULT_SEED_COUNTS: SeedCounts = {
+  users: 2,
   customers: 10,
   garment_types: 10,
   laundry_services: 20,

@@ -63,6 +63,7 @@ export class App {
     this.routePrv.laundryServicesRoutes.routes(this.app);
     this.routePrv.serviceOrdersRoutes.routes(this.app);
     this.routePrv.serviceOrderItemsRoutes.routes(this.app);
+    this.routePrv.usersRoutes.routes(this.app);
   }
 
   private docs(): void {

@@ -1,0 +1,58 @@
+### Feature Users — escritura (sin auth hasta ISS-13)
+@baseUrl = http://localhost:4000
+@id = 3
+
+### Crear usuario (operario de planta)
+POST {{baseUrl}}/api/usuarios
+Content-Type: application/json
+
+{
+  "username": "lavador.turno1",
+  "full_name": "Carlos Pushaina",
+  "email": "lavador1@textilclean.local",
+  "password": "Password123!"
+}
+
+### Crear con username repetido → 409
+POST {{baseUrl}}/api/usuarios
+Content-Type: application/json
+
+{
+  "username": "admin",
+  "email": "otro@textilclean.local",
+  "password": "Password123!"
+}
+
+### Reemplazar datos (PUT)
+PUT {{baseUrl}}/api/usuarios/{{id}}
+Content-Type: application/json
+
+{
+  "username": "lavador.turno1",
+  "full_name": "Carlos Andrés Pushaina",
+  "email": "lavador1@textilclean.local",
+  "avatar": null
+}
+
+### Modificar (PATCH)
+PATCH {{baseUrl}}/api/usuarios/{{id}}
+Content-Type: application/json
+
+{
+  "full_name": "Carlos A. Pushaina"
+}
+
+### Cambiar contraseña
+PATCH {{baseUrl}}/api/usuarios/{{id}}/password
+Content-Type: application/json
+
+{
+  "current_password": "Password123!",
+  "new_password": "Password456!"
+}
+
+### Desactivar (borrado lógico)
+PATCH {{baseUrl}}/api/usuarios/{{id}}/deactivate
+
+### Eliminar (físico)
+DELETE {{baseUrl}}/api/usuarios/{{id}}
