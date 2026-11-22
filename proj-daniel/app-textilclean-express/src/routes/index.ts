@@ -8,6 +8,7 @@ import { RolesRoutes } from "../features/auth/roles/roles.routes";
 import { ResourcesRoutes } from "../features/auth/resources/resources.routes";
 import { RoleUsersRoutes } from "../features/auth/role-users/role-users.routes";
 import { ResourceRolesRoutes } from "../features/auth/resource-roles/resource-roles.routes";
+import { RefreshTokensRoutes } from "../features/auth/refresh-tokens/refresh-tokens.routes";
 
 /**
  * Agregador de rutas de TextilClean.
@@ -25,4 +26,5 @@ export class Routes {
   public resourcesRoutes: ResourcesRoutes = new ResourcesRoutes();
   public roleUsersRoutes: RoleUsersRoutes = new RoleUsersRoutes();
   public resourceRolesRoutes: ResourceRolesRoutes = new ResourceRolesRoutes();
+  public refreshTokensRoutes: RefreshTokensRoutes = new RefreshTokensRoutes();
 }
