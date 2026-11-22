@@ -1,7 +1,9 @@
+import { CustomersRoutes } from "../features/business/customers/customers.routes";
+
 /**
  * Agregador de rutas de TextilClean.
- *
- * Cada feature expone una clase `XxxRoutes` con un método `routes(app)`.
- * Aquí se instancian todas y `App.routes()` las monta.
+ * Cada feature expone `XxxRoutes.routes(app)`; `App.routes()` las monta.
  */
-export class Routes {}
+export class Routes {
+  public customersRoutes: CustomersRoutes = new CustomersRoutes();
+}

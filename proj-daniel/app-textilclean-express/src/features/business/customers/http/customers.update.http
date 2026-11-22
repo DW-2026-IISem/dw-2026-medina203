@@ -1,0 +1,24 @@
+### Feature Customers — UPDATE PUT / PATCH (SIN AUTH)
+@baseUrl = http://localhost:4000
+
+### PUT (reemplazo completo, sin status)
+PUT {{baseUrl}}/api/clientes/1
+Content-Type: application/json
+
+{
+  "business_name": "Hotel Waya Guajira S.A.S.",
+  "tax_id": "900123456-7",
+  "contact_name": "Laura Epieyú",
+  "phone": "3001234567",
+  "email": "compras@hotelwaya.com",
+  "address": "Calle 1 #4-50, Riohacha"
+}
+
+### PATCH (parcial; status se ignora)
+PATCH {{baseUrl}}/api/clientes/1
+Content-Type: application/json
+
+{
+  "phone": "3109876543",
+  "status": "inactive"
+}

@@ -1,0 +1,8 @@
+### Feature Customers — DELETE físico / lógico (SIN AUTH)
+@baseUrl = http://localhost:4000
+
+### Borrado lógico (status = inactive)
+PATCH {{baseUrl}}/api/clientes/1/deactivate
+
+### Borrado físico
+DELETE {{baseUrl}}/api/clientes/1

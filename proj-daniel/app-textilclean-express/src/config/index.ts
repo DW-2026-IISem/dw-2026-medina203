@@ -3,6 +3,8 @@ import express, { Application, ErrorRequestHandler } from "express";
 import morgan from "morgan";
 import cors from "cors";
 import { sequelize, getDatabaseInfo, testConnection } from "../database/db";
+// Modelos (deben importarse antes de sync)
+import "../features/business/customers/customer.model";
 import { Routes } from "../routes/index";
 
 dotenv.config({ quiet: true });
@@ -39,6 +41,7 @@ export class App {
     this.app.get("/api", (_req, res) => {
       res.json({ name: "TextilClean API", status: "ok" });
     });
+    this.routePrv.customersRoutes.routes(this.app);
   }
 
   private errorHandling(): void {

@@ -1,0 +1,11 @@
+### Feature Customers — GET ALL / GET ONE (SIN AUTH)
+@baseUrl = http://localhost:4000
+
+### GET ALL (solo activos)
+GET {{baseUrl}}/api/clientes
+
+### GET ONE
+GET {{baseUrl}}/api/clientes/1
+
+### GET ONE con id inválido → 400
+GET {{baseUrl}}/api/clientes/abc
