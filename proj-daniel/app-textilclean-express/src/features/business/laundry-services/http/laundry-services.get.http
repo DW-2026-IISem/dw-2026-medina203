@@ -1,0 +1,8 @@
+### Feature LaundryServices — GET ALL / GET ONE (SIN AUTH)
+@baseUrl = http://localhost:4000
+
+### GET ALL (incluye garment_type)
+GET {{baseUrl}}/api/servicios
+
+### GET ONE
+GET {{baseUrl}}/api/servicios/1

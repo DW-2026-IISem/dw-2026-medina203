@@ -1,0 +1,23 @@
+### Feature LaundryServices — UPDATE PUT / PATCH (SIN AUTH)
+@baseUrl = http://localhost:4000
+
+### PUT
+PUT {{baseUrl}}/api/servicios/1
+Content-Type: application/json
+
+{
+  "name": "Lavado industrial - Sábanas",
+  "description": "Lavado, secado y doblado",
+  "price": 6000,
+  "billing_unit": "kg",
+  "estimated_hours": 24,
+  "garment_type_id": 1
+}
+
+### PATCH (solo precio)
+PATCH {{baseUrl}}/api/servicios/1
+Content-Type: application/json
+
+{
+  "price": 6200
+}

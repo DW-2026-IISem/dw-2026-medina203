@@ -6,6 +6,9 @@ import { sequelize, getDatabaseInfo, testConnection } from "../database/db";
 // Modelos (deben importarse antes de sync)
 import "../features/business/customers/customer.model";
 import "../features/business/garment-types/garment-type.model";
+import "../features/business/laundry-services/laundry-service.model";
+// Relaciones
+import "../features/business/laundry-services/laundry-services.associations";
 import { Routes } from "../routes/index";
 import { setupSwagger } from "../swagger/index";
 
@@ -46,6 +49,7 @@ export class App {
     });
     this.routePrv.customersRoutes.routes(this.app);
     this.routePrv.garmentTypesRoutes.routes(this.app);
+    this.routePrv.laundryServicesRoutes.routes(this.app);
   }
 
   private docs(): void {

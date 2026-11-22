@@ -5,6 +5,9 @@ import "../../features/business/customers/customer.model";
 import { seedCustomers } from "../../features/business/customers/customers.seeder";
 import "../../features/business/garment-types/garment-type.model";
 import { seedGarmentTypes } from "../../features/business/garment-types/garment-types.seeder";
+import "../../features/business/laundry-services/laundry-service.model";
+import "../../features/business/laundry-services/laundry-services.associations";
+import { seedLaundryServices } from "../../features/business/laundry-services/laundry-services.seeder";
 
 dotenv.config({ quiet: true });
 
@@ -26,6 +29,7 @@ export async function runAllSeeders(): Promise<void> {
 
   await seedCustomers(counts.customers);
   await seedGarmentTypes(counts.garment_types);
+  await seedLaundryServices(counts.laundry_services);
 
   console.log("🌱 SeedersRunner finalizado");
 }
