@@ -1,8 +1,0 @@
-### Feature Client — GET ALL / GET ONE
-@baseUrl = http://localhost:3000
-
-### GET ALL
-GET {{baseUrl}}/api/clientes
-
-### GET ONE
-GET {{baseUrl}}/api/clientes/1

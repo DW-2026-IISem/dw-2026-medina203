@@ -1,9 +1,0 @@
-### Feature Client — DELETE físico / DELETE lógico
-@baseUrl = http://localhost:3000
-@id = 1
-
-### DELETE físico
-DELETE {{baseUrl}}/api/clientes/{{id}}
-
-### DELETE lógico
-PATCH {{baseUrl}}/api/clientes/{{id}}/deactivate
