@@ -2,6 +2,7 @@ import { Application } from "express";
 import swaggerUi from "swagger-ui-express";
 import { errorSchema } from "../shared/http/swagger-common";
 import { customersSwagger } from "../features/business/customers/customers.swagger";
+import { garmentTypesSwagger } from "../features/business/garment-types/garment-types.swagger";
 
 export type FeatureSwaggerModule = {
   tags: unknown[];
@@ -13,7 +14,7 @@ export type FeatureSwaggerModule = {
  * Registry de documentación: cada feature aporta su `*.swagger.ts`
  * (mismo patrón que el SeedersRunner).
  */
-const featureSwaggerModules: FeatureSwaggerModule[] = [customersSwagger];
+const featureSwaggerModules: FeatureSwaggerModule[] = [customersSwagger, garmentTypesSwagger];
 
 export function buildOpenApiDocument() {
   const tags: unknown[] = [];

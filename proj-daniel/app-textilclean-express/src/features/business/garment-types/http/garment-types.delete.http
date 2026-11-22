@@ -1,0 +1,8 @@
+### Feature GarmentTypes — DELETE físico / lógico (SIN AUTH)
+@baseUrl = http://localhost:4000
+
+### Borrado lógico
+PATCH {{baseUrl}}/api/tipos-prenda/1/deactivate
+
+### Borrado físico
+DELETE {{baseUrl}}/api/tipos-prenda/1

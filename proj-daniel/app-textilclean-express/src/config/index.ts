@@ -5,6 +5,7 @@ import cors from "cors";
 import { sequelize, getDatabaseInfo, testConnection } from "../database/db";
 // Modelos (deben importarse antes de sync)
 import "../features/business/customers/customer.model";
+import "../features/business/garment-types/garment-type.model";
 import { Routes } from "../routes/index";
 import { setupSwagger } from "../swagger/index";
 
@@ -44,6 +45,7 @@ export class App {
       res.json({ name: "TextilClean API", status: "ok" });
     });
     this.routePrv.customersRoutes.routes(this.app);
+    this.routePrv.garmentTypesRoutes.routes(this.app);
   }
 
   private docs(): void {

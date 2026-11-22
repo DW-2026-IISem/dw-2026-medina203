@@ -3,6 +3,8 @@ import { sequelize, testConnection } from "../db";
 import { resolveSeedCounts } from "./counts";
 import "../../features/business/customers/customer.model";
 import { seedCustomers } from "../../features/business/customers/customers.seeder";
+import "../../features/business/garment-types/garment-type.model";
+import { seedGarmentTypes } from "../../features/business/garment-types/garment-types.seeder";
 
 dotenv.config({ quiet: true });
 
@@ -23,6 +25,7 @@ export async function runAllSeeders(): Promise<void> {
   await sequelize.sync({ alter: true });
 
   await seedCustomers(counts.customers);
+  await seedGarmentTypes(counts.garment_types);
 
   console.log("🌱 SeedersRunner finalizado");
 }

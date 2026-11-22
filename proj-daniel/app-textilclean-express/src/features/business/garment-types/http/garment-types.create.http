@@ -1,0 +1,19 @@
+### Feature GarmentTypes — CREATE (SIN AUTH)
+@baseUrl = http://localhost:4000
+
+### CREATE → 201
+POST {{baseUrl}}/api/tipos-prenda
+Content-Type: application/json
+
+{
+  "name": "Tapetes",
+  "description": "Tapetes de baño y de entrada"
+}
+
+### CREATE con nombre repetido → 409
+POST {{baseUrl}}/api/tipos-prenda
+Content-Type: application/json
+
+{
+  "name": "Tapetes"
+}

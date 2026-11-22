@@ -1,0 +1,19 @@
+### Feature GarmentTypes — UPDATE PUT / PATCH (SIN AUTH)
+@baseUrl = http://localhost:4000
+
+### PUT
+PUT {{baseUrl}}/api/tipos-prenda/1
+Content-Type: application/json
+
+{
+  "name": "Sábanas",
+  "description": "Sábanas de algodón y poliéster"
+}
+
+### PATCH
+PATCH {{baseUrl}}/api/tipos-prenda/1
+Content-Type: application/json
+
+{
+  "description": "Sábanas de todos los tamaños"
+}

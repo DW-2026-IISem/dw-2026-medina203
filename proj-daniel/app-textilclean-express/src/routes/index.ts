@@ -1,4 +1,5 @@
 import { CustomersRoutes } from "../features/business/customers/customers.routes";
+import { GarmentTypesRoutes } from "../features/business/garment-types/garment-types.routes";
 
 /**
  * Agregador de rutas de TextilClean.
@@ -6,4 +7,5 @@ import { CustomersRoutes } from "../features/business/customers/customers.routes
  */
 export class Routes {
   public customersRoutes: CustomersRoutes = new CustomersRoutes();
+  public garmentTypesRoutes: GarmentTypesRoutes = new GarmentTypesRoutes();
 }

@@ -6,10 +6,12 @@
  */
 export type SeedCounts = {
   customers: number;
+  garment_types: number;
 };
 
 export const DEFAULT_SEED_COUNTS: SeedCounts = {
   customers: 10,
+  garment_types: 10,
 };
 
 export function resolveSeedCounts(argv: string[] = process.argv.slice(2)): SeedCounts {
