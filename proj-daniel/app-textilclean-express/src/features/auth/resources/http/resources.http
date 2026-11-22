@@ -1,0 +1,42 @@
+### Feature Resources (sin auth hasta ISS-13)
+@baseUrl = http://localhost:4000
+
+### Listar recursos (catálogo de operaciones protegibles)
+GET {{baseUrl}}/api/recursos
+
+### Obtener recurso
+GET {{baseUrl}}/api/recursos/1
+
+### Registrar recurso en caliente
+POST {{baseUrl}}/api/recursos
+Content-Type: application/json
+
+{
+  "method": "get",
+  "path": "/api/reportes/ordenes/",
+  "description": "Reporte de órdenes por cliente"
+}
+
+### Registrar operación repetida → 409
+POST {{baseUrl}}/api/recursos
+Content-Type: application/json
+
+{
+  "method": "GET",
+  "path": "/api/clientes"
+}
+
+### Método inválido → 400
+POST {{baseUrl}}/api/recursos
+Content-Type: application/json
+
+{
+  "method": "FETCH",
+  "path": "/api/clientes"
+}
+
+### Desactivar recurso
+PATCH {{baseUrl}}/api/recursos/70/deactivate
+
+### Eliminar recurso (físico)
+DELETE {{baseUrl}}/api/recursos/70

@@ -20,6 +20,8 @@ import "../../features/auth/resource-roles/resource-role.model";
 import "../../features/auth/refresh-tokens/refresh-token.model";
 import "../../features/auth/rbac.associations";
 import { seedUsers } from "../../features/auth/users/users.seeder";
+import { seedRoles } from "../../features/auth/roles/roles.seeder";
+import { seedResources } from "../../features/auth/resources/resources.seeder";
 import { seedServiceOrders } from "../../features/business/service-orders/service-orders.seeder";
 import { seedServiceOrderItems } from "../../features/business/service-order-items/service-order-items.seeder";
 
@@ -41,7 +43,9 @@ export async function runAllSeeders(): Promise<void> {
   if (!(await testConnection())) throw new Error("No hay conexión a la base de datos");
   await sequelize.sync({ alter: true });
 
-  // 1) Seguridad
+  // 1) Seguridad: roles → resources → users
+  await seedRoles();
+  await seedResources();
   await seedUsers(counts.users);
 
   // 2) Negocio (padres → hijos)

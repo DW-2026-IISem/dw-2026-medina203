@@ -1,0 +1,39 @@
+### Feature Roles (sin auth hasta ISS-13)
+@baseUrl = http://localhost:4000
+
+### Listar roles
+GET {{baseUrl}}/api/roles
+
+### Obtener rol
+GET {{baseUrl}}/api/roles/1
+
+### Crear rol (el nombre se guarda en MAYÚSCULAS)
+POST {{baseUrl}}/api/roles
+Content-Type: application/json
+
+{
+  "name": "supervisor",
+  "description": "Supervisa la planta de lavado"
+}
+
+### Crear rol repetido → 409
+POST {{baseUrl}}/api/roles
+Content-Type: application/json
+
+{
+  "name": "ADMIN"
+}
+
+### Modificar descripción
+PATCH {{baseUrl}}/api/roles/3
+Content-Type: application/json
+
+{
+  "description": "Supervisa turnos y calidad del lavado"
+}
+
+### Desactivar rol
+PATCH {{baseUrl}}/api/roles/3/deactivate
+
+### Eliminar rol (físico)
+DELETE {{baseUrl}}/api/roles/3
