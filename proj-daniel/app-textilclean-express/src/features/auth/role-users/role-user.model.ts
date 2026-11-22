@@ -1,0 +1,47 @@
+import { DataTypes, Model } from "sequelize";
+import { sequelize } from "../../../database/db";
+
+/**
+ * Asignación usuario ↔ rol (pivote). Tabla: `role_users`.
+ * `status` permite retirar y reactivar sin borrar la fila.
+ */
+export interface RoleUserI {
+  id?: number;
+  user_id: number;
+  role_id: number;
+  status: "active" | "inactive";
+  createdAt?: Date;
+  updatedAt?: Date;
+}
+
+export class RoleUser extends Model {
+  public id!: number;
+  public user_id!: number;
+  public role_id!: number;
+  public status!: "active" | "inactive";
+  public readonly createdAt!: Date;
+  public readonly updatedAt!: Date;
+}
+
+RoleUser.init(
+  {
+    user_id: { type: DataTypes.INTEGER, allowNull: false },
+    role_id: { type: DataTypes.INTEGER, allowNull: false },
+    status: {
+      type: DataTypes.ENUM("active", "inactive"),
+      defaultValue: "inactive",
+      allowNull: false,
+    },
+  },
+  {
+    sequelize,
+    modelName: "RoleUser",
+    tableName: "role_users",
+    timestamps: true,
+    indexes: [
+      { name: "uq_role_users_user_role", unique: true, fields: ["user_id", "role_id"] },
+      { name: "ix_role_users_user_id", fields: ["user_id"] },
+      { name: "ix_role_users_role_id", fields: ["role_id"] },
+    ],
+  }
+);

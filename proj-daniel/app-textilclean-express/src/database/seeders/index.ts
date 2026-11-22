@@ -12,6 +12,13 @@ import "../../features/business/service-orders/service-order.model";
 import "../../features/business/service-order-items/service-order-item.model";
 import "../../features/business/service-orders/service-orders.associations";
 import "../../features/business/service-order-items/service-order-items.associations";
+import "../../features/auth/users/user.model";
+import "../../features/auth/roles/role.model";
+import "../../features/auth/resources/resource.model";
+import "../../features/auth/role-users/role-user.model";
+import "../../features/auth/resource-roles/resource-role.model";
+import "../../features/auth/refresh-tokens/refresh-token.model";
+import "../../features/auth/rbac.associations";
 import { seedServiceOrders } from "../../features/business/service-orders/service-orders.seeder";
 import { seedServiceOrderItems } from "../../features/business/service-order-items/service-order-items.seeder";
 
