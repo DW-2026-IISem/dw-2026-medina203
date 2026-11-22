@@ -18,6 +18,7 @@ import { resourcesSwagger } from "../features/auth/resources/resources.swagger";
 import { roleUsersSwagger } from "../features/auth/role-users/role-users.swagger";
 import { resourceRolesSwagger } from "../features/auth/resource-roles/resource-roles.swagger";
 import { refreshTokensSwagger } from "../features/auth/refresh-tokens/refresh-tokens.swagger";
+import { sessionSwagger } from "../features/auth/session/session.swagger";
 
 export type FeatureSwaggerModule = {
   tags: unknown[];
@@ -30,6 +31,7 @@ export type FeatureSwaggerModule = {
  * (mismo patrón que el SeedersRunner).
  */
 const featureSwaggerModules: FeatureSwaggerModule[] = [
+  sessionSwagger,
   customersSwagger,
   garmentTypesSwagger,
   laundryServicesSwagger,
