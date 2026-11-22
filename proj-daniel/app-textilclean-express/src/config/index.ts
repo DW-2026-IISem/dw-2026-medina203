@@ -2,6 +2,7 @@ import dotenv from "dotenv";
 import express, { Application, ErrorRequestHandler } from "express";
 import morgan from "morgan";
 import cors from "cors";
+import { sequelize, getDatabaseInfo, testConnection } from "../database/db";
 import { Routes } from "../routes/index";
 
 dotenv.config({ quiet: true });
@@ -51,7 +52,40 @@ export class App {
     this.app.use(bodyErrorHandler);
   }
 
+  /**
+   * Conecta y sincroniza el esquema.
+   *
+   * `sync({ alter })` es cómodo en desarrollo pero NO es una migración de
+   * producción: con DB_SYNC_FORCE=true se borran y recrean las tablas.
+   */
+  private async dbConnection(): Promise<void> {
+    try {
+      const dbInfo = getDatabaseInfo();
+      console.log(`🔗 Conectando a ${dbInfo.connectionString}`);
+
+      if (!(await testConnection())) {
+        throw new Error(`No se pudo conectar a ${dbInfo.engine.toUpperCase()}`);
+      }
+
+      const force = process.env.DB_SYNC_FORCE === "true";
+      const isMysql = sequelize.getDialect() === "mysql";
+
+      if (isMysql) await sequelize.query("SET FOREIGN_KEY_CHECKS = 0");
+      try {
+        await sequelize.sync({ force, alter: !force });
+      } finally {
+        if (isMysql) await sequelize.query("SET FOREIGN_KEY_CHECKS = 1");
+      }
+
+      console.log(force ? "📦 Base de datos recreada (DB_SYNC_FORCE=true)" : "📦 Base de datos sincronizada");
+    } catch (error) {
+      console.error("❌ Error al conectar con la base de datos:", error);
+      process.exit(1);
+    }
+  }
+
   async listen(): Promise<void> {
+    await this.dbConnection();
     this.app.listen(this.app.get("port"));
     console.log(`🚀 TextilClean API en el puerto ${this.app.get("port")}`);
   }
