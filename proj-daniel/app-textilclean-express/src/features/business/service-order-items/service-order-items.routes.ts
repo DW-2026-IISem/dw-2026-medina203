@@ -1,7 +1,8 @@
 import { Application } from "express";
+import { protect } from "../../auth/access";
 import { ServiceOrderItemsController } from "./service-order-items.controller";
 
-/** Rutas de ServiceOrderItems — Fase I: SIN AUTH. */
+/** Rutas de ServiceOrderItems — JWT + RBAC (authenticate + authorize). */
 export class ServiceOrderItemsRoutes {
   public controller: ServiceOrderItemsController = new ServiceOrderItemsController();
 
@@ -9,16 +10,16 @@ export class ServiceOrderItemsRoutes {
     const c = this.controller;
 
     app.route("/api/detalle-ordenes")
-      .get(c.getAll.bind(c))
-      .post(c.create.bind(c));
+      .get(...protect, c.getAll.bind(c))
+      .post(...protect, c.create.bind(c));
 
     app.route("/api/detalle-ordenes/:id")
-      .get(c.getOne.bind(c))
-      .put(c.updatePut.bind(c))
-      .patch(c.updatePatch.bind(c))
-      .delete(c.deletePhysical.bind(c));
+      .get(...protect, c.getOne.bind(c))
+      .put(...protect, c.updatePut.bind(c))
+      .patch(...protect, c.updatePatch.bind(c))
+      .delete(...protect, c.deletePhysical.bind(c));
 
     app.route("/api/detalle-ordenes/:id/deactivate")
-      .patch(c.deleteLogical.bind(c));
+      .patch(...protect, c.deleteLogical.bind(c));
   }
 }

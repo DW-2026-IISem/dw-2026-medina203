@@ -1,8 +1,11 @@
-### Feature ServiceOrderItems — UPDATE (SIN AUTH)
+### Feature ServiceOrderItems — UPDATE (JWT + RBAC)
 @baseUrl = http://localhost:4000
+# access_token: npm run dev:token -- admin  (o POST /api/sesion/login desde ISS-15)
+@token = pega-aqui-el-access-token
 
 ### PUT (cantidad y peso)
 PUT {{baseUrl}}/api/detalle-ordenes/1
+Authorization: Bearer {{token}}
 Content-Type: application/json
 
 {
@@ -12,6 +15,7 @@ Content-Type: application/json
 
 ### PATCH (solo peso)
 PATCH {{baseUrl}}/api/detalle-ordenes/1
+Authorization: Bearer {{token}}
 Content-Type: application/json
 
 {

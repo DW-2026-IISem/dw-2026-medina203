@@ -1,11 +1,16 @@
-### Feature ServiceOrderItems — GET (SIN AUTH)
+### Feature ServiceOrderItems — GET (JWT + RBAC)
 @baseUrl = http://localhost:4000
+# access_token: npm run dev:token -- admin  (o POST /api/sesion/login desde ISS-15)
+@token = pega-aqui-el-access-token
 
 ### GET ALL
 GET {{baseUrl}}/api/detalle-ordenes
+Authorization: Bearer {{token}}
 
 ### GET ALL de una orden
 GET {{baseUrl}}/api/detalle-ordenes?service_order_id=1
+Authorization: Bearer {{token}}
 
 ### GET ONE
 GET {{baseUrl}}/api/detalle-ordenes/1
+Authorization: Bearer {{token}}

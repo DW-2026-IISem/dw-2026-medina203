@@ -1,11 +1,16 @@
-### Feature Users — GET (sin auth hasta ISS-13)
+### Feature Users — GET (JWT + RBAC)
 @baseUrl = http://localhost:4000
+# access_token: npm run dev:token -- admin  (o POST /api/sesion/login desde ISS-15)
+@token = pega-aqui-el-access-token
 
 ### Listar usuarios activos
 GET {{baseUrl}}/api/usuarios
+Authorization: Bearer {{token}}
 
 ### Obtener usuario
 GET {{baseUrl}}/api/usuarios/1
+Authorization: Bearer {{token}}
 
 ### id inválido → 400
 GET {{baseUrl}}/api/usuarios/abc
+Authorization: Bearer {{token}}

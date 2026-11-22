@@ -9,7 +9,8 @@
     "dev": "nodemon --watch src --ext ts --exec ts-node -- src/server.ts",
     "start": "node dist/server.js",
     "db:seed": "ts-node -- src/database/seeders/index.ts",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "dev:token": "ts-node -- src/scripts/dev-token.ts"
   },
   "keywords": [
     "textilclean",

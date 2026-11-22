@@ -1,17 +1,23 @@
-### Feature ResourceRoles — concesiones rol-recurso (sin auth hasta ISS-13)
+### Feature ResourceRoles — concesiones rol-recurso (JWT + RBAC)
 @baseUrl = http://localhost:4000
+# access_token: npm run dev:token -- admin  (o POST /api/sesion/login desde ISS-15)
+@token = pega-aqui-el-access-token
 
 ### Listar concesiones activas
 GET {{baseUrl}}/api/concesiones-rol
+Authorization: Bearer {{token}}
 
 ### Concesiones del rol OPERATOR (id 2)
 GET {{baseUrl}}/api/concesiones-rol?role_id=2
+Authorization: Bearer {{token}}
 
 ### Obtener concesión
 GET {{baseUrl}}/api/concesiones-rol/1
+Authorization: Bearer {{token}}
 
 ### Alta en caliente: 1) registrar recurso
 POST {{baseUrl}}/api/recursos
+Authorization: Bearer {{token}}
 Content-Type: application/json
 
 {
@@ -22,6 +28,7 @@ Content-Type: application/json
 
 ### Alta en caliente: 2) conceder ese recurso a OPERATOR (usa el id devuelto)
 POST {{baseUrl}}/api/concesiones-rol
+Authorization: Bearer {{token}}
 Content-Type: application/json
 
 {
@@ -31,6 +38,8 @@ Content-Type: application/json
 
 ### Retirar concesión
 PATCH {{baseUrl}}/api/concesiones-rol/1/deactivate
+Authorization: Bearer {{token}}
 
 ### Reactivar concesión
 PATCH {{baseUrl}}/api/concesiones-rol/1/reactivate
+Authorization: Bearer {{token}}

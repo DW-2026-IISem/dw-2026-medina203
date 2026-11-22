@@ -1,8 +1,11 @@
-### Feature GarmentTypes — CREATE (SIN AUTH)
+### Feature GarmentTypes — CREATE (JWT + RBAC)
 @baseUrl = http://localhost:4000
+# access_token: npm run dev:token -- admin  (o POST /api/sesion/login desde ISS-15)
+@token = pega-aqui-el-access-token
 
 ### CREATE → 201
 POST {{baseUrl}}/api/tipos-prenda
+Authorization: Bearer {{token}}
 Content-Type: application/json
 
 {
@@ -12,6 +15,7 @@ Content-Type: application/json
 
 ### CREATE con nombre repetido → 409
 POST {{baseUrl}}/api/tipos-prenda
+Authorization: Bearer {{token}}
 Content-Type: application/json
 
 {

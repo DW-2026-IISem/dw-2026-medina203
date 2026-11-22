@@ -1,7 +1,8 @@
 import { Application } from "express";
+import { protect } from "../../auth/access";
 import { ServiceOrdersController } from "./service-orders.controller";
 
-/** Rutas de ServiceOrders — Fase I: SIN AUTH. */
+/** Rutas de ServiceOrders — JWT + RBAC (authenticate + authorize). */
 export class ServiceOrdersRoutes {
   public controller: ServiceOrdersController = new ServiceOrdersController();
 
@@ -9,19 +10,19 @@ export class ServiceOrdersRoutes {
     const c = this.controller;
 
     app.route("/api/ordenes")
-      .get(c.getAll.bind(c))
-      .post(c.create.bind(c));
+      .get(...protect, c.getAll.bind(c))
+      .post(...protect, c.create.bind(c));
 
     app.route("/api/ordenes/:id")
-      .get(c.getOne.bind(c))
-      .put(c.updatePut.bind(c))
-      .patch(c.updatePatch.bind(c))
-      .delete(c.deletePhysical.bind(c));
+      .get(...protect, c.getOne.bind(c))
+      .put(...protect, c.updatePut.bind(c))
+      .patch(...protect, c.updatePatch.bind(c))
+      .delete(...protect, c.deletePhysical.bind(c));
 
     app.route("/api/ordenes/:id/estado")
-      .patch(c.changeProcessStatus.bind(c));
+      .patch(...protect, c.changeProcessStatus.bind(c));
 
     app.route("/api/ordenes/:id/deactivate")
-      .patch(c.deleteLogical.bind(c));
+      .patch(...protect, c.deleteLogical.bind(c));
   }
 }

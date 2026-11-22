@@ -1,9 +1,12 @@
-### Feature ServiceOrders — CREATE transaccional (SIN AUTH)
+### Feature ServiceOrders — CREATE transaccional (JWT + RBAC)
 @baseUrl = http://localhost:4000
+# access_token: npm run dev:token -- admin  (o POST /api/sesion/login desde ISS-15)
+@token = pega-aqui-el-access-token
 
 ### CREATE → 201 (una línea por kg y otra por unidad)
 # Revisa en GET /api/servicios qué ids cobran por kg o por unidad.
 POST {{baseUrl}}/api/ordenes
+Authorization: Bearer {{token}}
 Content-Type: application/json
 
 {
@@ -19,6 +22,7 @@ Content-Type: application/json
 
 ### CREATE sin peso en un servicio por kg → 400
 POST {{baseUrl}}/api/ordenes
+Authorization: Bearer {{token}}
 Content-Type: application/json
 
 {
@@ -28,6 +32,7 @@ Content-Type: application/json
 
 ### CREATE sin líneas → 400
 POST {{baseUrl}}/api/ordenes
+Authorization: Bearer {{token}}
 Content-Type: application/json
 
 {

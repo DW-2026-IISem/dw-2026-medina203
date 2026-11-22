@@ -1,14 +1,19 @@
-### Feature Resources (sin auth hasta ISS-13)
+### Feature Resources (JWT + RBAC)
 @baseUrl = http://localhost:4000
+# access_token: npm run dev:token -- admin  (o POST /api/sesion/login desde ISS-15)
+@token = pega-aqui-el-access-token
 
 ### Listar recursos (catálogo de operaciones protegibles)
 GET {{baseUrl}}/api/recursos
+Authorization: Bearer {{token}}
 
 ### Obtener recurso
 GET {{baseUrl}}/api/recursos/1
+Authorization: Bearer {{token}}
 
 ### Registrar recurso en caliente
 POST {{baseUrl}}/api/recursos
+Authorization: Bearer {{token}}
 Content-Type: application/json
 
 {
@@ -19,6 +24,7 @@ Content-Type: application/json
 
 ### Registrar operación repetida → 409
 POST {{baseUrl}}/api/recursos
+Authorization: Bearer {{token}}
 Content-Type: application/json
 
 {
@@ -28,6 +34,7 @@ Content-Type: application/json
 
 ### Método inválido → 400
 POST {{baseUrl}}/api/recursos
+Authorization: Bearer {{token}}
 Content-Type: application/json
 
 {
@@ -37,6 +44,8 @@ Content-Type: application/json
 
 ### Desactivar recurso
 PATCH {{baseUrl}}/api/recursos/70/deactivate
+Authorization: Bearer {{token}}
 
 ### Eliminar recurso (físico)
 DELETE {{baseUrl}}/api/recursos/70
+Authorization: Bearer {{token}}

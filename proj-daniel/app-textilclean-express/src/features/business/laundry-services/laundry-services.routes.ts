@@ -1,7 +1,8 @@
 import { Application } from "express";
+import { protect } from "../../auth/access";
 import { LaundryServicesController } from "./laundry-services.controller";
 
-/** Rutas de LaundryServices — Fase I: SIN AUTH. */
+/** Rutas de LaundryServices — JWT + RBAC (authenticate + authorize). */
 export class LaundryServicesRoutes {
   public controller: LaundryServicesController = new LaundryServicesController();
 
@@ -9,16 +10,16 @@ export class LaundryServicesRoutes {
     const c = this.controller;
 
     app.route("/api/servicios")
-      .get(c.getAll.bind(c))
-      .post(c.create.bind(c));
+      .get(...protect, c.getAll.bind(c))
+      .post(...protect, c.create.bind(c));
 
     app.route("/api/servicios/:id")
-      .get(c.getOne.bind(c))
-      .put(c.updatePut.bind(c))
-      .patch(c.updatePatch.bind(c))
-      .delete(c.deletePhysical.bind(c));
+      .get(...protect, c.getOne.bind(c))
+      .put(...protect, c.updatePut.bind(c))
+      .patch(...protect, c.updatePatch.bind(c))
+      .delete(...protect, c.deletePhysical.bind(c));
 
     app.route("/api/servicios/:id/deactivate")
-      .patch(c.deleteLogical.bind(c));
+      .patch(...protect, c.deleteLogical.bind(c));
   }
 }

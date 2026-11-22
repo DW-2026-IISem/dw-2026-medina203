@@ -1,8 +1,11 @@
-### Feature LaundryServices — UPDATE PUT / PATCH (SIN AUTH)
+### Feature LaundryServices — UPDATE PUT / PATCH (JWT + RBAC)
 @baseUrl = http://localhost:4000
+# access_token: npm run dev:token -- admin  (o POST /api/sesion/login desde ISS-15)
+@token = pega-aqui-el-access-token
 
 ### PUT
 PUT {{baseUrl}}/api/servicios/1
+Authorization: Bearer {{token}}
 Content-Type: application/json
 
 {
@@ -16,6 +19,7 @@ Content-Type: application/json
 
 ### PATCH (solo precio)
 PATCH {{baseUrl}}/api/servicios/1
+Authorization: Bearer {{token}}
 Content-Type: application/json
 
 {

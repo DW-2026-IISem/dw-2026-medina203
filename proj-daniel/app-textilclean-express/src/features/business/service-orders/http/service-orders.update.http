@@ -1,8 +1,11 @@
-### Feature ServiceOrders — UPDATE y estado del proceso (SIN AUTH)
+### Feature ServiceOrders — UPDATE y estado del proceso (JWT + RBAC)
 @baseUrl = http://localhost:4000
+# access_token: npm run dev:token -- admin  (o POST /api/sesion/login desde ISS-15)
+@token = pega-aqui-el-access-token
 
 ### PUT (fechas, notas, impuesto y descuento)
 PUT {{baseUrl}}/api/ordenes/1
+Authorization: Bearer {{token}}
 Content-Type: application/json
 
 {
@@ -15,6 +18,7 @@ Content-Type: application/json
 
 ### PATCH (solo descuento)
 PATCH {{baseUrl}}/api/ordenes/1
+Authorization: Bearer {{token}}
 Content-Type: application/json
 
 {
@@ -23,24 +27,28 @@ Content-Type: application/json
 
 ### Avanzar estado: received → in_process
 PATCH {{baseUrl}}/api/ordenes/1/estado
+Authorization: Bearer {{token}}
 Content-Type: application/json
 
 { "process_status": "in_process" }
 
 ### in_process → ready
 PATCH {{baseUrl}}/api/ordenes/1/estado
+Authorization: Bearer {{token}}
 Content-Type: application/json
 
 { "process_status": "ready" }
 
 ### ready → delivered
 PATCH {{baseUrl}}/api/ordenes/1/estado
+Authorization: Bearer {{token}}
 Content-Type: application/json
 
 { "process_status": "delivered" }
 
 ### Saltar o retroceder estados → 409
 PATCH {{baseUrl}}/api/ordenes/1/estado
+Authorization: Bearer {{token}}
 Content-Type: application/json
 
 { "process_status": "received" }

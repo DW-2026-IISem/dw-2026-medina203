@@ -1,7 +1,8 @@
 import { Application } from "express";
+import { protect } from "../../auth/access";
 import { CustomersController } from "./customers.controller";
 
-/** Rutas de Customers — Fase I: SIN AUTH. */
+/** Rutas de Customers — JWT + RBAC (authenticate + authorize). */
 export class CustomersRoutes {
   public controller: CustomersController = new CustomersController();
 
@@ -9,16 +10,16 @@ export class CustomersRoutes {
     const c = this.controller;
 
     app.route("/api/clientes")
-      .get(c.getAll.bind(c))
-      .post(c.create.bind(c));
+      .get(...protect, c.getAll.bind(c))
+      .post(...protect, c.create.bind(c));
 
     app.route("/api/clientes/:id")
-      .get(c.getOne.bind(c))
-      .put(c.updatePut.bind(c))
-      .patch(c.updatePatch.bind(c))
-      .delete(c.deletePhysical.bind(c));
+      .get(...protect, c.getOne.bind(c))
+      .put(...protect, c.updatePut.bind(c))
+      .patch(...protect, c.updatePatch.bind(c))
+      .delete(...protect, c.deletePhysical.bind(c));
 
     app.route("/api/clientes/:id/deactivate")
-      .patch(c.deleteLogical.bind(c));
+      .patch(...protect, c.deleteLogical.bind(c));
   }
 }

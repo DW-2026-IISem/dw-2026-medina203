@@ -1,14 +1,19 @@
-### Feature RoleUsers — asignaciones usuario-rol (sin auth hasta ISS-13)
+### Feature RoleUsers — asignaciones usuario-rol (JWT + RBAC)
 @baseUrl = http://localhost:4000
+# access_token: npm run dev:token -- admin  (o POST /api/sesion/login desde ISS-15)
+@token = pega-aqui-el-access-token
 
 ### Listar asignaciones activas
 GET {{baseUrl}}/api/asignaciones-rol
+Authorization: Bearer {{token}}
 
 ### Obtener asignación
 GET {{baseUrl}}/api/asignaciones-rol/1
+Authorization: Bearer {{token}}
 
 ### Asignar rol OPERATOR (id 2) al usuario 3
 POST {{baseUrl}}/api/asignaciones-rol
+Authorization: Bearer {{token}}
 Content-Type: application/json
 
 {
@@ -18,6 +23,7 @@ Content-Type: application/json
 
 ### Asignación repetida → 409
 POST {{baseUrl}}/api/asignaciones-rol
+Authorization: Bearer {{token}}
 Content-Type: application/json
 
 {
@@ -27,9 +33,12 @@ Content-Type: application/json
 
 ### Retirar rol
 PATCH {{baseUrl}}/api/asignaciones-rol/3/deactivate
+Authorization: Bearer {{token}}
 
 ### Reactivar rol
 PATCH {{baseUrl}}/api/asignaciones-rol/3/reactivate
+Authorization: Bearer {{token}}
 
 ### Permisos efectivos del usuario 2 (operador)
 GET {{baseUrl}}/api/usuarios/2/permisos
+Authorization: Bearer {{token}}
