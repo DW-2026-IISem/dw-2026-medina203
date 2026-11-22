@@ -6,6 +6,7 @@ import { sequelize, getDatabaseInfo, testConnection } from "../database/db";
 // Modelos (deben importarse antes de sync)
 import "../features/business/customers/customer.model";
 import { Routes } from "../routes/index";
+import { setupSwagger } from "../swagger/index";
 
 dotenv.config({ quiet: true });
 
@@ -23,6 +24,7 @@ export class App {
     this.settings();
     this.middlewares();
     this.routes();
+    this.docs();
     this.errorHandling();
   }
 
@@ -42,6 +44,10 @@ export class App {
       res.json({ name: "TextilClean API", status: "ok" });
     });
     this.routePrv.customersRoutes.routes(this.app);
+  }
+
+  private docs(): void {
+    setupSwagger(this.app);
   }
 
   private errorHandling(): void {
