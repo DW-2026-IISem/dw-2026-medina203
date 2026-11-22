@@ -1,0 +1,14 @@
+### Feature ServiceOrders — GET (SIN AUTH)
+@baseUrl = http://localhost:4000
+
+### GET ALL
+GET {{baseUrl}}/api/ordenes
+
+### GET ALL filtrado por estado del proceso
+GET {{baseUrl}}/api/ordenes?process_status=ready
+
+### GET ALL de un cliente
+GET {{baseUrl}}/api/ordenes?customer_id=1
+
+### GET ONE (con cliente y líneas)
+GET {{baseUrl}}/api/ordenes/1

@@ -1,0 +1,23 @@
+### Feature ServiceOrderItems — CREATE (SIN AUTH)
+@baseUrl = http://localhost:4000
+
+### Agregar línea por unidad a una orden → 201 (recalcula totales)
+POST {{baseUrl}}/api/detalle-ordenes
+Content-Type: application/json
+
+{
+  "service_order_id": 1,
+  "laundry_service_id": 6,
+  "quantity": 12
+}
+
+### Agregar línea por kg → 201
+POST {{baseUrl}}/api/detalle-ordenes
+Content-Type: application/json
+
+{
+  "service_order_id": 1,
+  "laundry_service_id": 2,
+  "quantity": 8,
+  "weight_kg": 4.2
+}

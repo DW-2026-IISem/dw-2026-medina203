@@ -1,0 +1,36 @@
+### Feature ServiceOrders — CREATE transaccional (SIN AUTH)
+@baseUrl = http://localhost:4000
+
+### CREATE → 201 (una línea por kg y otra por unidad)
+# Revisa en GET /api/servicios qué ids cobran por kg o por unidad.
+POST {{baseUrl}}/api/ordenes
+Content-Type: application/json
+
+{
+  "customer_id": 1,
+  "notes": "Recoger en la portería",
+  "tax": 0,
+  "discount": 0,
+  "items": [
+    { "laundry_service_id": 2, "quantity": 40, "weight_kg": 18.5 },
+    { "laundry_service_id": 6, "quantity": 25 }
+  ]
+}
+
+### CREATE sin peso en un servicio por kg → 400
+POST {{baseUrl}}/api/ordenes
+Content-Type: application/json
+
+{
+  "customer_id": 1,
+  "items": [ { "laundry_service_id": 2, "quantity": 10 } ]
+}
+
+### CREATE sin líneas → 400
+POST {{baseUrl}}/api/ordenes
+Content-Type: application/json
+
+{
+  "customer_id": 1,
+  "items": []
+}

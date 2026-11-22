@@ -7,8 +7,12 @@ import { sequelize, getDatabaseInfo, testConnection } from "../database/db";
 import "../features/business/customers/customer.model";
 import "../features/business/garment-types/garment-type.model";
 import "../features/business/laundry-services/laundry-service.model";
+import "../features/business/service-orders/service-order.model";
+import "../features/business/service-order-items/service-order-item.model";
 // Relaciones
 import "../features/business/laundry-services/laundry-services.associations";
+import "../features/business/service-orders/service-orders.associations";
+import "../features/business/service-order-items/service-order-items.associations";
 import { Routes } from "../routes/index";
 import { setupSwagger } from "../swagger/index";
 
@@ -50,6 +54,8 @@ export class App {
     this.routePrv.customersRoutes.routes(this.app);
     this.routePrv.garmentTypesRoutes.routes(this.app);
     this.routePrv.laundryServicesRoutes.routes(this.app);
+    this.routePrv.serviceOrdersRoutes.routes(this.app);
+    this.routePrv.serviceOrderItemsRoutes.routes(this.app);
   }
 
   private docs(): void {

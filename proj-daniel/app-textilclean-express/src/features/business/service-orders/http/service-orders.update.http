@@ -1,0 +1,46 @@
+### Feature ServiceOrders — UPDATE y estado del proceso (SIN AUTH)
+@baseUrl = http://localhost:4000
+
+### PUT (fechas, notas, impuesto y descuento)
+PUT {{baseUrl}}/api/ordenes/1
+Content-Type: application/json
+
+{
+  "received_at": "2026-11-20T08:00:00Z",
+  "delivery_date": "2026-11-22T17:00:00Z",
+  "notes": "Cliente pidió entrega urgente",
+  "tax": 0,
+  "discount": 5000
+}
+
+### PATCH (solo descuento)
+PATCH {{baseUrl}}/api/ordenes/1
+Content-Type: application/json
+
+{
+  "discount": 2000
+}
+
+### Avanzar estado: received → in_process
+PATCH {{baseUrl}}/api/ordenes/1/estado
+Content-Type: application/json
+
+{ "process_status": "in_process" }
+
+### in_process → ready
+PATCH {{baseUrl}}/api/ordenes/1/estado
+Content-Type: application/json
+
+{ "process_status": "ready" }
+
+### ready → delivered
+PATCH {{baseUrl}}/api/ordenes/1/estado
+Content-Type: application/json
+
+{ "process_status": "delivered" }
+
+### Saltar o retroceder estados → 409
+PATCH {{baseUrl}}/api/ordenes/1/estado
+Content-Type: application/json
+
+{ "process_status": "received" }

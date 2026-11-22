@@ -1,0 +1,8 @@
+### Feature ServiceOrders — DELETE físico / lógico (SIN AUTH)
+@baseUrl = http://localhost:4000
+
+### Anular (borrado lógico de la orden y sus líneas; 409 si ya fue entregada)
+PATCH {{baseUrl}}/api/ordenes/2/deactivate
+
+### Borrado físico (orden + líneas)
+DELETE {{baseUrl}}/api/ordenes/2

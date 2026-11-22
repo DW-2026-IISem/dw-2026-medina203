@@ -4,6 +4,8 @@ import { errorSchema } from "../shared/http/swagger-common";
 import { customersSwagger } from "../features/business/customers/customers.swagger";
 import { garmentTypesSwagger } from "../features/business/garment-types/garment-types.swagger";
 import { laundryServicesSwagger } from "../features/business/laundry-services/laundry-services.swagger";
+import { serviceOrdersSwagger } from "../features/business/service-orders/service-orders.swagger";
+import { serviceOrderItemsSwagger } from "../features/business/service-order-items/service-order-items.swagger";
 
 export type FeatureSwaggerModule = {
   tags: unknown[];
@@ -19,6 +21,8 @@ const featureSwaggerModules: FeatureSwaggerModule[] = [
   customersSwagger,
   garmentTypesSwagger,
   laundryServicesSwagger,
+  serviceOrdersSwagger,
+  serviceOrderItemsSwagger,
 ];
 
 export function buildOpenApiDocument() {

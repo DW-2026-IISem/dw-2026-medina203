@@ -1,0 +1,8 @@
+### Feature ServiceOrderItems — DELETE físico / lógico (SIN AUTH)
+@baseUrl = http://localhost:4000
+
+### Borrado lógico (recalcula totales)
+PATCH {{baseUrl}}/api/detalle-ordenes/1/deactivate
+
+### Borrado físico (recalcula totales)
+DELETE {{baseUrl}}/api/detalle-ordenes/1

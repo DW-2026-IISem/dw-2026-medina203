@@ -8,12 +8,16 @@ export type SeedCounts = {
   customers: number;
   garment_types: number;
   laundry_services: number;
+  service_orders: number;
+  service_order_items: number;
 };
 
 export const DEFAULT_SEED_COUNTS: SeedCounts = {
   customers: 10,
   garment_types: 10,
   laundry_services: 20,
+  service_orders: 15,
+  service_order_items: 10,
 };
 
 export function resolveSeedCounts(argv: string[] = process.argv.slice(2)): SeedCounts {

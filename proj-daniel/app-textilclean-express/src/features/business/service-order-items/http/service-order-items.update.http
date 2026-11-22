@@ -1,0 +1,19 @@
+### Feature ServiceOrderItems — UPDATE (SIN AUTH)
+@baseUrl = http://localhost:4000
+
+### PUT (cantidad y peso)
+PUT {{baseUrl}}/api/detalle-ordenes/1
+Content-Type: application/json
+
+{
+  "quantity": 15,
+  "weight_kg": 6
+}
+
+### PATCH (solo peso)
+PATCH {{baseUrl}}/api/detalle-ordenes/1
+Content-Type: application/json
+
+{
+  "weight_kg": 7.5
+}

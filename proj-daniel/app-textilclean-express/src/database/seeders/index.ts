@@ -8,6 +8,12 @@ import { seedGarmentTypes } from "../../features/business/garment-types/garment-
 import "../../features/business/laundry-services/laundry-service.model";
 import "../../features/business/laundry-services/laundry-services.associations";
 import { seedLaundryServices } from "../../features/business/laundry-services/laundry-services.seeder";
+import "../../features/business/service-orders/service-order.model";
+import "../../features/business/service-order-items/service-order-item.model";
+import "../../features/business/service-orders/service-orders.associations";
+import "../../features/business/service-order-items/service-order-items.associations";
+import { seedServiceOrders } from "../../features/business/service-orders/service-orders.seeder";
+import { seedServiceOrderItems } from "../../features/business/service-order-items/service-order-items.seeder";
 
 dotenv.config({ quiet: true });
 
@@ -30,6 +36,9 @@ export async function runAllSeeders(): Promise<void> {
   await seedCustomers(counts.customers);
   await seedGarmentTypes(counts.garment_types);
   await seedLaundryServices(counts.laundry_services);
+  // service_orders antes que service_order_items
+  const createdOrders = await seedServiceOrders(counts.service_orders);
+  if (createdOrders > 0) await seedServiceOrderItems(counts.service_order_items);
 
   console.log("🌱 SeedersRunner finalizado");
 }
