@@ -47,6 +47,7 @@ npm run smoke              # (con el servidor arriba) prueba E2E
 | `npm run build` / `npm start` | Compilar a `dist/` y ejecutar |
 | `npm run typecheck` | `tsc --noEmit` |
 | `npm run db:seed` | SeedersRunner (`-- --customers=20`, `SEED_SERVICE_ORDERS=30`…). ⚠️ Reconcilia la matriz por defecto; `-- --skip-grants` la conserva |
+| `npm run test:reconcile` | Pruebas de la reconciliación de la matriz (roles descartables `QA_MATRIZ*`) |
 | `npm run db:seed:catalog` | Sincroniza solo el catálogo de recursos, sin tocar concesiones (ISS-CR-01) |
 | `npm run dev:token -- admin` | Access token de desarrollo para un usuario |
 | `npm run smoke` | Smoke test E2E de las 3 modalidades y el flujo de una orden |

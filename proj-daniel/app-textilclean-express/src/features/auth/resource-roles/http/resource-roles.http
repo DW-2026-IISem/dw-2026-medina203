@@ -43,3 +43,55 @@ Authorization: Bearer {{token}}
 ### Reactivar concesión
 PATCH {{baseUrl}}/api/concesiones-rol/1/reactivate
 Authorization: Bearer {{token}}
+
+### ===== Matriz (ISS-CR-02): guardar el estado final de un rol =====
+### Usa un rol de prueba (créalo con POST /api/roles), no el único ADMIN real.
+### 200 → { message: "Role permissions updated", result: { role_id, activated, deactivated, total_active } }
+POST {{baseUrl}}/api/concesiones-rol
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "role_id": 3,
+  "resource_ids": [1, 2, 3]
+}
+
+### Matriz vacía: revoca todas las concesiones activas del rol (200)
+POST {{baseUrl}}/api/concesiones-rol
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "role_id": 3,
+  "resource_ids": []
+}
+
+### 400: ids duplicados (no cambia nada)
+POST {{baseUrl}}/api/concesiones-rol
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "role_id": 3,
+  "resource_ids": [1, 1, 2]
+}
+
+### 400: recurso inexistente (no cambia nada)
+POST {{baseUrl}}/api/concesiones-rol
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "role_id": 3,
+  "resource_ids": [1, 99999]
+}
+
+### 404: rol inexistente o inactivo
+POST {{baseUrl}}/api/concesiones-rol
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "role_id": 99999,
+  "resource_ids": [1]
+}

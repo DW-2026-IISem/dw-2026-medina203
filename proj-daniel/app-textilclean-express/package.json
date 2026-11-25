@@ -12,7 +12,8 @@
     "db:seed:catalog": "ts-node -- src/database/seeders/catalog.ts",
     "typecheck": "tsc --noEmit",
     "dev:token": "ts-node -- src/scripts/dev-token.ts",
-    "smoke": "ts-node -- src/scripts/smoke-e2e.ts"
+    "smoke": "ts-node -- src/scripts/smoke-e2e.ts",
+    "test:reconcile": "ts-node -- src/scripts/test-reconcile.ts"
   },
   "keywords": [
     "textilclean",

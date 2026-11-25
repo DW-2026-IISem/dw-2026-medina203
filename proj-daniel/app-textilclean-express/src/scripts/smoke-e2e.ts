@@ -96,6 +96,9 @@ async function main(): Promise<void> {
   check("operador elimina orden", (await call("DELETE", `/api/ordenes/${order.id}`, undefined, operator.access)).status, 403);
   check("admin elimina orden", (await call("DELETE", `/api/ordenes/${order.id}`, undefined, admin.access)).status, 200);
 
+  console.log("\n— Matriz de permisos (ISS-CR-02)");
+  await checkPermissionMatrix(admin.access, operator.access);
+
   console.log("\n— Refresh con rotación");
   const rotated = await call("POST", "/api/sesion/refresh", { refresh_token: operator.refresh });
   check("refresh", rotated.status, 200);
@@ -104,6 +107,44 @@ async function main(): Promise<void> {
 
   console.log(failures === 0 ? "\n🎉 Smoke E2E en verde" : `\n💥 ${failures} verificación(es) fallaron`);
   process.exitCode = failures === 0 ? 0 : 1;
+}
+
+/**
+ * Guarda matrices completas y comprueba el efecto REAL sobre el acceso:
+ * al operador se le retira `GET /api/clientes` (403) y luego se restaura (200).
+ * La matriz original de OPERATOR se restaura siempre (finally).
+ */
+async function checkPermissionMatrix(adminToken: string, operatorToken: string): Promise<void> {
+  const matrix = (body: unknown, token?: string) => call("POST", "/api/concesiones-rol", body, token);
+  const roles = (await call("GET", "/api/roles", undefined, adminToken)).json?.roles ?? [];
+  const operatorRole = roles.find((role: any) => role.name === "OPERATOR");
+  const resources = (await call("GET", "/api/recursos", undefined, adminToken)).json?.resources ?? [];
+  const listCustomers = resources.find((r: any) => r.method === "GET" && r.path === "/api/clientes");
+  if (!operatorRole || !listCustomers) throw new Error("Faltan datos semilla: ejecuta npm run db:seed");
+
+  const grants = (await call("GET", `/api/concesiones-rol?role_id=${operatorRole.id}`, undefined, adminToken)).json?.grants ?? [];
+  const original: number[] = grants.map((grant: any) => grant.resource_id);
+
+  check("matriz sin token", (await matrix({ role_id: operatorRole.id, resource_ids: original })).status, 401);
+  check("matriz con token de operador", (await matrix({ role_id: operatorRole.id, resource_ids: original }, operatorToken)).status, 403);
+  check("matriz con ids duplicados", (await matrix({ role_id: operatorRole.id, resource_ids: [listCustomers.id, listCustomers.id] }, adminToken)).status, 400);
+  check("matriz con recurso inexistente", (await matrix({ role_id: operatorRole.id, resource_ids: [999999] }, adminToken)).status, 400);
+  check("matriz con rol inexistente", (await matrix({ role_id: 999999, resource_ids: [] }, adminToken)).status, 404);
+  check("resource_id y resource_ids a la vez", (await matrix({ role_id: operatorRole.id, resource_id: 1, resource_ids: [] }, adminToken)).status, 400);
+  const afterInvalid = (await call("GET", `/api/concesiones-rol?role_id=${operatorRole.id}`, undefined, adminToken)).json?.grants ?? [];
+  check("entradas inválidas no cambian la matriz", afterInvalid.length === original.length ? 1 : 0, 1);
+
+  try {
+    const without = original.filter((id) => id !== listCustomers.id);
+    const revoked = await matrix({ role_id: operatorRole.id, resource_ids: without }, adminToken);
+    check("guardar matriz sin GET /api/clientes", revoked.status, 200);
+    check("respuesta con result.total_active", revoked.json?.result?.total_active === without.length ? 1 : 0, 1);
+    check("operador lista clientes tras revocar", (await call("GET", "/api/clientes", undefined, operatorToken)).status, 403);
+  } finally {
+    const restored = await matrix({ role_id: operatorRole.id, resource_ids: original }, adminToken);
+    check("restaurar matriz original del operador", restored.status, 200);
+  }
+  check("operador lista clientes tras restaurar", (await call("GET", "/api/clientes", undefined, operatorToken)).status, 200);
 }
 
 main().catch((error) => {

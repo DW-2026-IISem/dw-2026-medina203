@@ -5,19 +5,28 @@ import { RolesRepository } from "../roles/roles.repository";
 import {
   CreateResourceRoleDto,
   EffectivePermissionDto,
+  findDuplicateIds,
   ListResourceRolesDto,
+  ReconcileResult,
   ResourceRoleResponseDto,
   toResourceRoleResponse,
 } from "./dto";
 import { ResourceRole } from "./resource-role.model";
 import { ResourceRolesRepository } from "./resource-roles.repository";
 
-export interface ReconcileResult {
-  role_id: number;
-  activated: number;
-  deactivated: number;
-  total_active: number;
-}
+export type { ReconcileResult } from "./dto";
+
+/**
+ * Operaciones que el rol ADMIN no puede perder desde el panel: sin ellas nadie
+ * podría volver a abrir ni guardar la matriz (bloqueo administrativo).
+ */
+export const ADMIN_ROLE_NAME = "ADMIN";
+export const ADMIN_PANEL_OPERATIONS: ReadonlyArray<{ method: string; path: string }> = [
+  { method: "GET", path: "/api/roles" },
+  { method: "GET", path: "/api/recursos" },
+  { method: "GET", path: "/api/concesiones-rol" },
+  { method: "POST", path: "/api/concesiones-rol" },
+];
 
 /**
  * Service de ResourceRoles: concede, retira y reactiva permisos de un rol.
@@ -67,20 +76,42 @@ export class ResourceRolesService {
     return toResourceRoleResponse(await this.reload(grant.id));
   }
 
+  /**
+   * Deja los permisos de un rol EXACTAMENTE iguales a `resourceIds`:
+   *   - enviado y sin concesión → se crea activa
+   *   - enviado e inactivo      → se reactiva
+   *   - enviado y activo        → sin cambios (idempotente)
+   *   - activo y no enviado     → se revoca (`status = inactive`, no se borra)
+   *
+   * Todo ocurre en UNA transacción: si algo falla, no queda una matriz a medias.
+   * Errores: 404 rol inexistente/inactivo · 400 ids inválidos, duplicados,
+   * inexistentes o inactivos · 409 ADMIN perdería el acceso al panel.
+   */
   public async reconcileRole(roleId: number, resourceIds: number[]): Promise<ReconcileResult> {
+    if (!Number.isInteger(roleId) || roleId < 1) throw new AppError(400, "role_id must be a positive integer");
+    if (!Array.isArray(resourceIds) || resourceIds.some((id) => !Number.isInteger(id) || id < 1)) {
+      throw new AppError(400, "resource_ids must contain only positive integers");
+    }
+    const duplicates = findDuplicateIds(resourceIds);
+    if (duplicates.length > 0) throw new AppError(400, `resource_ids has duplicated ids: ${duplicates.join(", ")}`);
+
     const role = await this.rolesRepository.findById(roleId);
     if (!role || role.status !== "active") throw new AppError(404, "Active role not found");
-    if (!Array.isArray(resourceIds) || resourceIds.some((id) => !Number.isInteger(id) || id < 1)) {
-      throw new AppError(400, "resourceIds must contain positive integers");
-    }
-    const desiredIds = [...new Set(resourceIds)].sort((left, right) => left - right);
-    const activeResources = await this.repository.findActiveResourcesByIds(desiredIds);
-    if (activeResources.length !== desiredIds.length) throw new AppError(404, "One or more active resources were not found");
+
+    const desiredIds = [...resourceIds].sort((left, right) => left - right);
+    const desired = new Set(desiredIds);
 
     return withTransaction(async (transaction) => {
+      const activeResources = await this.repository.findActiveResourcesByIds(desiredIds, transaction);
+      if (activeResources.length !== desiredIds.length) {
+        const found = new Set(activeResources.map((resource) => resource.id));
+        const missing = desiredIds.filter((id) => !found.has(id));
+        throw new AppError(400, `Resources not found or inactive: ${missing.join(", ")}`);
+      }
+      if (role.name === ADMIN_ROLE_NAME) await this.assertAdminKeepsPanel(desired);
+
       const existing = await this.repository.findAllByRole(roleId, transaction);
       const byResourceId = new Map(existing.map((grant) => [grant.resource_id, grant]));
-      const desired = new Set(desiredIds);
       let activated = 0;
       let deactivated = 0;
 
@@ -102,6 +133,17 @@ export class ResourceRolesService {
       }
       return { role_id: roleId, activated, deactivated, total_active: desiredIds.length };
     });
+  }
+
+  private async assertAdminKeepsPanel(desired: Set<number>): Promise<void> {
+    const missing: string[] = [];
+    for (const operation of ADMIN_PANEL_OPERATIONS) {
+      const resource = await this.resourcesRepository.findByOperation(operation.method, operation.path);
+      if (resource?.status === "active" && !desired.has(resource.id)) missing.push(`${operation.method} ${operation.path}`);
+    }
+    if (missing.length > 0) {
+      throw new AppError(409, `ADMIN must keep access to the permissions panel: ${missing.join(", ")}`);
+    }
   }
 
   private async findOrFail(id: number, onlyActive = true): Promise<ResourceRole> {

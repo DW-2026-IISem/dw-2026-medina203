@@ -1,4 +1,4 @@
-import { badRequestResponse, conflictResponse, idParam, invalidIdResponse, jsonBody, notFoundResponse, wrapped } from "../../../shared/http/swagger-common";
+import { badRequestResponse, conflictResponse, idParam, invalidIdResponse, notFoundResponse, wrapped } from "../../../shared/http/swagger-common";
 
 /** Documentación OpenAPI del feature ResourceRoles. */
 const TAG = "Concesiones de rol";
@@ -18,10 +18,32 @@ export const resourceRolesSwagger = {
       },
       post: {
         tags: [TAG],
-        summary: "Conceder recurso a rol",
-        description: "Efecto inmediato: `authorize` consulta la matriz en cada petición.",
-        requestBody: jsonBody("ResourceRoleCreate"),
-        responses: { "201": { description: "Concedido", content: wrapped("grant", "ResourceRole") }, "400": badRequestResponse, "404": notFoundResponse, "409": conflictResponse },
+        summary: "Conceder un recurso o guardar la matriz completa de un rol",
+        description:
+          "Dos formas (efecto inmediato: `authorize` consulta la matriz en cada petición):\n\n" +
+          "- `{ role_id, resource_id }` → concede un recurso (**201**).\n" +
+          "- `{ role_id, resource_ids }` → reconcilia en una transacción: activa los enviados y revoca los activos no enviados (**200**). " +
+          "`resource_ids: []` deja al rol sin permisos. 400: ids inválidos, duplicados, inexistentes o inactivos, o ambas formas a la vez. " +
+          "404: rol inexistente o inactivo. 409: ADMIN perdería el acceso al panel.",
+        requestBody: {
+          required: true,
+          content: {
+            "application/json": {
+              schema: { oneOf: [{ $ref: "#/components/schemas/ResourceRoleCreate" }, { $ref: "#/components/schemas/ResourceRoleReconcile" }] },
+              examples: {
+                matriz: { summary: "Guardar matriz", value: { role_id: 2, resource_ids: [1, 2, 3] } },
+                individual: { summary: "Conceder uno", value: { role_id: 2, resource_id: 6 } },
+              },
+            },
+          },
+        },
+        responses: {
+          "200": { description: "Matriz guardada", content: { "application/json": { schema: { $ref: "#/components/schemas/ResourceRoleReconcileResponse" } } } },
+          "201": { description: "Concedido", content: wrapped("grant", "ResourceRole") },
+          "400": badRequestResponse,
+          "404": notFoundResponse,
+          "409": conflictResponse,
+        },
       },
     },
     "/api/concesiones-rol/{id}": {
@@ -54,6 +76,29 @@ export const resourceRolesSwagger = {
         type: "object",
         required: ["role_id", "resource_id"],
         properties: { role_id: { type: "integer", example: 2 }, resource_id: { type: "integer", example: 6 } },
+      },
+      ResourceRoleReconcile: {
+        type: "object",
+        required: ["role_id", "resource_ids"],
+        properties: {
+          role_id: { type: "integer", example: 2 },
+          resource_ids: { type: "array", items: { type: "integer", minimum: 1 }, uniqueItems: true, example: [1, 2, 3] },
+        },
+      },
+      ResourceRoleReconcileResponse: {
+        type: "object",
+        properties: {
+          message: { type: "string", example: "Role permissions updated" },
+          result: {
+            type: "object",
+            properties: {
+              role_id: { type: "integer", example: 2 },
+              activated: { type: "integer", example: 1 },
+              deactivated: { type: "integer", example: 3 },
+              total_active: { type: "integer", example: 3 },
+            },
+          },
+        },
       },
     },
   },
