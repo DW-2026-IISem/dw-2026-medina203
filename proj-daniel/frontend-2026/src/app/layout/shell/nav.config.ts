@@ -21,12 +21,13 @@ export const NAV: NavGroup[] = [
   {
     label: 'Operación',
     items: [
-      { label: 'Inicio', icon: 'pi pi-home', routerLink: '/inicio' },
+      { label: 'Panel', icon: 'pi pi-chart-bar', routerLink: '/panel' },
       { label: 'Clientes', icon: 'pi pi-building', routerLink: '/clientes' },
       { label: 'Tipos de prenda', icon: 'pi pi-tags', routerLink: '/tipos-prenda' },
       { label: 'Servicios', icon: 'pi pi-sparkles', routerLink: '/servicios' },
       { label: 'Órdenes', icon: 'pi pi-inbox', routerLink: '/ordenes', exact: true },
       { label: 'Nueva orden', icon: 'pi pi-plus-circle', routerLink: '/ordenes/nueva' },
+      { label: 'Detalle de órdenes', icon: 'pi pi-list', routerLink: '/detalle-ordenes' },
     ],
   },
 ];

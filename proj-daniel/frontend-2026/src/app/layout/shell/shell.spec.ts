@@ -14,7 +14,15 @@ describe('Shell (ISS-02)', () => {
   it('arma el menú a partir de NAV', () => {
     const shell = TestBed.createComponent(Shell).componentInstance;
     const labels = shell.navGroups().flatMap((g) => g.items?.map((i) => i.label) ?? []);
-    expect(labels).toContain('Inicio');
+    expect(labels).toEqual([
+      'Panel',
+      'Clientes',
+      'Tipos de prenda',
+      'Servicios',
+      'Órdenes',
+      'Nueva orden',
+      'Detalle de órdenes',
+    ]);
   });
 
   it('en móvil (jsdom) el botón del header abre el drawer', async () => {

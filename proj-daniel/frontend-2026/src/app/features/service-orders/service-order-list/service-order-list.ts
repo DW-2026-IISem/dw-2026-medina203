@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { ConfirmationService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
+import { DialogModule } from 'primeng/dialog';
 import { MessageModule } from 'primeng/message';
 import { SelectModule } from 'primeng/select';
 import { TableModule } from 'primeng/table';
@@ -25,6 +26,7 @@ import { PageHeader } from '../../../shared/ui/page-header/page-header';
 import { ProcessStatusTag } from '../../../shared/ui/process-status-tag/process-status-tag';
 import { CustomerApi } from '../../customers/customer-api';
 import { ServiceOrderApi } from '../service-order-api';
+import { ServiceOrderDetail } from '../service-order-detail/service-order-detail';
 
 /**
  * Órdenes de servicio activas. Los filtros por estado del proceso y por cliente
@@ -38,6 +40,7 @@ import { ServiceOrderApi } from '../service-order-api';
     ButtonModule,
     CopPipe,
     DatePipe,
+    DialogModule,
     EmptyState,
     FormsModule,
     MessageModule,
@@ -45,6 +48,7 @@ import { ServiceOrderApi } from '../service-order-api';
     ProcessStatusTag,
     RouterLink,
     SelectModule,
+    ServiceOrderDetail,
     TableModule,
     TagModule,
     TooltipModule,
@@ -63,6 +67,10 @@ export class ServiceOrderList {
   readonly loading = signal(true);
   readonly error = signal<string | null>(null);
   readonly busyId = signal<number | null>(null);
+
+  readonly detailVisible = signal(false);
+  readonly detail = signal<ServiceOrder | null>(null);
+  readonly detailLoading = signal(false);
 
   readonly statusFilter = signal<ProcessStatus | null>(null);
   readonly customerFilter = signal<number | null>(null);
@@ -111,6 +119,24 @@ export class ServiceOrderList {
   setCustomerFilter(value: number | null): void {
     this.customerFilter.set(value);
     this.load();
+  }
+
+  /** Abre el detalle: `GET /api/ordenes/:id` trae cliente y líneas activas. */
+  openDetail(order: ServiceOrder): void {
+    this.detail.set(null);
+    this.detailVisible.set(true);
+    this.detailLoading.set(true);
+    this.api.get(order.id).subscribe({
+      next: (full) => {
+        this.detail.set(full);
+        this.detailLoading.set(false);
+      },
+      error: (error: unknown) => {
+        this.detailLoading.set(false);
+        this.detailVisible.set(false);
+        this.notify.error('No se pudo cargar el detalle', toApiMessage(error));
+      },
+    });
   }
 
   /** Texto del botón de avance, o `null` si la orden ya fue entregada. */

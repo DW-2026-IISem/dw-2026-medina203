@@ -1,0 +1,84 @@
+<form [formGroup]="form" (ngSubmit)="submit()" class="space-y-4">
+  <div>
+    <label for="item-order" class="mb-1 block text-sm font-medium text-slate-700">
+      Orden <span class="text-red-500">*</span>
+    </label>
+    <p-select
+      inputId="item-order"
+      formControlName="service_order_id"
+      [options]="orderOptions()"
+      optionLabel="label"
+      optionValue="id"
+      [filter]="true"
+      placeholder="Orden abierta"
+      [fluid]="true"
+    />
+  </div>
+
+  <div>
+    <label for="item-service" class="mb-1 block text-sm font-medium text-slate-700">
+      Servicio <span class="text-red-500">*</span>
+    </label>
+    <p-select
+      inputId="item-service"
+      formControlName="laundry_service_id"
+      [options]="services()"
+      optionLabel="name"
+      optionValue="id"
+      [filter]="true"
+      placeholder="Servicio activo"
+      [fluid]="true"
+    />
+    @if (item()) {
+      <p class="mt-1 text-xs text-slate-500">
+        El servicio y su precio quedaron congelados; solo cambian prendas y peso.
+      </p>
+    }
+  </div>
+
+  <div class="grid gap-4 sm:grid-cols-2">
+    <div>
+      <label for="item-qty" class="mb-1 block text-sm font-medium text-slate-700">Prendas</label>
+      <p-inputnumber
+        inputId="item-qty"
+        formControlName="quantity"
+        [min]="1"
+        [showButtons]="true"
+        [fluid]="true"
+      />
+    </div>
+    <div>
+      <label for="item-weight" class="mb-1 block text-sm font-medium text-slate-700">
+        Peso (kg)
+        @if (billingUnit() === 'kg') {
+          <span class="text-red-500">*</span>
+        }
+      </label>
+      <p-inputnumber
+        inputId="item-weight"
+        formControlName="weight_kg"
+        mode="decimal"
+        [maxFractionDigits]="2"
+        [min]="0"
+        locale="es-CO"
+        suffix=" kg"
+        [fluid]="true"
+      />
+      @if (form.touched && billingUnit() === 'kg' && !(form.controls.weight_kg.value ?? 0)) {
+        <p-message severity="error" size="small" variant="simple" styleClass="mt-1">
+          Este servicio se cobra por kg: el peso es obligatorio.
+        </p-message>
+      }
+    </div>
+  </div>
+
+  <div class="flex justify-end gap-2 border-t border-slate-100 pt-4">
+    <button pButton type="button" severity="secondary" outlined (click)="cancelled.emit()">
+      <span pButtonLabel>Cancelar</span>
+    </button>
+    <button pButton type="submit" [loading]="saving()">
+      <i pButtonIcon class="pi pi-check"></i>
+      <span pButtonLabel>Guardar</span>
+    </button>
+  </div>
+</form>

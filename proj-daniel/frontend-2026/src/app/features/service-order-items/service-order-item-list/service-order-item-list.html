@@ -1,0 +1,158 @@
+<app-page-header
+  title="Detalle de órdenes"
+  subtitle="Líneas de todas las órdenes. Al agregar, corregir o quitar una línea, el backend recalcula el total de su orden."
+>
+  <p-tag
+    [value]="visibleRows().length + ' líneas · ' + (visibleTotal() | cop)"
+    severity="info"
+    [rounded]="true"
+  />
+  <button pButton type="button" (click)="openCreate()" [disabled]="openOrders().length === 0">
+    <i pButtonIcon class="pi pi-plus"></i>
+    <span pButtonLabel>Agregar línea</span>
+  </button>
+</app-page-header>
+
+@if (error()) {
+  <p-message severity="error" styleClass="mb-4 w-full">{{ error() }}</p-message>
+}
+
+<div class="rounded-xl border border-slate-200 bg-white">
+  <p-table
+    [value]="visibleRows()"
+    [loading]="loading()"
+    [paginator]="visibleRows().length > 10"
+    [rows]="10"
+    dataKey="id"
+    tableStyleClass="min-w-4xl"
+  >
+    <ng-template #caption>
+      <p-select
+        ariaLabel="Filtrar por orden"
+        [options]="orderOptions()"
+        optionLabel="label"
+        optionValue="id"
+        [filter]="true"
+        [showClear]="true"
+        placeholder="Todas las órdenes"
+        [ngModel]="orderFilter()"
+        (ngModelChange)="orderFilter.set($event)"
+        styleClass="w-full sm:w-96"
+      />
+    </ng-template>
+
+    <ng-template #header>
+      <tr>
+        <th pSortableColumn="service_order_id">
+          <div class="flex items-center gap-1">Orden <p-sort-icon field="service_order_id" /></div>
+        </th>
+        <th>Servicio</th>
+        <th class="text-right">Prendas</th>
+        <th class="text-right">Peso</th>
+        <th class="text-right">Precio</th>
+        <th class="text-right">Total línea</th>
+        <th class="w-36 text-right">Acciones</th>
+      </tr>
+    </ng-template>
+
+    <ng-template #body let-item>
+      <tr>
+        <td>
+          <p class="font-medium text-slate-800">#{{ item.service_order_id }}</p>
+          @if (orderById().get(item.service_order_id); as order) {
+            <div class="flex items-center gap-1">
+              <span class="text-xs text-slate-400">{{ order.customer?.business_name }}</span>
+              <app-process-status-tag [status]="order.process_status" />
+            </div>
+          }
+        </td>
+        <td>{{ item.laundry_service?.name ?? 'Servicio #' + item.laundry_service_id }}</td>
+        <td class="text-right">{{ item.quantity }}</td>
+        <td class="text-right">{{ item.weight_kg !== null ? item.weight_kg + ' kg' : '—' }}</td>
+        <td class="text-right text-sm text-slate-600">
+          {{ item.unit_price | cop }}
+          <span class="text-xs text-slate-400">
+            / {{ item.laundry_service?.billing_unit === 'kg' ? 'kg' : 'und' }}
+          </span>
+        </td>
+        <td class="text-right font-medium">{{ item.line_total | cop }}</td>
+        <td>
+          @if (isEditable(item)) {
+            <div class="flex justify-end gap-1">
+              <button
+                pButton
+                type="button"
+                text
+                rounded
+                severity="secondary"
+                aria-label="Editar línea"
+                pTooltip="Editar prendas o peso"
+                (click)="openEdit(item)"
+              >
+                <i pButtonIcon class="pi pi-pencil"></i>
+              </button>
+              <button
+                pButton
+                type="button"
+                text
+                rounded
+                severity="warn"
+                aria-label="Quitar línea"
+                pTooltip="Quitar (baja lógica)"
+                (click)="deactivate(item)"
+              >
+                <i pButtonIcon class="pi pi-ban"></i>
+              </button>
+              <button
+                pButton
+                type="button"
+                text
+                rounded
+                severity="danger"
+                aria-label="Eliminar línea"
+                pTooltip="Eliminar"
+                (click)="remove(item)"
+              >
+                <i pButtonIcon class="pi pi-trash"></i>
+              </button>
+            </div>
+          } @else {
+            <p class="text-right text-xs text-slate-400">Orden entregada</p>
+          }
+        </td>
+      </tr>
+    </ng-template>
+
+    <ng-template #emptymessage>
+      <tr>
+        <td colspan="7">
+          <app-empty-state
+            icon="pi pi-list"
+            title="Sin líneas"
+            message="No hay líneas activas con este filtro."
+          />
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
+</div>
+
+<p-dialog
+  [visible]="dialogVisible()"
+  (visibleChange)="dialogVisible.set($event)"
+  [header]="title()"
+  [modal]="true"
+  [draggable]="false"
+  [dismissableMask]="true"
+  styleClass="w-full max-w-lg mx-4"
+>
+  <app-service-order-item-form
+    [item]="editing()"
+    [orders]="openOrders()"
+    [services]="services()"
+    [saving]="saving()"
+    [resetKey]="resetKey()"
+    (saved)="save($event)"
+    (cancelled)="dialogVisible.set(false)"
+  />
+</p-dialog>

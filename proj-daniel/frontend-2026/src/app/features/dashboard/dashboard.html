@@ -1,0 +1,104 @@
+<app-page-header title="Panel de la planta" subtitle="Estado de las órdenes de lavado de hoy.">
+  <button pButton type="button" severity="secondary" outlined (click)="load()">
+    <i pButtonIcon class="pi pi-refresh"></i>
+    <span pButtonLabel>Actualizar</span>
+  </button>
+  <a pButton routerLink="/ordenes/nueva">
+    <i pButtonIcon class="pi pi-plus"></i>
+    <span pButtonLabel>Nueva orden</span>
+  </a>
+</app-page-header>
+
+@if (error()) {
+  <p-message severity="error" styleClass="mb-4 w-full">{{ error() }}</p-message>
+}
+
+@if (loading()) {
+  <div class="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+    @for (i of [1, 2, 3, 4]; track i) {
+      <p-skeleton height="6rem" />
+    }
+  </div>
+} @else if (data(); as d) {
+  <section class="grid gap-4 sm:grid-cols-2 xl:grid-cols-4" aria-label="Indicadores">
+    <div class="rounded-xl border border-slate-200 bg-white p-5">
+      <p class="text-sm text-slate-500">Órdenes en planta</p>
+      <p class="mt-1 text-3xl font-semibold text-slate-900">{{ d.stats.openOrders }}</p>
+      <p class="text-xs text-slate-400">{{ d.stats.pendingRevenue | cop }} por cobrar</p>
+    </div>
+    <div class="rounded-xl border border-slate-200 bg-white p-5">
+      <p class="text-sm text-slate-500">Listas para entregar</p>
+      <p class="mt-1 text-3xl font-semibold text-teal-700">{{ d.stats.readyOrders }}</p>
+      <a routerLink="/ordenes" class="text-xs text-teal-700 hover:underline">Ver órdenes</a>
+    </div>
+    <div class="rounded-xl border border-slate-200 bg-white p-5">
+      <p class="text-sm text-slate-500">Entregado</p>
+      <p class="mt-1 text-3xl font-semibold text-slate-900">{{ d.stats.deliveredRevenue | cop }}</p>
+      <p class="text-xs text-slate-400">{{ d.stats.byStatus.delivered }} órdenes</p>
+    </div>
+    <div class="rounded-xl border border-slate-200 bg-white p-5">
+      <p class="text-sm text-slate-500">Catálogo</p>
+      <p class="mt-1 text-3xl font-semibold text-slate-900">{{ d.stats.customers }}</p>
+      <p class="text-xs text-slate-400">clientes activos · {{ d.stats.services }} servicios</p>
+    </div>
+  </section>
+
+  <section class="mt-6 grid gap-4 lg:grid-cols-[1fr_2fr]">
+    <div class="rounded-xl border border-slate-200 bg-white p-5">
+      <h2 class="mb-3 font-semibold text-slate-800">Órdenes por estado</h2>
+      <ul class="space-y-3">
+        @for (s of statuses; track s.value) {
+          <li class="flex items-center justify-between">
+            <span class="flex items-center gap-2 text-sm text-slate-600">
+              <i [class]="s.icon + ' text-slate-400'"></i>{{ s.label }}
+            </span>
+            <span class="font-semibold text-slate-900">{{ d.stats.byStatus[s.value] }}</span>
+          </li>
+        }
+      </ul>
+
+      <h2 class="mt-6 mb-2 font-semibold text-slate-800">Entregas vencidas</h2>
+      @if (d.overdueOrders.length === 0) {
+        <p class="text-sm text-slate-500">Ninguna. ¡Todo a tiempo!</p>
+      } @else {
+        <ul class="space-y-2 text-sm">
+          @for (o of d.overdueOrders.slice(0, 5); track o.id) {
+            <li class="flex justify-between gap-2 rounded-md bg-red-50 px-2 py-1 text-red-800">
+              <span>#{{ o.id }} · {{ o.customer?.business_name }}</span>
+              <span>{{ o.delivery_date | date: 'dd/MM HH:mm' }}</span>
+            </li>
+          }
+        </ul>
+      }
+    </div>
+
+    <div class="rounded-xl border border-slate-200 bg-white">
+      <h2 class="px-5 pt-5 font-semibold text-slate-800">Últimas órdenes recibidas</h2>
+      <p-table [value]="d.latestOrders" tableStyleClass="min-w-xl">
+        <ng-template #header>
+          <tr>
+            <th>#</th>
+            <th>Cliente</th>
+            <th>Recibida</th>
+            <th>Proceso</th>
+            <th class="text-right">Total</th>
+          </tr>
+        </ng-template>
+        <ng-template #body let-o>
+          <tr>
+            <td class="font-medium">#{{ o.id }}</td>
+            <td class="text-sm">{{ o.customer?.business_name }}</td>
+            <td class="text-sm text-slate-500">{{ o.received_at | date: 'dd/MM/yyyy HH:mm' }}</td>
+            <td><app-process-status-tag [status]="o.process_status" /></td>
+            <td class="text-right font-medium">{{ o.total | cop }}</td>
+          </tr>
+        </ng-template>
+        <ng-template #emptymessage>
+          <tr>
+            <td colspan="5" class="p-4 text-center text-sm text-slate-500">Aún no hay órdenes.</td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </div>
+  </section>
+}

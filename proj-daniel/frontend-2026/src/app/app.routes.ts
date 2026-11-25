@@ -9,11 +9,11 @@ export const routes: Routes = [
     path: '',
     loadComponent: () => import('./layout/shell/shell').then((m) => m.Shell),
     children: [
-      { path: '', pathMatch: 'full', redirectTo: 'inicio' },
+      { path: '', pathMatch: 'full', redirectTo: 'panel' },
       {
-        path: 'inicio',
-        title: 'Inicio · TextilClean',
-        loadComponent: () => import('./features/home/home').then((m) => m.Home),
+        path: 'panel',
+        title: 'Panel · TextilClean',
+        loadComponent: () => import('./features/dashboard/dashboard').then((m) => m.Dashboard),
       },
       {
         path: 'clientes',
@@ -53,7 +53,15 @@ export const routes: Routes = [
             (m) => m.ServiceOrderForm,
           ),
       },
-      { path: '**', redirectTo: 'inicio' },
+      {
+        path: 'detalle-ordenes',
+        title: 'Detalle de órdenes · TextilClean',
+        loadComponent: () =>
+          import('./features/service-order-items/service-order-item-list/service-order-item-list').then(
+            (m) => m.ServiceOrderItemList,
+          ),
+      },
+      { path: '**', redirectTo: 'panel' },
     ],
   },
 ];
