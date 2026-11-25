@@ -21,6 +21,14 @@ export const routes: Routes = [
         loadComponent: () =>
           import('./features/customers/customer-list/customer-list').then((m) => m.CustomerList),
       },
+      {
+        path: 'tipos-prenda',
+        title: 'Tipos de prenda · TextilClean',
+        loadComponent: () =>
+          import('./features/garment-types/garment-type-list/garment-type-list').then(
+            (m) => m.GarmentTypeList,
+          ),
+      },
       { path: '**', redirectTo: 'inicio' },
     ],
   },

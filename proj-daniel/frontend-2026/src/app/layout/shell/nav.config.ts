@@ -21,6 +21,7 @@ export const NAV: NavGroup[] = [
     items: [
       { label: 'Inicio', icon: 'pi pi-home', routerLink: '/inicio' },
       { label: 'Clientes', icon: 'pi pi-building', routerLink: '/clientes' },
+      { label: 'Tipos de prenda', icon: 'pi pi-tags', routerLink: '/tipos-prenda' },
     ],
   },
 ];
