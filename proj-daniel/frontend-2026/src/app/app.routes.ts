@@ -101,6 +101,53 @@ export const routes: Routes = [
             (m) => m.ServiceOrderItemList,
           ),
       },
+      // --- Administración RBAC (solo con auth activa) ---
+      {
+        path: 'admin/usuarios',
+        title: 'Usuarios · TextilClean',
+        canActivate: [authOnlyGuard, permissionGuard],
+        data: { permission: 'GET /api/usuarios' },
+        loadComponent: () =>
+          import('./features/admin/users/user-list/user-list').then((m) => m.UserList),
+      },
+      {
+        path: 'admin/roles',
+        title: 'Roles · TextilClean',
+        canActivate: [authOnlyGuard, permissionGuard],
+        data: { permission: 'GET /api/roles' },
+        loadComponent: () =>
+          import('./features/admin/roles/role-list/role-list').then((m) => m.RoleList),
+      },
+      {
+        path: 'admin/recursos',
+        title: 'Recursos · TextilClean',
+        canActivate: [authOnlyGuard, permissionGuard],
+        data: { permission: 'GET /api/recursos' },
+        loadComponent: () =>
+          import('./features/admin/resources/resource-list/resource-list').then(
+            (m) => m.ResourceList,
+          ),
+      },
+      {
+        path: 'admin/asignaciones',
+        title: 'Asignaciones de rol · TextilClean',
+        canActivate: [authOnlyGuard, permissionGuard],
+        data: { permission: 'GET /api/asignaciones-rol' },
+        loadComponent: () =>
+          import('./features/admin/role-users/role-user-list/role-user-list').then(
+            (m) => m.RoleUserList,
+          ),
+      },
+      {
+        path: 'admin/permisos',
+        title: 'Concesiones · TextilClean',
+        canActivate: [authOnlyGuard, permissionGuard],
+        data: { permission: 'GET /api/concesiones-rol' },
+        loadComponent: () =>
+          import('./features/admin/resource-roles/resource-role-list/resource-role-list').then(
+            (m) => m.ResourceRoleList,
+          ),
+      },
       { path: '**', redirectTo: 'panel' },
     ],
   },

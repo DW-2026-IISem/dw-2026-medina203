@@ -1,0 +1,154 @@
+<app-page-header
+  title="Concesiones rol ↔ recurso"
+  subtitle="Qué puede hacer cada rol. Revocar es baja lógica."
+>
+  <p-tag [value]="rows().length + ' activas'" severity="info" [rounded]="true" />
+  <ng-container *appHasPermission="'POST /api/concesiones-rol'">
+    <button pButton type="button" (click)="openCreate()">
+      <i pButtonIcon class="pi pi-plus"></i><span pButtonLabel>Conceder permiso</span>
+    </button>
+  </ng-container>
+</app-page-header>
+
+@if (error()) {
+  <p-message severity="error" styleClass="mb-4 w-full">{{ error() }}</p-message>
+}
+
+<div class="mb-4">
+  <input
+    pInputText
+    type="search"
+    aria-label="Buscar concesiones"
+    placeholder="Buscar por rol, método o ruta…"
+    [value]="filter()"
+    (input)="filter.set($any($event.target).value)"
+    class="w-full"
+  />
+</div>
+
+<div class="rounded-xl border border-slate-200 bg-white">
+  <p-table
+    [value]="visibleRows()"
+    [loading]="loading()"
+    dataKey="id"
+    [paginator]="visibleRows().length > 15"
+    [rows]="15"
+    tableStyleClass="min-w-4xl"
+  >
+    <ng-template #header>
+      <tr>
+        <th>Rol</th>
+        <th>Método</th>
+        <th>Ruta</th>
+        <th class="w-32 text-right">Acciones</th>
+      </tr>
+    </ng-template>
+    <ng-template #body let-g>
+      <tr>
+        <td><p-tag [value]="roleName()(g.role_id)" severity="info" [rounded]="true" /></td>
+        <td>
+          @if (resourceOf()(g.resource_id); as res) {
+            <p-tag [value]="res.method" [severity]="methodSeverity(res.method)" [rounded]="true" />
+          }
+        </td>
+        <td class="font-mono text-xs">
+          {{ resourceOf()(g.resource_id)?.path || '—' }}
+        </td>
+        <td>
+          <div class="flex justify-end">
+            <ng-container *appHasPermission="'PATCH /api/concesiones-rol/:id/deactivate'">
+              <button
+                pButton
+                text
+                rounded
+                severity="danger"
+                aria-label="Revocar permiso"
+                pTooltip="Revocar"
+                (click)="deactivate(g)"
+              >
+                <i pButtonIcon class="pi pi-times"></i>
+              </button>
+            </ng-container>
+          </div>
+        </td>
+      </tr>
+    </ng-template>
+    <ng-template #emptymessage>
+      <tr>
+        <td colspan="4">
+          <app-empty-state
+            icon="pi pi-key"
+            title="Sin concesiones"
+            message="Concede el primer permiso con «Conceder permiso»."
+          />
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
+</div>
+
+<p-dialog
+  [visible]="dialogVisible()"
+  (visibleChange)="dialogVisible.set($event)"
+  header="Conceder permiso"
+  [modal]="true"
+  [draggable]="false"
+  [resizable]="false"
+  styleClass="w-full max-w-xl mx-4"
+>
+  <div class="space-y-4">
+    <div>
+      <label for="rr-role" class="mb-1 block text-sm font-medium text-slate-700">Rol</label>
+      <p-select
+        inputId="rr-role"
+        [fluid]="true"
+        [options]="roles()"
+        optionLabel="name"
+        [filter]="true"
+        [ngModel]="selectedRole()"
+        (ngModelChange)="selectedRole.set($event)"
+      />
+    </div>
+    <div>
+      <label for="rr-resource" class="mb-1 block text-sm font-medium text-slate-700"
+        >Recurso (método + ruta)</label
+      >
+      <p-select
+        inputId="rr-resource"
+        [fluid]="true"
+        [options]="resources()"
+        [filter]="true"
+        filterBy="path,method"
+        [ngModel]="selectedResource()"
+        (ngModelChange)="selectedResource.set($event)"
+      >
+        <ng-template #selectedItem let-res>
+          <span class="flex items-center gap-2">
+            <p-tag [value]="res.method" [severity]="methodSeverity(res.method)" [rounded]="true" />
+            <code class="text-xs">{{ res.path }}</code>
+          </span>
+        </ng-template>
+        <ng-template #item let-res>
+          <span class="flex items-center gap-2">
+            <p-tag [value]="res.method" [severity]="methodSeverity(res.method)" [rounded]="true" />
+            <code class="text-xs">{{ res.path }}</code>
+          </span>
+        </ng-template>
+      </p-select>
+    </div>
+    <div class="flex justify-end gap-2 border-t border-slate-100 pt-4">
+      <button
+        pButton
+        type="button"
+        severity="secondary"
+        outlined
+        (click)="dialogVisible.set(false)"
+      >
+        <span pButtonLabel>Cancelar</span>
+      </button>
+      <button pButton type="button" [disabled]="!canSave()" (click)="save()">
+        <i pButtonIcon class="pi pi-check"></i><span pButtonLabel>Conceder</span>
+      </button>
+    </div>
+  </div>
+</p-dialog>
