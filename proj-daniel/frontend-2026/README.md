@@ -6,3 +6,12 @@ Angular 22 (standalone, zoneless, signals) + PrimeNG 22 (tema Aura) + Tailwind C
 Consume el backend [`app-textilclean-express`](../app-textilclean-express).
 
 La trazabilidad de cada issue está en [`docs/issues/`](docs/issues/).
+
+## Comandos
+
+```bash
+npm ci          # instalar dependencias
+npm start       # http://localhost:4200
+npm run build   # build de producción en dist/
+npm test        # pruebas unitarias (Vitest + jsdom)
+```
