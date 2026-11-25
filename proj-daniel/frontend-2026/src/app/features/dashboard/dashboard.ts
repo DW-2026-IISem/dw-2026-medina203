@@ -10,6 +10,7 @@ import { DashboardData } from '../../core/models/dashboard.model';
 import { PROCESS_STATUS_LABELS, ProcessStatus } from '../../core/models/service-order.model';
 import { toApiMessage } from '../../core/utils/api-error';
 import { CopPipe } from '../../shared/pipes/cop.pipe';
+import { HasPermission } from '../../shared/directives/has-permission';
 import { PageHeader } from '../../shared/ui/page-header/page-header';
 import { ProcessStatusTag } from '../../shared/ui/process-status-tag/process-status-tag';
 import { CustomerApi } from '../customers/customer-api';
@@ -25,6 +26,7 @@ import { buildDashboard } from './dashboard-data';
   host: { class: 'block' },
   selector: 'app-dashboard',
   imports: [
+    HasPermission,
     ButtonModule,
     CopPipe,
     DatePipe,

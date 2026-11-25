@@ -17,5 +17,27 @@
       <span class="text-lg font-semibold tracking-tight">TextilClean</span>
       <span class="hidden text-sm font-normal text-slate-400 sm:inline">Lavandería industrial</span>
     </a>
+
+    @if (showSession()) {
+      <div class="ml-auto flex items-center gap-2">
+        <p-tag
+          [value]="roleLabel()"
+          severity="info"
+          [rounded]="true"
+          styleClass="hidden sm:inline-flex"
+        />
+        <button
+          type="button"
+          class="flex items-center gap-2 rounded-full p-1 hover:bg-slate-100"
+          aria-label="Menú de usuario"
+          aria-haspopup="true"
+          (click)="userMenuPanel.toggle($event)"
+        >
+          <p-avatar [label]="initials()" shape="circle" styleClass="bg-teal-600 text-white" />
+          <span class="hidden text-sm font-medium text-slate-700 sm:inline">{{ username() }}</span>
+        </button>
+        <p-menu #userMenuPanel [model]="userMenu()" [popup]="true" appendTo="body" />
+      </div>
+    }
   </div>
 </header>

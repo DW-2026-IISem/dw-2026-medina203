@@ -20,6 +20,7 @@ import { toApiMessage } from '../../../core/utils/api-error';
 import { filterRows } from '../../../core/utils/filter-rows';
 import { CopPipe } from '../../../shared/pipes/cop.pipe';
 import { EmptyState } from '../../../shared/ui/empty-state/empty-state';
+import { HasPermission } from '../../../shared/directives/has-permission';
 import { PageHeader } from '../../../shared/ui/page-header/page-header';
 import { StatusTag } from '../../../shared/ui/status-tag/status-tag';
 import { GarmentTypeApi } from '../../garment-types/garment-type-api';
@@ -34,6 +35,7 @@ import { LaundryServiceForm } from '../laundry-service-form/laundry-service-form
   host: { class: 'block' },
   selector: 'app-laundry-service-list',
   imports: [
+    HasPermission,
     ButtonModule,
     CopPipe,
     DialogModule,

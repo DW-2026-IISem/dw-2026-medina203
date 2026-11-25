@@ -22,6 +22,7 @@ import { toApiMessage } from '../../../core/utils/api-error';
 import { toNumber } from '../../../core/utils/to-number';
 import { CopPipe } from '../../../shared/pipes/cop.pipe';
 import { EmptyState } from '../../../shared/ui/empty-state/empty-state';
+import { HasPermission } from '../../../shared/directives/has-permission';
 import { PageHeader } from '../../../shared/ui/page-header/page-header';
 import { ProcessStatusTag } from '../../../shared/ui/process-status-tag/process-status-tag';
 import { CustomerApi } from '../../customers/customer-api';
@@ -37,6 +38,7 @@ import { ServiceOrderDetail } from '../service-order-detail/service-order-detail
   host: { class: 'block' },
   selector: 'app-service-order-list',
   imports: [
+    HasPermission,
     ButtonModule,
     CopPipe,
     DatePipe,

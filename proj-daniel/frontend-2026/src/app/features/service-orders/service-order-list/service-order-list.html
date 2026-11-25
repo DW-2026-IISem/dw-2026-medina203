@@ -7,10 +7,12 @@
     severity="info"
     [rounded]="true"
   />
-  <a pButton routerLink="/ordenes/nueva">
-    <i pButtonIcon class="pi pi-plus"></i>
-    <span pButtonLabel>Nueva orden</span>
-  </a>
+  <ng-container *appHasPermission="'POST /api/ordenes'">
+    <a pButton routerLink="/ordenes/nueva">
+      <i pButtonIcon class="pi pi-plus"></i>
+      <span pButtonLabel>Nueva orden</span>
+    </a>
+  </ng-container>
 </app-page-header>
 
 @if (error()) {
@@ -89,59 +91,67 @@
         <td class="text-right font-medium">{{ order.total | cop }}</td>
         <td>
           <div class="flex items-center justify-end gap-1">
-            <button
-              pButton
-              type="button"
-              text
-              rounded
-              severity="secondary"
-              aria-label="Ver detalle de la orden"
-              pTooltip="Ver detalle"
-              (click)="openDetail(order)"
-            >
-              <i pButtonIcon class="pi pi-eye"></i>
-            </button>
-            @if (nextLabel(order); as next) {
-              <button
-                pButton
-                type="button"
-                size="small"
-                outlined
-                [loading]="busyId() === order.id"
-                class="whitespace-nowrap"
-                [attr.aria-label]="'Pasar la orden ' + order.id + ' a ' + next"
-                (click)="advance(order)"
-              >
-                <i pButtonIcon class="pi pi-arrow-right"></i>
-                <span pButtonLabel>{{ next }}</span>
-              </button>
-            }
-            @if (order.process_status !== 'delivered') {
+            <ng-container *appHasPermission="'GET /api/ordenes/:id'">
               <button
                 pButton
                 type="button"
                 text
                 rounded
-                severity="warn"
-                aria-label="Anular orden"
-                pTooltip="Anular"
-                (click)="cancel(order)"
+                severity="secondary"
+                aria-label="Ver detalle de la orden"
+                pTooltip="Ver detalle"
+                (click)="openDetail(order)"
               >
-                <i pButtonIcon class="pi pi-ban"></i>
+                <i pButtonIcon class="pi pi-eye"></i>
               </button>
+            </ng-container>
+            @if (nextLabel(order); as next) {
+              <ng-container *appHasPermission="'PATCH /api/ordenes/:id/estado'">
+                <button
+                  pButton
+                  type="button"
+                  size="small"
+                  outlined
+                  [loading]="busyId() === order.id"
+                  class="whitespace-nowrap"
+                  [attr.aria-label]="'Pasar la orden ' + order.id + ' a ' + next"
+                  (click)="advance(order)"
+                >
+                  <i pButtonIcon class="pi pi-arrow-right"></i>
+                  <span pButtonLabel>{{ next }}</span>
+                </button>
+              </ng-container>
             }
-            <button
-              pButton
-              type="button"
-              text
-              rounded
-              severity="danger"
-              aria-label="Eliminar orden"
-              pTooltip="Eliminar"
-              (click)="remove(order)"
-            >
-              <i pButtonIcon class="pi pi-trash"></i>
-            </button>
+            @if (order.process_status !== 'delivered') {
+              <ng-container *appHasPermission="'PATCH /api/ordenes/:id/deactivate'">
+                <button
+                  pButton
+                  type="button"
+                  text
+                  rounded
+                  severity="warn"
+                  aria-label="Anular orden"
+                  pTooltip="Anular"
+                  (click)="cancel(order)"
+                >
+                  <i pButtonIcon class="pi pi-ban"></i>
+                </button>
+              </ng-container>
+            }
+            <ng-container *appHasPermission="'DELETE /api/ordenes/:id'">
+              <button
+                pButton
+                type="button"
+                text
+                rounded
+                severity="danger"
+                aria-label="Eliminar orden"
+                pTooltip="Eliminar"
+                (click)="remove(order)"
+              >
+                <i pButtonIcon class="pi pi-trash"></i>
+              </button>
+            </ng-container>
           </div>
         </td>
       </tr>

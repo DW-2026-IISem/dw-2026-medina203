@@ -1,5 +1,14 @@
 <div class="flex min-h-dvh flex-col bg-slate-50">
-  <app-header (menuRequested)="toggleMenu()" />
+  <app-header
+    [showSession]="session.authEnabled"
+    [username]="displayName()"
+    [initials]="initials()"
+    [roleLabel]="roleLabel()"
+    (menuRequested)="toggleMenu()"
+    (profileRequested)="goToProfile()"
+    (reloadPermissionsRequested)="reloadPermissions()"
+    (logoutRequested)="onLogout()"
+  />
 
   <div class="flex flex-1">
     @if (isDesktop()) {
@@ -9,7 +18,15 @@
         [class.w-0]="sidebarCollapsed()"
       >
         @if (!sidebarCollapsed()) {
-          <app-aside [items]="navGroups()" (navigated)="closeMobile()" />
+          <app-aside
+            [items]="navGroups()"
+            [showSession]="session.authEnabled"
+            [username]="displayName()"
+            [roleLabel]="roleLabel()"
+            [permissionCount]="session.permissionCount()"
+            (navigated)="closeMobile()"
+            (logoutRequested)="onLogout()"
+          />
         }
       </aside>
     }
@@ -31,7 +48,15 @@
     <div class="flex h-full flex-col gap-3">
       <p class="px-3 text-sm font-semibold text-slate-900">TextilClean</p>
       @if (!isDesktop()) {
-        <app-aside [items]="navGroups()" (navigated)="closeMobile()" />
+        <app-aside
+          [items]="navGroups()"
+          [showSession]="session.authEnabled"
+          [username]="displayName()"
+          [roleLabel]="roleLabel()"
+          [permissionCount]="session.permissionCount()"
+          (navigated)="closeMobile()"
+          (logoutRequested)="onLogout()"
+        />
       }
     </div>
   </p-drawer>

@@ -1,13 +1,22 @@
 import { Routes } from '@angular/router';
+import { authGuard } from './core/guards/auth-guard';
+import { authOnlyGuard } from './core/guards/auth-only-guard';
+import { guestGuard } from './core/guards/guest-guard';
+import { permissionGuard } from './core/guards/permission-guard';
 
 /**
- * Rutas de TextilClean. Todas las pantallas viven dentro del Shell y se cargan
- * de forma diferida (`loadComponent`).
+ * Rutas de TextilClean. Las pantallas viven dentro del Shell, se cargan de forma
+ * diferida y declaran su permiso (`data.permission`) para `permissionGuard`.
+ *
+ *  - authGuard: ¿hay sesión?          → si no, /login?returnUrl=…
+ *  - permissionGuard: ¿tu rol puede?  → si no, /forbidden?permission=…
+ *  - guestGuard: /login solo sin sesión.
  */
 export const routes: Routes = [
   {
     path: 'login',
     title: 'Iniciar sesión · TextilClean',
+    canActivate: [guestGuard],
     loadComponent: () => import('./features/auth/login/login').then((m) => m.Login),
   },
   {
@@ -17,28 +26,36 @@ export const routes: Routes = [
   },
   {
     path: '',
+    canActivate: [authGuard],
     loadComponent: () => import('./layout/shell/shell').then((m) => m.Shell),
     children: [
       { path: '', pathMatch: 'full', redirectTo: 'panel' },
       {
         path: 'panel',
         title: 'Panel · TextilClean',
+        canActivate: [permissionGuard],
+        data: { permission: 'GET /api/ordenes' },
         loadComponent: () => import('./features/dashboard/dashboard').then((m) => m.Dashboard),
       },
       {
         path: 'perfil',
         title: 'Mi perfil · TextilClean',
+        canActivate: [authOnlyGuard],
         loadComponent: () => import('./features/auth/profile/profile').then((m) => m.Profile),
       },
       {
         path: 'clientes',
         title: 'Clientes · TextilClean',
+        canActivate: [permissionGuard],
+        data: { permission: 'GET /api/clientes' },
         loadComponent: () =>
           import('./features/customers/customer-list/customer-list').then((m) => m.CustomerList),
       },
       {
         path: 'tipos-prenda',
         title: 'Tipos de prenda · TextilClean',
+        canActivate: [permissionGuard],
+        data: { permission: 'GET /api/tipos-prenda' },
         loadComponent: () =>
           import('./features/garment-types/garment-type-list/garment-type-list').then(
             (m) => m.GarmentTypeList,
@@ -47,6 +64,8 @@ export const routes: Routes = [
       {
         path: 'servicios',
         title: 'Servicios · TextilClean',
+        canActivate: [permissionGuard],
+        data: { permission: 'GET /api/servicios' },
         loadComponent: () =>
           import('./features/laundry-services/laundry-service-list/laundry-service-list').then(
             (m) => m.LaundryServiceList,
@@ -55,6 +74,8 @@ export const routes: Routes = [
       {
         path: 'ordenes',
         title: 'Órdenes de servicio · TextilClean',
+        canActivate: [permissionGuard],
+        data: { permission: 'GET /api/ordenes' },
         loadComponent: () =>
           import('./features/service-orders/service-order-list/service-order-list').then(
             (m) => m.ServiceOrderList,
@@ -63,6 +84,8 @@ export const routes: Routes = [
       {
         path: 'ordenes/nueva',
         title: 'Nueva orden · TextilClean',
+        canActivate: [permissionGuard],
+        data: { permission: 'POST /api/ordenes' },
         loadComponent: () =>
           import('./features/service-orders/service-order-form/service-order-form').then(
             (m) => m.ServiceOrderForm,
@@ -71,6 +94,8 @@ export const routes: Routes = [
       {
         path: 'detalle-ordenes',
         title: 'Detalle de órdenes · TextilClean',
+        canActivate: [permissionGuard],
+        data: { permission: 'GET /api/detalle-ordenes' },
         loadComponent: () =>
           import('./features/service-order-items/service-order-item-list/service-order-item-list').then(
             (m) => m.ServiceOrderItemList,

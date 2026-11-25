@@ -14,6 +14,20 @@
       <ng-container *ngTemplateOutlet="link; context: { $implicit: entry }"></ng-container>
     }
   }
+
+  @if (showSession()) {
+    <div class="mt-auto border-t border-slate-100 px-3 pt-3 text-sm">
+      <p class="font-medium text-slate-800">{{ username() }}</p>
+      <p class="text-xs text-slate-500">{{ roleLabel() }} · {{ permissionCount() }} permisos</p>
+      <button
+        type="button"
+        class="mt-2 flex items-center gap-2 text-xs font-medium text-red-600 hover:underline"
+        (click)="logoutRequested.emit()"
+      >
+        <i class="pi pi-sign-out"></i> Cerrar sesión
+      </button>
+    </div>
+  }
 </nav>
 
 <ng-template #link let-item>

@@ -3,10 +3,12 @@
     <i pButtonIcon class="pi pi-refresh"></i>
     <span pButtonLabel>Actualizar</span>
   </button>
-  <a pButton routerLink="/ordenes/nueva">
-    <i pButtonIcon class="pi pi-plus"></i>
-    <span pButtonLabel>Nueva orden</span>
-  </a>
+  <ng-container *appHasPermission="'POST /api/ordenes'">
+    <a pButton routerLink="/ordenes/nueva">
+      <i pButtonIcon class="pi pi-plus"></i>
+      <span pButtonLabel>Nueva orden</span>
+    </a>
+  </ng-container>
 </app-page-header>
 
 @if (error()) {

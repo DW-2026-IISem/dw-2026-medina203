@@ -5,7 +5,9 @@ import { MenuItem } from 'primeng/api';
 
 /**
  * Menú lateral reutilizable: lo usan el Aside de escritorio y el Drawer móvil.
- * Acepta grupos (`MenuItem` con `items`) o elementos sueltos.
+ *
+ * Acepta una lista plana (`MenuItem` con `routerLink`) o grupos
+ * (`MenuItem` con `items`), que es lo que construye `Shell.navGroups()`.
  */
 @Component({
   host: { class: 'block h-full' },
@@ -16,5 +18,11 @@ import { MenuItem } from 'primeng/api';
 })
 export class Aside {
   readonly items = input<MenuItem[]>([]);
+  readonly showSession = input(false);
+  readonly username = input('');
+  readonly roleLabel = input('');
+  readonly permissionCount = input(0);
+
   readonly navigated = output<void>();
+  readonly logoutRequested = output<void>();
 }

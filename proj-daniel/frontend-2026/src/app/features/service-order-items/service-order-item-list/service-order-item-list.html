@@ -7,10 +7,12 @@
     severity="info"
     [rounded]="true"
   />
-  <button pButton type="button" (click)="openCreate()" [disabled]="openOrders().length === 0">
-    <i pButtonIcon class="pi pi-plus"></i>
-    <span pButtonLabel>Agregar línea</span>
-  </button>
+  <ng-container *appHasPermission="'POST /api/detalle-ordenes'">
+    <button pButton type="button" (click)="openCreate()" [disabled]="openOrders().length === 0">
+      <i pButtonIcon class="pi pi-plus"></i>
+      <span pButtonLabel>Agregar línea</span>
+    </button>
+  </ng-container>
 </app-page-header>
 
 @if (error()) {
@@ -79,42 +81,48 @@
         <td>
           @if (isEditable(item)) {
             <div class="flex justify-end gap-1">
-              <button
-                pButton
-                type="button"
-                text
-                rounded
-                severity="secondary"
-                aria-label="Editar línea"
-                pTooltip="Editar prendas o peso"
-                (click)="openEdit(item)"
-              >
-                <i pButtonIcon class="pi pi-pencil"></i>
-              </button>
-              <button
-                pButton
-                type="button"
-                text
-                rounded
-                severity="warn"
-                aria-label="Quitar línea"
-                pTooltip="Quitar (baja lógica)"
-                (click)="deactivate(item)"
-              >
-                <i pButtonIcon class="pi pi-ban"></i>
-              </button>
-              <button
-                pButton
-                type="button"
-                text
-                rounded
-                severity="danger"
-                aria-label="Eliminar línea"
-                pTooltip="Eliminar"
-                (click)="remove(item)"
-              >
-                <i pButtonIcon class="pi pi-trash"></i>
-              </button>
+              <ng-container *appHasPermission="'PATCH /api/detalle-ordenes/:id'">
+                <button
+                  pButton
+                  type="button"
+                  text
+                  rounded
+                  severity="secondary"
+                  aria-label="Editar línea"
+                  pTooltip="Editar prendas o peso"
+                  (click)="openEdit(item)"
+                >
+                  <i pButtonIcon class="pi pi-pencil"></i>
+                </button>
+              </ng-container>
+              <ng-container *appHasPermission="'PATCH /api/detalle-ordenes/:id/deactivate'">
+                <button
+                  pButton
+                  type="button"
+                  text
+                  rounded
+                  severity="warn"
+                  aria-label="Quitar línea"
+                  pTooltip="Quitar (baja lógica)"
+                  (click)="deactivate(item)"
+                >
+                  <i pButtonIcon class="pi pi-ban"></i>
+                </button>
+              </ng-container>
+              <ng-container *appHasPermission="'DELETE /api/detalle-ordenes/:id'">
+                <button
+                  pButton
+                  type="button"
+                  text
+                  rounded
+                  severity="danger"
+                  aria-label="Eliminar línea"
+                  pTooltip="Eliminar"
+                  (click)="remove(item)"
+                >
+                  <i pButtonIcon class="pi pi-trash"></i>
+                </button>
+              </ng-container>
             </div>
           } @else {
             <p class="text-right text-xs text-slate-400">Orden entregada</p>

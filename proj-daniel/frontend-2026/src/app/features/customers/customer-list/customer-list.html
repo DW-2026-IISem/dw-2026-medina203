@@ -3,10 +3,12 @@
   subtitle="Empresas que contratan el lavado industrial. El listado muestra solo las activas."
 >
   <p-tag [value]="rows().length + ' activos'" severity="info" [rounded]="true" />
-  <button pButton type="button" (click)="openCreate()">
-    <i pButtonIcon class="pi pi-plus"></i>
-    <span pButtonLabel>Nuevo cliente</span>
-  </button>
+  <ng-container *appHasPermission="'POST /api/clientes'">
+    <button pButton type="button" (click)="openCreate()">
+      <i pButtonIcon class="pi pi-plus"></i>
+      <span pButtonLabel>Nuevo cliente</span>
+    </button>
+  </ng-container>
 </app-page-header>
 
 @if (error()) {
@@ -74,42 +76,48 @@
         <td><app-status-tag [status]="customer.status" /></td>
         <td>
           <div class="flex justify-end gap-1">
-            <button
-              pButton
-              type="button"
-              text
-              rounded
-              severity="secondary"
-              aria-label="Editar cliente"
-              pTooltip="Editar"
-              (click)="openEdit(customer)"
-            >
-              <i pButtonIcon class="pi pi-pencil"></i>
-            </button>
-            <button
-              pButton
-              type="button"
-              text
-              rounded
-              severity="warn"
-              aria-label="Desactivar cliente"
-              pTooltip="Baja lógica"
-              (click)="deactivate(customer)"
-            >
-              <i pButtonIcon class="pi pi-ban"></i>
-            </button>
-            <button
-              pButton
-              type="button"
-              text
-              rounded
-              severity="danger"
-              aria-label="Eliminar cliente"
-              pTooltip="Eliminar"
-              (click)="remove(customer)"
-            >
-              <i pButtonIcon class="pi pi-trash"></i>
-            </button>
+            <ng-container *appHasPermission="'PATCH /api/clientes/:id'">
+              <button
+                pButton
+                type="button"
+                text
+                rounded
+                severity="secondary"
+                aria-label="Editar cliente"
+                pTooltip="Editar"
+                (click)="openEdit(customer)"
+              >
+                <i pButtonIcon class="pi pi-pencil"></i>
+              </button>
+            </ng-container>
+            <ng-container *appHasPermission="'PATCH /api/clientes/:id/deactivate'">
+              <button
+                pButton
+                type="button"
+                text
+                rounded
+                severity="warn"
+                aria-label="Desactivar cliente"
+                pTooltip="Baja lógica"
+                (click)="deactivate(customer)"
+              >
+                <i pButtonIcon class="pi pi-ban"></i>
+              </button>
+            </ng-container>
+            <ng-container *appHasPermission="'DELETE /api/clientes/:id'">
+              <button
+                pButton
+                type="button"
+                text
+                rounded
+                severity="danger"
+                aria-label="Eliminar cliente"
+                pTooltip="Eliminar"
+                (click)="remove(customer)"
+              >
+                <i pButtonIcon class="pi pi-trash"></i>
+              </button>
+            </ng-container>
           </div>
         </td>
       </tr>

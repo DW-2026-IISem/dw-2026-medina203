@@ -3,10 +3,12 @@
   subtitle="Catálogo de prendas que procesa la planta. Cada servicio de lavado pertenece a un tipo."
 >
   <p-tag [value]="rows().length + ' activos'" severity="info" [rounded]="true" />
-  <button pButton type="button" (click)="openCreate()">
-    <i pButtonIcon class="pi pi-plus"></i>
-    <span pButtonLabel>Nuevo tipo</span>
-  </button>
+  <ng-container *appHasPermission="'POST /api/tipos-prenda'">
+    <button pButton type="button" (click)="openCreate()">
+      <i pButtonIcon class="pi pi-plus"></i>
+      <span pButtonLabel>Nuevo tipo</span>
+    </button>
+  </ng-container>
 </app-page-header>
 
 @if (error()) {
@@ -58,42 +60,48 @@
         <td><app-status-tag [status]="garmentType.status" /></td>
         <td>
           <div class="flex justify-end gap-1">
-            <button
-              pButton
-              type="button"
-              text
-              rounded
-              severity="secondary"
-              aria-label="Editar tipo de prenda"
-              pTooltip="Editar"
-              (click)="openEdit(garmentType)"
-            >
-              <i pButtonIcon class="pi pi-pencil"></i>
-            </button>
-            <button
-              pButton
-              type="button"
-              text
-              rounded
-              severity="warn"
-              aria-label="Desactivar tipo de prenda"
-              pTooltip="Baja lógica"
-              (click)="deactivate(garmentType)"
-            >
-              <i pButtonIcon class="pi pi-ban"></i>
-            </button>
-            <button
-              pButton
-              type="button"
-              text
-              rounded
-              severity="danger"
-              aria-label="Eliminar tipo de prenda"
-              pTooltip="Eliminar"
-              (click)="remove(garmentType)"
-            >
-              <i pButtonIcon class="pi pi-trash"></i>
-            </button>
+            <ng-container *appHasPermission="'PATCH /api/tipos-prenda/:id'">
+              <button
+                pButton
+                type="button"
+                text
+                rounded
+                severity="secondary"
+                aria-label="Editar tipo de prenda"
+                pTooltip="Editar"
+                (click)="openEdit(garmentType)"
+              >
+                <i pButtonIcon class="pi pi-pencil"></i>
+              </button>
+            </ng-container>
+            <ng-container *appHasPermission="'PATCH /api/tipos-prenda/:id/deactivate'">
+              <button
+                pButton
+                type="button"
+                text
+                rounded
+                severity="warn"
+                aria-label="Desactivar tipo de prenda"
+                pTooltip="Baja lógica"
+                (click)="deactivate(garmentType)"
+              >
+                <i pButtonIcon class="pi pi-ban"></i>
+              </button>
+            </ng-container>
+            <ng-container *appHasPermission="'DELETE /api/tipos-prenda/:id'">
+              <button
+                pButton
+                type="button"
+                text
+                rounded
+                severity="danger"
+                aria-label="Eliminar tipo de prenda"
+                pTooltip="Eliminar"
+                (click)="remove(garmentType)"
+              >
+                <i pButtonIcon class="pi pi-trash"></i>
+              </button>
+            </ng-container>
           </div>
         </td>
       </tr>

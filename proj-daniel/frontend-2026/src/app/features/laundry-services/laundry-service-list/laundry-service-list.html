@@ -3,10 +3,12 @@
   subtitle="Lo que cobra la lavandería por tipo de prenda: por kilogramo o por unidad."
 >
   <p-tag [value]="rows().length + ' activos'" severity="info" [rounded]="true" />
-  <button pButton type="button" (click)="openCreate()">
-    <i pButtonIcon class="pi pi-plus"></i>
-    <span pButtonLabel>Nuevo servicio</span>
-  </button>
+  <ng-container *appHasPermission="'POST /api/servicios'">
+    <button pButton type="button" (click)="openCreate()">
+      <i pButtonIcon class="pi pi-plus"></i>
+      <span pButtonLabel>Nuevo servicio</span>
+    </button>
+  </ng-container>
 </app-page-header>
 
 @if (error()) {
@@ -84,42 +86,48 @@
         <td><app-status-tag [status]="service.status" /></td>
         <td>
           <div class="flex justify-end gap-1">
-            <button
-              pButton
-              type="button"
-              text
-              rounded
-              severity="secondary"
-              aria-label="Editar servicio"
-              pTooltip="Editar"
-              (click)="openEdit(service)"
-            >
-              <i pButtonIcon class="pi pi-pencil"></i>
-            </button>
-            <button
-              pButton
-              type="button"
-              text
-              rounded
-              severity="warn"
-              aria-label="Desactivar servicio"
-              pTooltip="Baja lógica"
-              (click)="deactivate(service)"
-            >
-              <i pButtonIcon class="pi pi-ban"></i>
-            </button>
-            <button
-              pButton
-              type="button"
-              text
-              rounded
-              severity="danger"
-              aria-label="Eliminar servicio"
-              pTooltip="Eliminar"
-              (click)="remove(service)"
-            >
-              <i pButtonIcon class="pi pi-trash"></i>
-            </button>
+            <ng-container *appHasPermission="'PATCH /api/servicios/:id'">
+              <button
+                pButton
+                type="button"
+                text
+                rounded
+                severity="secondary"
+                aria-label="Editar servicio"
+                pTooltip="Editar"
+                (click)="openEdit(service)"
+              >
+                <i pButtonIcon class="pi pi-pencil"></i>
+              </button>
+            </ng-container>
+            <ng-container *appHasPermission="'PATCH /api/servicios/:id/deactivate'">
+              <button
+                pButton
+                type="button"
+                text
+                rounded
+                severity="warn"
+                aria-label="Desactivar servicio"
+                pTooltip="Baja lógica"
+                (click)="deactivate(service)"
+              >
+                <i pButtonIcon class="pi pi-ban"></i>
+              </button>
+            </ng-container>
+            <ng-container *appHasPermission="'DELETE /api/servicios/:id'">
+              <button
+                pButton
+                type="button"
+                text
+                rounded
+                severity="danger"
+                aria-label="Eliminar servicio"
+                pTooltip="Eliminar"
+                (click)="remove(service)"
+              >
+                <i pButtonIcon class="pi pi-trash"></i>
+              </button>
+            </ng-container>
           </div>
         </td>
       </tr>
