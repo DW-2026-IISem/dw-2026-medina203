@@ -73,6 +73,35 @@ describe('Contratos de API (ISS-02)', () => {
     });
   }
 
+  it('ResourceRoleApi.reconcileRole hace POST { role_id, resource_ids } y desenvuelve { result } (ISS-CR-03)', () => {
+    let result: unknown;
+    TestBed.inject(ResourceRoleApi)
+      .reconcileRole(2, [1, 2])
+      .subscribe((r) => (result = r));
+    const req = http.expectOne(`${API}/concesiones-rol`);
+    expect(req.request.method).toBe('POST');
+    expect(req.request.body).toEqual({ role_id: 2, resource_ids: [1, 2] });
+    req.flush({
+      message: 'Role permissions updated',
+      result: { role_id: 2, activated: 1, deactivated: 0, total_active: 2 },
+    });
+    expect(result).toEqual({ role_id: 2, activated: 1, deactivated: 0, total_active: 2 });
+  });
+
+  it('ResourceRoleApi rechaza envolturas mal formadas', () => {
+    const api = TestBed.inject(ResourceRoleApi);
+    const errors: string[] = [];
+    api.list({ role_id: 2 }).subscribe({ error: (e: Error) => errors.push(e.message) });
+    const list = http.expectOne((r) => r.url === `${API}/concesiones-rol`);
+    expect(list.request.params.get('role_id')).toBe('2');
+    list.flush({ rows: [] });
+    api.reconcileRole(2, []).subscribe({ error: (e: Error) => errors.push(e.message) });
+    http.expectOne(`${API}/concesiones-rol`).flush({ message: 'ok' });
+    expect(errors).toHaveLength(2);
+    expect(errors[0]).toContain('grants');
+    expect(errors[1]).toContain('result');
+  });
+
   it('CustomerApi usa PATCH, PUT, /deactivate y DELETE', () => {
     const api = TestBed.inject(CustomerApi);
     api.update(3, { phone: '300' }).subscribe();
