@@ -18,7 +18,7 @@ export abstract class BaseController {
   /**
    * Ejecuta el cuerpo de un handler y centraliza el manejo de errores.
    *
-   * Sin este helper, cada uno de los 35 métodos de los controllers tendría su
+   * Sin este helper, cada método de cada controller tendría su
    * propio `try/catch`. Aquí el `catch` vive una sola vez.
    */
   protected async run(res: Response, work: () => Promise<void>): Promise<void> {

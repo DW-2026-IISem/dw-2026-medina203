@@ -1,0 +1,67 @@
+### Feature Session — login, refresh, logout (OPEN) · perfil y permisos (JWT)
+@baseUrl = http://localhost:4000
+
+### 1) Login como administrador (OPEN)
+# @name login
+POST {{baseUrl}}/api/sesion/login
+Content-Type: application/json
+
+{
+  "identifier": "admin",
+  "password": "Admin123!"
+}
+
+### Tokens capturados de la respuesta anterior (REST Client)
+@token = {{login.response.body.access_token}}
+@refresh = {{login.response.body.refresh_token}}
+
+### 2) Mi perfil y roles (JWT)
+GET {{baseUrl}}/api/sesion/perfil
+Authorization: Bearer {{token}}
+
+### 3) Mis permisos efectivos (JWT)
+GET {{baseUrl}}/api/permisos
+Authorization: Bearer {{token}}
+
+### 4) Renovar tokens (OPEN) — rota el refresh token
+# @name refreshed
+POST {{baseUrl}}/api/sesion/refresh
+Content-Type: application/json
+
+{
+  "refresh_token": "{{refresh}}"
+}
+
+### 5) Reusar el refresh token ya rotado → 401 y se revoca la familia
+POST {{baseUrl}}/api/sesion/refresh
+Content-Type: application/json
+
+{
+  "refresh_token": "{{refresh}}"
+}
+
+### 6) Cerrar sesión (OPEN)
+POST {{baseUrl}}/api/sesion/logout
+Content-Type: application/json
+
+{
+  "refresh_token": "{{refreshed.response.body.refresh_token}}"
+}
+
+### Login como operario de planta
+POST {{baseUrl}}/api/sesion/login
+Content-Type: application/json
+
+{
+  "identifier": "operador@textilclean.local",
+  "password": "Operador123!"
+}
+
+### Credenciales inválidas → 401
+POST {{baseUrl}}/api/sesion/login
+Content-Type: application/json
+
+{
+  "identifier": "admin",
+  "password": "incorrecta"
+}

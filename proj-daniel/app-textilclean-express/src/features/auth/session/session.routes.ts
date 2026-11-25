@@ -1,15 +1,23 @@
 import { Application } from "express";
-import { authenticate } from "../access";
+import { jwtOnly } from "../access";
 import { SessionController } from "./session.controller";
 
+/**
+ * Rutas de Session:
+ * - **OPEN**: login, refresh y logout (no hay identidad previa).
+ * - **JWT**: perfil y permisos propios.
+ */
 export class SessionRoutes {
-  public sessionController: SessionController = new SessionController();
+  public controller: SessionController = new SessionController();
 
   public routes(app: Application): void {
-    app.route("/api/sesion/login").post(this.sessionController.login.bind(this.sessionController));
-    app.route("/api/sesion/refresh").post(this.sessionController.refresh.bind(this.sessionController));
-    app.route("/api/sesion/logout").post(this.sessionController.logout.bind(this.sessionController));
-    app.route("/api/sesion/perfil").get(authenticate, this.sessionController.profile.bind(this.sessionController));
-    app.route("/api/permisos").get(authenticate, this.sessionController.myPermissions.bind(this.sessionController));
+    const c = this.controller;
+    // OPEN
+    app.route("/api/sesion/login").post(c.login.bind(c));
+    app.route("/api/sesion/refresh").post(c.refresh.bind(c));
+    app.route("/api/sesion/logout").post(c.logout.bind(c));
+    // JWT
+    app.route("/api/sesion/perfil").get(...jwtOnly, c.profile.bind(c));
+    app.route("/api/permisos").get(...jwtOnly, c.myPermissions.bind(c));
   }
 }

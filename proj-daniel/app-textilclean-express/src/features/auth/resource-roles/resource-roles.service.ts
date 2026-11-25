@@ -19,6 +19,11 @@ export interface ReconcileResult {
   total_active: number;
 }
 
+/**
+ * Service de ResourceRoles: concede, retira y reactiva permisos de un rol.
+ * `reconcileRole` deja la matriz de un rol EXACTAMENTE igual a una lista de
+ * recursos (activa lo que falta y desactiva lo que sobra) en una transacción.
+ */
 export class ResourceRolesService {
   public constructor(
     private readonly repository: ResourceRolesRepository = new ResourceRolesRepository(),

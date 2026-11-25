@@ -1,6 +1,10 @@
 import { DataTypes, Model } from "sequelize";
 import { sequelize } from "../../../database/db";
 
+/**
+ * Sesión de un usuario: refresh token **opaco** guardado como hash SHA-256,
+ * rotativo (familia `family_id`) y revocable. Tabla: `refresh_tokens`.
+ */
 export interface RefreshTokenI {
   id?: number;
   user_id: number;

@@ -2,6 +2,7 @@ import { normalizePath } from "../../../shared/auth/resource-match";
 import { RESOURCE_CATALOG } from "./resource-catalog";
 import { Resource } from "./resource.model";
 
+/** Seeder de Resources: reconcilia la tabla con RESOURCE_CATALOG (crea, reactiva y actualiza descripción). */
 export async function seedResources(): Promise<number> {
   let created = 0;
   for (const entry of RESOURCE_CATALOG) {
@@ -16,5 +17,6 @@ export async function seedResources(): Promise<number> {
       await resource.update({ status: "active", description: entry.description });
     }
   }
+  console.log(`✅ resources: ${created} creado(s), catálogo de ${RESOURCE_CATALOG.length}`);
   return created;
 }

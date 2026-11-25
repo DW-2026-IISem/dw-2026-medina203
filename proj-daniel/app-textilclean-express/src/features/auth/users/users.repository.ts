@@ -1,12 +1,14 @@
 import { CreationAttributes, Op } from "sequelize";
 import { User } from "./user.model";
 
+/** Repository de Users. Por defecto nunca carga la columna `password`. */
 export class UsersRepository {
   private static readonly WITHOUT_PASSWORD = { exclude: ["password"] };
 
   public async findAllActive(): Promise<User[]> {
     return User.findAll({
       where: { status: "active" },
+      order: [["username", "ASC"]],
       attributes: UsersRepository.WITHOUT_PASSWORD,
     });
   }

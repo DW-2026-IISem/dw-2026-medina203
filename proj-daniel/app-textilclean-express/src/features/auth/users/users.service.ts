@@ -13,6 +13,14 @@ import { UsersRepository } from "./users.repository";
 import { ResourceRolesService } from "../resource-roles/resource-roles.service";
 import { EffectivePermissionDto } from "../resource-roles/dto";
 
+/**
+ * Service de Users (personal de TextilClean).
+ *
+ * - username y email se normalizan (trim + minúsculas) y son únicos (409).
+ * - La contraseña (mín. 8) se hashea en el modelo; solo cambia por `/password`
+ *   verificando la actual.
+ * - `status` solo cambia con el borrado lógico.
+ */
 export class UsersService {
   public constructor(
     private readonly repository: UsersRepository = new UsersRepository(),
@@ -27,17 +35,19 @@ export class UsersService {
     return toUserResponse(await this.findOrFail(id));
   }
 
+  /** Permisos efectivos: unión de los recursos activos de sus roles activos. */
   public async getEffectivePermissions(id: number): Promise<EffectivePermissionDto[]> {
     await this.findOrFail(id);
     return this.resourceRolesService.findEffectiveForUser(id);
   }
 
   public async create(body: CreateUserDto): Promise<UserResponseDto> {
-    this.validateCredentials(body.username, body.email, body.password);
+    this.validateCredentials(body?.username, body?.email, body?.password);
     await this.assertUnique(body.username, body.email);
 
     const user = await this.repository.create({
       username: body.username.trim().toLowerCase(),
+      full_name: body.full_name ?? null,
       email: body.email.trim().toLowerCase(),
       password: body.password,
       avatar: body.avatar ?? null,
@@ -48,11 +58,12 @@ export class UsersService {
 
   public async updatePut(id: number, body: UpdateUserDto): Promise<UserResponseDto> {
     const user = await this.findOrFail(id);
-    this.validateIdentity(body.username, body.email);
+    this.validateIdentity(body?.username, body?.email);
     await this.assertUnique(body.username, body.email, id);
 
     await this.repository.update(user, {
       username: body.username.trim().toLowerCase(),
+      full_name: body.full_name ?? null,
       email: body.email.trim().toLowerCase(),
       avatar: body.avatar ?? null,
     });
@@ -61,13 +72,14 @@ export class UsersService {
 
   public async updatePatch(id: number, body: PatchUserDto): Promise<UserResponseDto> {
     const user = await this.findOrFail(id);
-    const username = body.username ?? user.username;
-    const email = body.email ?? user.email;
+    const username = body?.username ?? user.username;
+    const email = body?.email ?? user.email;
     this.validateIdentity(username, email);
     await this.assertUnique(username, email, id);
 
-    const update: Partial<Pick<User, "username" | "email" | "avatar">> = {};
+    const update: Partial<Pick<User, "username" | "full_name" | "email" | "avatar">> = {};
     if (body.username !== undefined) update.username = username.trim().toLowerCase();
+    if (body.full_name !== undefined) update.full_name = body.full_name;
     if (body.email !== undefined) update.email = email.trim().toLowerCase();
     if (body.avatar !== undefined) update.avatar = body.avatar;
     await this.repository.update(user, update);
@@ -75,7 +87,7 @@ export class UsersService {
   }
 
   public async changePassword(id: number, body: ChangePasswordDto): Promise<void> {
-    if (typeof body.current_password !== "string" || typeof body.new_password !== "string" ||
+    if (typeof body?.current_password !== "string" || typeof body?.new_password !== "string" ||
         body.new_password.length < 8) {
       throw new AppError(400, "current_password and new_password (min 8 characters) are required");
     }
@@ -124,12 +136,8 @@ export class UsersService {
     const conflicts = await this.repository.findConflicts(username, email);
     for (const candidate of conflicts) {
       if (candidate.id === excludeId) continue;
-      if (candidate.username === username.trim().toLowerCase()) {
-        throw new AppError(409, "Username already in use");
-      }
-      if (candidate.email === email.trim().toLowerCase()) {
-        throw new AppError(409, "Email already in use");
-      }
+      if (candidate.username === username.trim().toLowerCase()) throw new AppError(409, "Username already in use");
+      if (candidate.email === email.trim().toLowerCase()) throw new AppError(409, "Email already in use");
     }
   }
 }

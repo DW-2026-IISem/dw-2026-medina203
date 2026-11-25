@@ -3,6 +3,7 @@ import { requireAuthUser } from "../../../shared/auth/auth-user";
 import { BaseController } from "../../../shared/http/base-controller";
 import { RefreshTokensService } from "./refresh-tokens.service";
 
+/** Controller de sesiones propias: siempre opera sobre `req.auth.id`. */
 export class RefreshTokensController extends BaseController {
   public constructor(private readonly service: RefreshTokensService = new RefreshTokensService()) { super(); }
 

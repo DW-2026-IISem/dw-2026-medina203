@@ -2,11 +2,13 @@ import { Role } from "../roles/role.model";
 import { User } from "../users/user.model";
 import { RoleUser } from "./role-user.model";
 
+/** Asignaciones canónicas: admin → ADMIN, operador → OPERATOR. */
 export const SEED_ROLE_USERS = [
   { username: "admin", roleName: "ADMIN" },
-  { username: "seller", roleName: "SELLER" },
+  { username: "operador", roleName: "OPERATOR" },
 ] as const;
 
+/** Seeder de RoleUsers: crea o reactiva las asignaciones canónicas. */
 export async function seedRoleUsers(): Promise<number> {
   let created = 0;
   for (const item of SEED_ROLE_USERS) {
@@ -20,5 +22,6 @@ export async function seedRoleUsers(): Promise<number> {
     if (wasCreated) created += 1;
     else if (assignment.status !== "active") await assignment.update({ status: "active" });
   }
+  console.log(`✅ role_users: ${created} asignación(es) creada(s)`);
   return created;
 }

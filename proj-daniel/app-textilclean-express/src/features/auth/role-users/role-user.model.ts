@@ -1,6 +1,10 @@
 import { DataTypes, Model } from "sequelize";
 import { sequelize } from "../../../database/db";
 
+/**
+ * Asignación usuario ↔ rol (pivote). Tabla: `role_users`.
+ * `status` permite retirar y reactivar sin borrar la fila.
+ */
 export interface RoleUserI {
   id?: number;
   user_id: number;

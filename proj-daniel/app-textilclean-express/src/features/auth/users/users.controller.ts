@@ -3,6 +3,7 @@ import { BaseController } from "../../../shared/http/base-controller";
 import { ChangePasswordDto, CreateUserDto, PatchUserDto, UpdateUserDto } from "./dto";
 import { UsersService } from "./users.service";
 
+/** Controller de Users: solo HTTP. */
 export class UsersController extends BaseController {
   public constructor(private readonly service: UsersService = new UsersService()) {
     super();
@@ -19,6 +20,7 @@ export class UsersController extends BaseController {
       res.status(200).json({ user: await this.service.getOne(this.paramId(req)) });
     });
   }
+
 
   public async getEffectivePermissions(req: Request, res: Response): Promise<void> {
     await this.run(res, async () => {

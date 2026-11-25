@@ -1,6 +1,7 @@
 import { CreationAttributes, Op, Transaction } from "sequelize";
 import { RefreshToken } from "./refresh-token.model";
 
+/** Repository de RefreshTokens: única capa que usa Sequelize. */
 export class RefreshTokensRepository {
   public findByHash(tokenHash: string, transaction?: Transaction, lock = false): Promise<RefreshToken | null> {
     return RefreshToken.findOne({

@@ -1,0 +1,30 @@
+### Feature Customers — CREATE (JWT + RBAC)
+@baseUrl = http://localhost:4000
+# access_token: POST /api/sesion/login (features/auth/session/http/session.http) o npm run dev:token -- admin
+@token = pega-aqui-el-access-token
+
+### CREATE → 201
+POST {{baseUrl}}/api/clientes
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "business_name": "Hotel Waya Guajira",
+  "tax_id": "900123456-7",
+  "contact_name": "Laura Epieyú",
+  "phone": "3001234567",
+  "email": "compras@hotelwaya.com",
+  "address": "Calle 1 #4-50, Riohacha"
+}
+
+### CREATE con NIT repetido → 409
+POST {{baseUrl}}/api/clientes
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "business_name": "Otro hotel",
+  "tax_id": "900123456-7",
+  "phone": "3007654321",
+  "email": "otro@hotel.com"
+}

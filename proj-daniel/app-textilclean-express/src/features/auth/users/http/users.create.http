@@ -1,39 +1,67 @@
-### Feature Users - escritura
-@baseUrl = http://localhost:3000
-@id = 2
+### Feature Users — escritura (JWT + RBAC)
+@baseUrl = http://localhost:4000
+# access_token: POST /api/sesion/login (features/auth/session/http/session.http) o npm run dev:token -- admin
+@token = pega-aqui-el-access-token
+@id = 3
 
-### Crear usuario
+### Crear usuario (operario de planta)
 POST {{baseUrl}}/api/usuarios
+Authorization: Bearer {{token}}
 Content-Type: application/json
 
 {
-  "username": "nuevo.usuario",
-  "email": "nuevo.usuario@textilclean.local",
-  "password": "Password123!",
+  "username": "lavador.turno1",
+  "full_name": "Carlos Pushaina",
+  "email": "lavador1@textilclean.local",
+  "password": "Password123!"
+}
+
+### Crear con username repetido → 409
+POST {{baseUrl}}/api/usuarios
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "username": "admin",
+  "email": "otro@textilclean.local",
+  "password": "Password123!"
+}
+
+### Reemplazar datos (PUT)
+PUT {{baseUrl}}/api/usuarios/{{id}}
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "username": "lavador.turno1",
+  "full_name": "Carlos Andrés Pushaina",
+  "email": "lavador1@textilclean.local",
   "avatar": null
 }
 
-### Actualizar usuario
-PUT {{baseUrl}}/api/usuarios/{{id}}
+### Modificar (PATCH)
+PATCH {{baseUrl}}/api/usuarios/{{id}}
+Authorization: Bearer {{token}}
 Content-Type: application/json
 
 {
-  "username": "seller",
-  "email": "seller@textilclean.local",
-  "avatar": null
+  "full_name": "Carlos A. Pushaina"
 }
 
 ### Cambiar contraseña
 PATCH {{baseUrl}}/api/usuarios/{{id}}/password
+Authorization: Bearer {{token}}
 Content-Type: application/json
 
 {
-  "current_password": "Seller123!",
-  "new_password": "Seller456!"
+  "current_password": "Password123!",
+  "new_password": "Password456!"
 }
 
-### Desactivar usuario
+### Desactivar (borrado lógico)
 PATCH {{baseUrl}}/api/usuarios/{{id}}/deactivate
+Authorization: Bearer {{token}}
 
-### Eliminar usuario físicamente
+### Eliminar (físico)
 DELETE {{baseUrl}}/api/usuarios/{{id}}
+Authorization: Bearer {{token}}

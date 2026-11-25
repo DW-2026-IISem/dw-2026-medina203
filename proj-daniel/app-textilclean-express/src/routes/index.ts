@@ -1,8 +1,8 @@
-import { ClientsRoutes } from "../features/business/clients/clients.routes";
-import { ProductTypesRoutes } from "../features/business/product-types/product-types.routes";
-import { ProductsRoutes } from "../features/business/products/products.routes";
-import { SalesRoutes } from "../features/business/sales/sales.routes";
-import { ProductSalesRoutes } from "../features/business/product-sales/product-sales.routes";
+import { CustomersRoutes } from "../features/business/customers/customers.routes";
+import { GarmentTypesRoutes } from "../features/business/garment-types/garment-types.routes";
+import { LaundryServicesRoutes } from "../features/business/laundry-services/laundry-services.routes";
+import { ServiceOrdersRoutes } from "../features/business/service-orders/service-orders.routes";
+import { ServiceOrderItemsRoutes } from "../features/business/service-order-items/service-order-items.routes";
 import { UsersRoutes } from "../features/auth/users/users.routes";
 import { RolesRoutes } from "../features/auth/roles/roles.routes";
 import { ResourcesRoutes } from "../features/auth/resources/resources.routes";
@@ -11,12 +11,17 @@ import { ResourceRolesRoutes } from "../features/auth/resource-roles/resource-ro
 import { RefreshTokensRoutes } from "../features/auth/refresh-tokens/refresh-tokens.routes";
 import { SessionRoutes } from "../features/auth/session/session.routes";
 
+/**
+ * Agregador de rutas de TextilClean.
+ * Cada feature expone `XxxRoutes.routes(app)`; `App.routes()` las monta.
+ */
 export class Routes {
-  public clientsRoutes: ClientsRoutes = new ClientsRoutes();
-  public productTypesRoutes: ProductTypesRoutes = new ProductTypesRoutes();
-  public productsRoutes: ProductsRoutes = new ProductsRoutes();
-  public salesRoutes: SalesRoutes = new SalesRoutes();
-  public productSalesRoutes: ProductSalesRoutes = new ProductSalesRoutes();
+  public customersRoutes: CustomersRoutes = new CustomersRoutes();
+  public garmentTypesRoutes: GarmentTypesRoutes = new GarmentTypesRoutes();
+  public laundryServicesRoutes: LaundryServicesRoutes = new LaundryServicesRoutes();
+  public serviceOrdersRoutes: ServiceOrdersRoutes = new ServiceOrdersRoutes();
+  public serviceOrderItemsRoutes: ServiceOrderItemsRoutes = new ServiceOrderItemsRoutes();
+  // Auth
   public usersRoutes: UsersRoutes = new UsersRoutes();
   public rolesRoutes: RolesRoutes = new RolesRoutes();
   public resourcesRoutes: ResourcesRoutes = new ResourcesRoutes();
@@ -24,5 +29,4 @@ export class Routes {
   public resourceRolesRoutes: ResourceRolesRoutes = new ResourceRolesRoutes();
   public refreshTokensRoutes: RefreshTokensRoutes = new RefreshTokensRoutes();
   public sessionRoutes: SessionRoutes = new SessionRoutes();
-  
 }

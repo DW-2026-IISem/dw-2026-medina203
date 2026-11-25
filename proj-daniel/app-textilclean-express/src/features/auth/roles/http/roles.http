@@ -1,0 +1,48 @@
+### Feature Roles (JWT + RBAC)
+@baseUrl = http://localhost:4000
+# access_token: POST /api/sesion/login (features/auth/session/http/session.http) o npm run dev:token -- admin
+@token = pega-aqui-el-access-token
+
+### Listar roles
+GET {{baseUrl}}/api/roles
+Authorization: Bearer {{token}}
+
+### Obtener rol
+GET {{baseUrl}}/api/roles/1
+Authorization: Bearer {{token}}
+
+### Crear rol (el nombre se guarda en MAYÚSCULAS)
+POST {{baseUrl}}/api/roles
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "name": "supervisor",
+  "description": "Supervisa la planta de lavado"
+}
+
+### Crear rol repetido → 409
+POST {{baseUrl}}/api/roles
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "name": "ADMIN"
+}
+
+### Modificar descripción
+PATCH {{baseUrl}}/api/roles/3
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "description": "Supervisa turnos y calidad del lavado"
+}
+
+### Desactivar rol
+PATCH {{baseUrl}}/api/roles/3/deactivate
+Authorization: Bearer {{token}}
+
+### Eliminar rol (físico)
+DELETE {{baseUrl}}/api/roles/3
+Authorization: Bearer {{token}}

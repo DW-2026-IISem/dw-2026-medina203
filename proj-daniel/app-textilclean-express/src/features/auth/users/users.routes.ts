@@ -1,28 +1,29 @@
 import { Application } from "express";
+import { protect } from "../access";
 import { UsersController } from "./users.controller";
-import { authenticate, authorize } from "../access";
 
-// TODO ISS-13: proteger todas las operaciones con authenticate y authorize.
+/**
+ * Rutas de Users.
+ * JWT + RBAC (authenticate + authorize).
+ */
 export class UsersRoutes {
-  public usersController: UsersController = new UsersController();
+  public controller: UsersController = new UsersController();
 
   public routes(app: Application): void {
-    app
-      .route("/api/usuarios/:id/permisos")
-      .get(authenticate, authorize, this.usersController.getEffectivePermissions.bind(this.usersController));
-    app.route("/api/usuarios").get(authenticate, authorize, this.usersController.getAll.bind(this.usersController));
-    app.route("/api/usuarios/:id").get(authenticate, authorize, this.usersController.getOne.bind(this.usersController));
-    app.route("/api/usuarios").post(authenticate, authorize, this.usersController.create.bind(this.usersController));
-    app
-      .route("/api/usuarios/:id")
-      .put(authenticate, authorize, this.usersController.updatePut.bind(this.usersController))
-      .patch(authenticate, authorize, this.usersController.updatePatch.bind(this.usersController));
-    app.route("/api/usuarios/:id").delete(authenticate, authorize, this.usersController.deletePhysical.bind(this.usersController));
-    app
-      .route("/api/usuarios/:id/deactivate")
-      .patch(authenticate, authorize, this.usersController.deleteLogical.bind(this.usersController));
-    app
-      .route("/api/usuarios/:id/password")
-      .patch(authenticate, authorize, this.usersController.changePassword.bind(this.usersController));
+    const c = this.controller;
+
+    app.route("/api/usuarios")
+      .get(...protect, c.getAll.bind(c))
+      .post(...protect, c.create.bind(c));
+
+    app.route("/api/usuarios/:id")
+      .get(...protect, c.getOne.bind(c))
+      .put(...protect, c.updatePut.bind(c))
+      .patch(...protect, c.updatePatch.bind(c))
+      .delete(...protect, c.deletePhysical.bind(c));
+
+    app.route("/api/usuarios/:id/deactivate").patch(...protect, c.deleteLogical.bind(c));
+    app.route("/api/usuarios/:id/password").patch(...protect, c.changePassword.bind(c));
+    app.route("/api/usuarios/:id/permisos").get(...protect, c.getEffectivePermissions.bind(c));
   }
 }

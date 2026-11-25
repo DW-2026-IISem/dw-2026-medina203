@@ -4,7 +4,7 @@ import { Resource } from "./resource.model";
 
 export class ResourcesRepository {
   public findAllActive(): Promise<Resource[]> {
-    return Resource.findAll({ where: { status: "active" } });
+    return Resource.findAll({ where: { status: "active" }, order: [["path", "ASC"], ["method", "ASC"]] });
   }
 
   public findById(id: number, transaction?: Transaction): Promise<Resource | null> {

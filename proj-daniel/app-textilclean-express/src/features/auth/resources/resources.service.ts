@@ -4,6 +4,10 @@ import { CreateResourceDto, PatchResourceDto, ResourceResponseDto, toResourceRes
 import { Resource } from "./resource.model";
 import { ResourcesRepository } from "./resources.repository";
 
+/**
+ * Service de Resources: cada recurso es una operación `METHOD /ruta`.
+ * El par (method, path) es único (409) y el path se normaliza.
+ */
 export class ResourcesService {
   public constructor(private readonly repository: ResourcesRepository = new ResourcesRepository()) {}
 

@@ -1,10 +1,10 @@
-import { Sequelize } from "sequelize";
+import { Dialect, Sequelize } from "sequelize";
 import dotenv from "dotenv";
 
-dotenv.config();
+dotenv.config({ quiet: true });
 
 interface DatabaseConfig {
-  dialect: string;
+  dialect: Dialect;
   host: string;
   username: string;
   password: string;
@@ -12,23 +12,27 @@ interface DatabaseConfig {
   port: number;
 }
 
+/**
+ * Motores soportados por TextilClean. SQL Server y Oracle tienen variables en
+ * `.env.example` pero todavía no tienen adaptador.
+ */
 const dbConfigurations: Record<string, DatabaseConfig> = {
   mysql: {
     dialect: "mysql",
     host: process.env.MYSQL_HOST || "localhost",
     username: process.env.MYSQL_USER || "root",
     password: process.env.MYSQL_PASSWORD || "",
-    database: process.env.MYSQL_NAME || "test",
-    port: parseInt(process.env.MYSQL_PORT || "3306")
+    database: process.env.MYSQL_NAME || "textilclean_db",
+    port: parseInt(process.env.MYSQL_PORT || "3306", 10),
   },
   postgres: {
     dialect: "postgres",
     host: process.env.POSTGRES_HOST || "localhost",
     username: process.env.POSTGRES_USER || "postgres",
     password: process.env.POSTGRES_PASSWORD || "",
-    database: process.env.POSTGRES_NAME || "test",
-    port: parseInt(process.env.POSTGRES_PORT || "5432")
-  }
+    database: process.env.POSTGRES_NAME || "textilclean_db",
+    port: parseInt(process.env.POSTGRES_PORT || "5432", 10),
+  },
 };
 
 const selectedEngine = process.env.DB_ENGINE || "mysql";
@@ -38,8 +42,6 @@ if (!selectedConfig) {
   throw new Error(`Motor de base de datos no soportado: ${selectedEngine}`);
 }
 
-console.log(`🔌 Conectando a base de datos: ${selectedEngine.toUpperCase()}`);
-
 export const sequelize = new Sequelize(
   selectedConfig.database,
   selectedConfig.username,
@@ -47,24 +49,17 @@ export const sequelize = new Sequelize(
   {
     host: selectedConfig.host,
     port: selectedConfig.port,
-    dialect: selectedConfig.dialect as any,
-    logging: process.env.NODE_ENV === 'development' ? console.log : false,
-    pool: {
-      max: 5,
-      min: 0,
-      acquire: 30000,
-      idle: 10000
-    }
+    dialect: selectedConfig.dialect,
+    logging: process.env.DB_LOGGING === "true" ? console.log : false,
+    pool: { max: 5, min: 0, acquire: 30000, idle: 10000 },
   }
 );
 
-export const getDatabaseInfo = () => {
-  return {
-    engine: selectedEngine,
-    config: selectedConfig,
-    connectionString: `${selectedConfig.dialect}://${selectedConfig.username}@${selectedConfig.host}:${selectedConfig.port}/${selectedConfig.database}`
-  };
-};
+export const getDatabaseInfo = () => ({
+  engine: selectedEngine,
+  database: selectedConfig.database,
+  connectionString: `${selectedConfig.dialect}://${selectedConfig.username}@${selectedConfig.host}:${selectedConfig.port}/${selectedConfig.database}`,
+});
 
 export const testConnection = async (): Promise<boolean> => {
   try {

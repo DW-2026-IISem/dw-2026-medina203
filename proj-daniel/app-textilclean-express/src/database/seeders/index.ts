@@ -1,24 +1,17 @@
 import dotenv from "dotenv";
 import { sequelize, testConnection } from "../db";
-import "../../features/business/clients/client.model";
-import { seedClients } from "../../features/business/clients/clients.seeder";
 import { resolveSeedCounts } from "./counts";
-import "../../features/business/product-types/product-type.model";
-import { seedProductTypes } from "../../features/business/product-types/product-types.seeder";
-import "../../features/business/products/product.model";
-import "../../features/business/products/products.associations";
-import { seedProducts } from "../../features/business/products/products.seeder";
-import "../../features/business/sales/sale.model";
-import "../../features/business/product-sales/product-sale.model";
-import "../../features/business/sales/sales.associations";
-import "../../features/business/product-sales/product-sales.associations";
-import { seedSales } from "../../features/business/sales/sales.seeder";
-import { seedProductSales } from "../../features/business/product-sales/product-sales.seeder";
-import { seedUsers } from "../../features/auth/users/users.seeder";
-import { seedRoles } from "../../features/auth/roles/roles.seeder";
-import { seedResources } from "../../features/auth/resources/resources.seeder";
-import { seedRoleUsers } from "../../features/auth/role-users/role-users.seeder";
-import { seedResourceRoles } from "../../features/auth/resource-roles/resource-roles.seeder";
+import "../../features/business/customers/customer.model";
+import { seedCustomers } from "../../features/business/customers/customers.seeder";
+import "../../features/business/garment-types/garment-type.model";
+import { seedGarmentTypes } from "../../features/business/garment-types/garment-types.seeder";
+import "../../features/business/laundry-services/laundry-service.model";
+import "../../features/business/laundry-services/laundry-services.associations";
+import { seedLaundryServices } from "../../features/business/laundry-services/laundry-services.seeder";
+import "../../features/business/service-orders/service-order.model";
+import "../../features/business/service-order-items/service-order-item.model";
+import "../../features/business/service-orders/service-orders.associations";
+import "../../features/business/service-order-items/service-order-items.associations";
 import "../../features/auth/users/user.model";
 import "../../features/auth/roles/role.model";
 import "../../features/auth/resources/resource.model";
@@ -26,44 +19,46 @@ import "../../features/auth/role-users/role-user.model";
 import "../../features/auth/resource-roles/resource-role.model";
 import "../../features/auth/refresh-tokens/refresh-token.model";
 import "../../features/auth/rbac.associations";
+import { seedUsers } from "../../features/auth/users/users.seeder";
+import { seedRoles } from "../../features/auth/roles/roles.seeder";
+import { seedResources } from "../../features/auth/resources/resources.seeder";
+import { seedRoleUsers } from "../../features/auth/role-users/role-users.seeder";
+import { seedResourceRoles } from "../../features/auth/resource-roles/resource-roles.seeder";
+import { seedServiceOrders } from "../../features/business/service-orders/service-orders.seeder";
+import { seedServiceOrderItems } from "../../features/business/service-order-items/service-order-items.seeder";
 
-
-dotenv.config();
+dotenv.config({ quiet: true });
 
 /**
- * SeedersRunner — ejecuta TODOS los seeders de features.
- *
- * Ubicación: `src/database/seeders/` (orquestación fuera de cada feature).
- * Cada feature exporta su seeder (ej. `features/business/clients/clients.seeder.ts`).
+ * SeedersRunner — ejecuta los seeders de todos los features (padres → hijos).
  *
  * Uso:
  *   npm run db:seed
- *   npm run db:seed -- --clients=20
- *   SEED_CLIENTS=5 npm run db:seed
+ *   npm run db:seed -- --customers=20
+ *   SEED_CUSTOMERS=5 npm run db:seed
  */
 export async function runAllSeeders(): Promise<void> {
   const counts = resolveSeedCounts();
   console.log("🌱 Iniciando SeedersRunner...");
   console.log("📊 Conteos:", counts);
 
-  const ok = await testConnection();
-  if (!ok) {
-    throw new Error("No hay conexión a la base de datos");
-  }
+  if (!(await testConnection())) throw new Error("No hay conexión a la base de datos");
+  await sequelize.sync({ alter: true });
 
-  await sequelize.sync({ force: false, alter: true });
-
-  // Orden: business (padres → hijos)
-  await seedClients(counts.clients);
-  await seedProductTypes(counts.product_types);
-  await seedProducts(counts.products);
-  await seedSales(counts.sales);
-  await seedProductSales(counts.product_sales);
-  await seedUsers(counts.users);
+  // 1) Seguridad: roles → resources → users → role_users → resource_roles
   await seedRoles();
   await seedResources();
+  await seedUsers(counts.users);
   await seedRoleUsers();
   await seedResourceRoles();
+
+  // 2) Negocio (padres → hijos)
+  await seedCustomers(counts.customers);
+  await seedGarmentTypes(counts.garment_types);
+  await seedLaundryServices(counts.laundry_services);
+  // service_orders antes que service_order_items
+  const createdOrders = await seedServiceOrders(counts.service_orders);
+  if (createdOrders > 0) await seedServiceOrderItems(counts.service_order_items);
 
   console.log("🌱 SeedersRunner finalizado");
 }

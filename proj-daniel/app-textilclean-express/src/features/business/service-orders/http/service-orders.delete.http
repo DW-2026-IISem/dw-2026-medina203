@@ -1,0 +1,12 @@
+### Feature ServiceOrders — DELETE físico / lógico (JWT + RBAC)
+@baseUrl = http://localhost:4000
+# access_token: POST /api/sesion/login (features/auth/session/http/session.http) o npm run dev:token -- admin
+@token = pega-aqui-el-access-token
+
+### Anular (borrado lógico de la orden y sus líneas; 409 si ya fue entregada)
+PATCH {{baseUrl}}/api/ordenes/2/deactivate
+Authorization: Bearer {{token}}
+
+### Borrado físico (orden + líneas)
+DELETE {{baseUrl}}/api/ordenes/2
+Authorization: Bearer {{token}}

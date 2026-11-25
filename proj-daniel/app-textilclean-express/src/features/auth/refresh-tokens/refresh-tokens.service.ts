@@ -7,7 +7,6 @@ import { RefreshTokenResponseDto, toRefreshTokenResponse } from "./dto";
 import { RefreshToken } from "./refresh-token.model";
 import { RefreshTokensRepository } from "./refresh-tokens.repository";
 
-const REFRESH_TTL_DAYS = Number(process.env.JWT_REFRESH_TTL_DAYS ?? 30);
 
 export interface IssuedSession { rawToken: string; familyId: string; expiresAt: Date }
 export type RotationOutcome =
@@ -16,6 +15,15 @@ export type RotationOutcome =
   | { kind: "expired" }
   | { kind: "reuse"; familyId: string; revoked: number };
 
+/**
+ * Service de RefreshTokens (sesiones).
+ *
+ * - El refresh token es **opaco** (64 bytes aleatorios); en BD solo se guarda su SHA-256.
+ * - **Rotación**: cada uso invalida el token y emite otro de la misma familia.
+ * - **Detección de reuso**: si llega un token ya rotado/revocado, se revoca toda la
+ *   familia (posible robo del token).
+ * - El usuario gestiona sus propias sesiones (listar, revocar una o todas, purgar).
+ */
 export class RefreshTokensService {
   public constructor(private readonly repository: RefreshTokensRepository = new RefreshTokensRepository()) {}
 
@@ -89,6 +97,8 @@ export class RefreshTokensService {
   }
 }
 
+/** Vida del refresh token: JWT_REFRESH_TTL_DAYS (por defecto 7 días). */
 function expiryFromNow(): Date {
-  return new Date(Date.now() + REFRESH_TTL_DAYS * 24 * 60 * 60 * 1000);
+  const days = Number(process.env.JWT_REFRESH_TTL_DAYS ?? 7);
+  return new Date(Date.now() + days * 24 * 60 * 60 * 1000);
 }

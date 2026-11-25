@@ -3,6 +3,9 @@ import { CreateRoleDto, PatchRoleDto, RoleResponseDto, toRoleResponse, UpdateRol
 import { Role } from "./role.model";
 import { RolesRepository } from "./roles.repository";
 
+/**
+ * Service de Roles: nombre único en MAYÚSCULAS (409 si se repite).
+ */
 export class RolesService {
   public constructor(private readonly repository: RolesRepository = new RolesRepository()) {}
 

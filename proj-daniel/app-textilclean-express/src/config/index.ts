@@ -1,29 +1,35 @@
 import dotenv from "dotenv";
 import express, { Application, ErrorRequestHandler } from "express";
 import morgan from "morgan";
-var cors = require("cors");
+import cors from "cors";
 import { sequelize, getDatabaseInfo, testConnection } from "../database/db";
-import "../features/business/clients/client.model";
-import "../features/business/product-types/product-type.model";
-import "../features/business/products/product.model";
-import "../features/business/sales/sale.model";
-import "../features/business/product-sales/product-sale.model";
-import "../features/business/products/products.associations";
-import "../features/business/sales/sales.associations";
-import "../features/business/product-sales/product-sales.associations";
+// Modelos (deben importarse antes de sync)
+import "../features/business/customers/customer.model";
+import "../features/business/garment-types/garment-type.model";
+import "../features/business/laundry-services/laundry-service.model";
+import "../features/business/service-orders/service-order.model";
+import "../features/business/service-order-items/service-order-item.model";
 import "../features/auth/users/user.model";
 import "../features/auth/roles/role.model";
 import "../features/auth/resources/resource.model";
 import "../features/auth/role-users/role-user.model";
 import "../features/auth/resource-roles/resource-role.model";
 import "../features/auth/refresh-tokens/refresh-token.model";
+// Relaciones
+import "../features/business/laundry-services/laundry-services.associations";
+import "../features/business/service-orders/service-orders.associations";
+import "../features/business/service-order-items/service-order-items.associations";
 import "../features/auth/rbac.associations";
 import { Routes } from "../routes/index";
 import { setupSwagger } from "../swagger/index";
 
+dotenv.config({ quiet: true });
 
-dotenv.config();
-
+/**
+ * Aplicación Express de TextilClean.
+ *
+ * Orden de arranque: settings → middlewares → routes → manejo de errores.
+ */
 export class App {
   public app: Application;
   public routePrv: Routes = new Routes();
@@ -38,23 +44,25 @@ export class App {
   }
 
   private settings(): void {
-    this.app.set('port', this.port || process.env.PORT || 3000);
+    this.app.set("port", this.port || process.env.PORT || 4000);
   }
 
   private middlewares(): void {
-    this.app.use(morgan('dev'));
+    this.app.use(morgan("dev"));
     this.app.use(cors());
     this.app.use(express.json());
     this.app.use(express.urlencoded({ extended: false }));
   }
 
   private routes(): void {
-   
-    this.routePrv.clientsRoutes.routes(this.app);
-    this.routePrv.productTypesRoutes.routes(this.app);
-    this.routePrv.productsRoutes.routes(this.app);
-    this.routePrv.salesRoutes.routes(this.app);
-    this.routePrv.productSalesRoutes.routes(this.app);
+    this.app.get("/api", (_req, res) => {
+      res.json({ name: "TextilClean API", status: "ok" });
+    });
+    this.routePrv.customersRoutes.routes(this.app);
+    this.routePrv.garmentTypesRoutes.routes(this.app);
+    this.routePrv.laundryServicesRoutes.routes(this.app);
+    this.routePrv.serviceOrdersRoutes.routes(this.app);
+    this.routePrv.serviceOrderItemsRoutes.routes(this.app);
     this.routePrv.usersRoutes.routes(this.app);
     this.routePrv.rolesRoutes.routes(this.app);
     this.routePrv.resourcesRoutes.routes(this.app);
@@ -62,7 +70,6 @@ export class App {
     this.routePrv.resourceRolesRoutes.routes(this.app);
     this.routePrv.refreshTokensRoutes.routes(this.app);
     this.routePrv.sessionRoutes.routes(this.app);
-
   }
 
   private docs(): void {
@@ -80,45 +87,41 @@ export class App {
     this.app.use(bodyErrorHandler);
   }
 
+  /**
+   * Conecta y sincroniza el esquema.
+   *
+   * `sync({ alter })` es cómodo en desarrollo pero NO es una migración de
+   * producción: con DB_SYNC_FORCE=true se borran y recrean las tablas.
+   */
   private async dbConnection(): Promise<void> {
     try {
       const dbInfo = getDatabaseInfo();
-      console.log(`🔗 Intentando conectar a: ${dbInfo.engine.toUpperCase()}`);
+      console.log(`🔗 Conectando a ${dbInfo.connectionString}`);
 
-      const isConnected = await testConnection();
-      if (!isConnected) {
-        throw new Error(`No se pudo conectar a la base de datos ${dbInfo.engine.toUpperCase()}`);
+      if (!(await testConnection())) {
+        throw new Error(`No se pudo conectar a ${dbInfo.engine.toUpperCase()}`);
       }
 
       const force = process.env.DB_SYNC_FORCE === "true";
-      const isMysql =
-        sequelize.getDialect() === "mysql" || sequelize.getDialect() === "mariadb";
+      const isMysql = sequelize.getDialect() === "mysql";
 
-      if (isMysql) {
-        await sequelize.query("SET FOREIGN_KEY_CHECKS = 0");
-      }
+      if (isMysql) await sequelize.query("SET FOREIGN_KEY_CHECKS = 0");
       try {
         await sequelize.sync({ force, alter: !force });
       } finally {
-        if (isMysql) {
-          await sequelize.query("SET FOREIGN_KEY_CHECKS = 1");
-        }
+        if (isMysql) await sequelize.query("SET FOREIGN_KEY_CHECKS = 1");
       }
 
-      console.log(
-        force
-          ? "📦 Base de datos recreada (DB_SYNC_FORCE=true)"
-          : "📦 Base de datos sincronizada exitosamente"
-      );
+      console.log(force ? "📦 Base de datos recreada (DB_SYNC_FORCE=true)" : "📦 Base de datos sincronizada");
     } catch (error) {
       console.error("❌ Error al conectar con la base de datos:", error);
       process.exit(1);
     }
   }
 
-  async listen() {
+  async listen(): Promise<void> {
     await this.dbConnection();
-    await this.app.listen(this.app.get('port'));
-    console.log(`🚀 Servidor ejecutándose en puerto ${this.app.get('port')}`);
+    this.app.listen(this.app.get("port"));
+    console.log(`🚀 TextilClean API en el puerto ${this.app.get("port")}`);
   }
 }

@@ -1,0 +1,12 @@
+### Feature LaundryServices — GET ALL / GET ONE (JWT + RBAC)
+@baseUrl = http://localhost:4000
+# access_token: POST /api/sesion/login (features/auth/session/http/session.http) o npm run dev:token -- admin
+@token = pega-aqui-el-access-token
+
+### GET ALL (incluye garment_type)
+GET {{baseUrl}}/api/servicios
+Authorization: Bearer {{token}}
+
+### GET ONE
+GET {{baseUrl}}/api/servicios/1
+Authorization: Bearer {{token}}

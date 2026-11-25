@@ -2,6 +2,10 @@ import { DataTypes, Model } from "sequelize";
 import { sequelize } from "../../../database/db";
 import { normalizePath } from "../../../shared/auth/resource-match";
 
+/**
+ * Recurso protegible: una operación HTTP (`method` + `path` con `:params`).
+ * Tabla: `resources`. Par (method, path) único.
+ */
 export interface ResourceI {
   id?: number;
   method: string;

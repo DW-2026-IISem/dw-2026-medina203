@@ -8,7 +8,7 @@ import { sequelize } from "../../database/db";
  * - Rollback si `work` lanza (y re-lanza el error).
  *
  * Lo usan los services que tocan varias tablas a la vez
- * (ej. crear una venta = `sales` + `product_sales` + stock de `products`).
+ * (ej. crear una orden = `service_orders` + `service_order_items`).
  */
 export async function withTransaction<T>(
   work: (transaction: Transaction) => Promise<T>

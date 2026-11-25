@@ -3,7 +3,7 @@ import { Role } from "./role.model";
 
 export class RolesRepository {
   public findAllActive(): Promise<Role[]> {
-    return Role.findAll({ where: { status: "active" } });
+    return Role.findAll({ where: { status: "active" }, order: [["name", "ASC"]] });
   }
 
   public findById(id: number): Promise<Role | null> {

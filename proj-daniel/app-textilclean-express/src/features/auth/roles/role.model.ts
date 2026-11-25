@@ -1,6 +1,10 @@
 import { DataTypes, Model } from "sequelize";
 import { sequelize } from "../../../database/db";
 
+/**
+ * Rol RBAC (ADMIN, OPERATOR…). El nombre se normaliza a mayúsculas.
+ * Tabla: `roles`.
+ */
 export interface RoleI {
   id?: number;
   name: string;

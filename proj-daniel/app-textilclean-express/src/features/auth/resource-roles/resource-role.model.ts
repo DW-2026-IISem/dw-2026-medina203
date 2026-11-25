@@ -1,6 +1,10 @@
 import { DataTypes, Model } from "sequelize";
 import { sequelize } from "../../../database/db";
 
+/**
+ * Concesión rol ↔ recurso (pivote). Tabla: `resource_roles`.
+ * Esta fila ES el permiso: no existe una entidad `Permission`.
+ */
 export interface ResourceRoleI {
   id?: number;
   role_id: number;

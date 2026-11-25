@@ -1,41 +1,94 @@
-import { bearerSecurity, openSecurity, unauthorizedResponse } from "../../../shared/http/swagger-security";
+import { badRequestResponse, jsonBody, wrapped } from "../../../shared/http/swagger-common";
+
+/** Documentación OpenAPI de Session. login/refresh/logout son OPEN (`security: []`). */
+const TAG = "Sesión";
+const open = { security: [] as unknown[] };
+const jwt = { "x-access": "jwt" };
+const tokens = { "application/json": { schema: { $ref: "#/components/schemas/SessionTokens" } } };
+const invalid = { description: "Credenciales o refresh token inválidos, expirados o reutilizados" };
 
 export const sessionSwagger = {
-  tags: [{ name: "Sesión", description: "Login, renovación, cierre, perfil y permisos (OPEN + JWT)" }],
+  tags: [{ name: TAG, description: "Login, renovación, cierre de sesión y perfil" }],
   paths: {
     "/api/sesion/login": {
       post: {
-        tags: ["Sesión"], summary: "Iniciar sesión", security: openSecurity,
-        description: "Valida username/correo y contraseña. Las credenciales incorrectas siempre reciben el mismo 401.",
-        requestBody: { required: true, content: { "application/json": { schema: { $ref: "#/components/schemas/Login" } } } },
-        responses: { "200": { description: "Access y refresh tokens" }, "400": { description: "Faltan credenciales" }, "401": { description: "Credenciales inválidas" } },
+        tags: [TAG], ...open,
+        summary: "Iniciar sesión (OPEN)",
+        description: "Credenciales de laboratorio: `admin / Admin123!` y `operador / Operador123!`.",
+        requestBody: jsonBody("Login"),
+        responses: { "200": { description: "Tokens emitidos", content: tokens }, "400": badRequestResponse, "401": invalid },
       },
     },
     "/api/sesion/refresh": {
       post: {
-        tags: ["Sesión"], summary: "Renovar tokens", security: openSecurity,
-        description: "Rota el refresh token; reutilizar uno anterior revoca la familia completa.",
-        requestBody: { required: true, content: { "application/json": { schema: { $ref: "#/components/schemas/RefreshSession" } } } },
-        responses: { "200": { description: "Tokens nuevos" }, "400": { description: "Falta refresh_token" }, "401": { description: "Token inválido, expirado o reutilizado" } },
+        tags: [TAG], ...open,
+        summary: "Renovar tokens con rotación (OPEN)",
+        description: "Devuelve un nuevo par de tokens e invalida el refresh token usado. Reusar uno viejo revoca toda la familia.",
+        requestBody: jsonBody("RefreshSession"),
+        responses: { "200": { description: "Tokens renovados", content: tokens }, "400": badRequestResponse, "401": invalid },
       },
     },
     "/api/sesion/logout": {
       post: {
-        tags: ["Sesión"], summary: "Cerrar sesión", security: openSecurity,
-        requestBody: { required: true, content: { "application/json": { schema: { $ref: "#/components/schemas/RefreshSession" } } } },
-        responses: { "200": { description: "Sesión cerrada" }, "400": { description: "Falta refresh_token" } },
+        tags: [TAG], ...open,
+        summary: "Cerrar sesión (OPEN): revoca el refresh token",
+        requestBody: jsonBody("RefreshSession"),
+        responses: { "200": { description: "Sesión cerrada" }, "400": badRequestResponse },
       },
     },
     "/api/sesion/perfil": {
-      get: { tags: ["Sesión"], summary: "Perfil del usuario autenticado", security: bearerSecurity, responses: { "200": { description: "Perfil sin contraseña" }, "401": unauthorizedResponse } },
+      get: {
+        tags: [TAG], ...jwt,
+        summary: "Mi perfil y mis roles (JWT)",
+        responses: { "200": { description: "Perfil", content: wrapped("user", "Profile") } },
+      },
     },
     "/api/permisos": {
-      get: { tags: ["Sesión"], summary: "Consultar permisos efectivos propios", security: bearerSecurity, responses: { "200": { description: "Permisos efectivos" }, "401": unauthorizedResponse } },
+      get: {
+        tags: [TAG], ...jwt,
+        summary: "Mis permisos efectivos (JWT)",
+        description: "La UI los usa para mostrar u ocultar opciones según el rol.",
+        responses: { "200": { description: "Permisos", content: wrapped("permissions", "EffectivePermission", true) } },
+      },
     },
   },
-  components: { schemas: {
-    Login: { type: "object", required: ["identifier", "password"], properties: { identifier: { type: "string", description: "Username o email" }, password: { type: "string", format: "password" } } },
-    RefreshSession: { type: "object", required: ["refresh_token"], properties: { refresh_token: { type: "string" } } },
-    SessionTokens: { type: "object", properties: { access_token: { type: "string" }, token_type: { type: "string", enum: ["Bearer"] }, expires_in: { type: "integer" }, refresh_token: { type: "string" }, refresh_expires_in: { type: "integer" } } },
-  } },
+  components: {
+    schemas: {
+      Login: {
+        type: "object",
+        required: ["identifier", "password"],
+        properties: {
+          identifier: { type: "string", description: "username o email", example: "admin" },
+          password: { type: "string", format: "password", example: "Admin123!" },
+        },
+      },
+      RefreshSession: {
+        type: "object",
+        required: ["refresh_token"],
+        properties: { refresh_token: { type: "string" } },
+      },
+      SessionTokens: {
+        type: "object",
+        properties: {
+          access_token: { type: "string" },
+          token_type: { type: "string", example: "Bearer" },
+          expires_in: { type: "integer", example: 900 },
+          refresh_token: { type: "string" },
+          refresh_expires_in: { type: "integer", example: 604800 },
+        },
+      },
+      Profile: {
+        type: "object",
+        properties: {
+          id: { type: "integer" },
+          username: { type: "string", example: "operador" },
+          full_name: { type: "string", nullable: true, example: "Operario de planta" },
+          email: { type: "string", format: "email" },
+          avatar: { type: "string", nullable: true },
+          status: { type: "string", enum: ["active", "inactive"] },
+          roles: { type: "array", items: { type: "string" }, example: ["OPERATOR"] },
+        },
+      },
+    },
+  },
 };

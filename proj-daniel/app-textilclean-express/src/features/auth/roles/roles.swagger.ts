@@ -1,29 +1,60 @@
-import { bearerSecurity, forbiddenResponse, invalidIdResponse, notFoundResponse, unauthorizedResponse } from "../../../shared/http/swagger-security";
+import {
+  badRequestResponse,
+  conflictResponse,
+  idParam,
+  invalidIdResponse,
+  jsonBody,
+  notFoundResponse,
+  wrapped,
+} from "../../../shared/http/swagger-common";
 
-const id = [{ name: "id", in: "path", required: true, schema: { type: "integer", minimum: 1 } }];
-const auth = { "401": unauthorizedResponse, "403": forbiddenResponse };
+/** Documentación OpenAPI del feature Roles. */
+const TAG = "Roles";
 
 export const rolesSwagger = {
-  tags: [{ name: "Roles", description: "Roles de autorización (JWT + RBAC)" }],
+  tags: [{ name: TAG, description: "Roles RBAC (ADMIN, OPERATOR…)" }],
   paths: {
     "/api/roles": {
-      get: { tags: ["Roles"], summary: "Listar roles activos", security: bearerSecurity, responses: { "200": { description: "Roles" }, ...auth } },
-      post: { tags: ["Roles"], summary: "Crear rol", security: bearerSecurity, requestBody: { required: true, content: { "application/json": { schema: { $ref: "#/components/schemas/RoleCreate" } } } }, responses: { "201": { description: "Creado" }, "409": { description: "Nombre duplicado" }, ...auth } },
+      get: { tags: [TAG], summary: "Listar roles activos", responses: { "200": { description: "Lista", content: wrapped("roles", "Role", true) } } },
+      post: {
+        tags: [TAG],
+        summary: "Crear rol (nombre en mayúsculas)",
+        requestBody: jsonBody("RoleCreate"),
+        responses: { "201": { description: "Creado", content: wrapped("role", "Role") }, "400": badRequestResponse, "409": conflictResponse },
+      },
     },
     "/api/roles/{id}": {
-      get: { tags: ["Roles"], summary: "Consultar rol", security: bearerSecurity, parameters: id, responses: { "200": { description: "Rol" }, "400": invalidIdResponse, "404": notFoundResponse, ...auth } },
-      put: { tags: ["Roles"], summary: "Reemplazar rol", security: bearerSecurity, parameters: id, requestBody: { required: true, content: { "application/json": { schema: { $ref: "#/components/schemas/RoleUpdate" } } } }, responses: { "200": { description: "Actualizado" }, "400": invalidIdResponse, "404": notFoundResponse, "409": { description: "Nombre duplicado" }, ...auth } },
-      patch: { tags: ["Roles"], summary: "Actualizar rol", security: bearerSecurity, parameters: id, requestBody: { content: { "application/json": { schema: { $ref: "#/components/schemas/RolePatch" } } } }, responses: { "200": { description: "Actualizado" }, "400": invalidIdResponse, "404": notFoundResponse, ...auth } },
-      delete: { tags: ["Roles"], summary: "Eliminar rol físicamente", security: bearerSecurity, parameters: id, responses: { "200": { description: "Eliminado" }, "404": notFoundResponse, ...auth } },
+      get: { tags: [TAG], summary: "Obtener rol", parameters: [idParam], responses: { "200": { description: "Rol", content: wrapped("role", "Role") }, "400": invalidIdResponse, "404": notFoundResponse } },
+      put: { tags: [TAG], summary: "Reemplazar rol", parameters: [idParam], requestBody: jsonBody("RoleUpdate"), responses: { "200": { description: "Actualizado", content: wrapped("role", "Role") }, "400": badRequestResponse, "404": notFoundResponse, "409": conflictResponse } },
+      patch: { tags: [TAG], summary: "Modificar rol", parameters: [idParam], requestBody: jsonBody("RolePatch"), responses: { "200": { description: "Actualizado", content: wrapped("role", "Role") }, "400": badRequestResponse, "404": notFoundResponse, "409": conflictResponse } },
+      delete: { tags: [TAG], summary: "Eliminar rol (físico)", parameters: [idParam], responses: { "200": { description: "Eliminado" }, "400": invalidIdResponse, "404": notFoundResponse, "409": conflictResponse } },
     },
     "/api/roles/{id}/deactivate": {
-      patch: { tags: ["Roles"], summary: "Desactivar rol", security: bearerSecurity, parameters: id, responses: { "200": { description: "Desactivado" }, "404": notFoundResponse, ...auth } },
+      patch: { tags: [TAG], summary: "Desactivar rol", parameters: [idParam], responses: { "200": { description: "Desactivado" }, "400": invalidIdResponse, "404": notFoundResponse } },
     },
   },
-  components: { schemas: {
-    Role: { type: "object", properties: { id: { type: "integer" }, name: { type: "string" }, description: { type: "string", nullable: true }, status: { type: "string", enum: ["active", "inactive"] } } },
-    RoleCreate: { type: "object", required: ["name"], properties: { name: { type: "string" }, description: { type: "string", nullable: true }, status: { type: "string", enum: ["active", "inactive"] } } },
-    RoleUpdate: { type: "object", required: ["name"], properties: { name: { type: "string" }, description: { type: "string", nullable: true } } },
-    RolePatch: { type: "object", properties: { name: { type: "string" }, description: { type: "string", nullable: true } } },
-  } },
+  components: {
+    schemas: {
+      Role: {
+        type: "object",
+        properties: {
+          id: { type: "integer", example: 2 },
+          name: { type: "string", example: "OPERATOR" },
+          description: { type: "string", nullable: true },
+          status: { type: "string", enum: ["active", "inactive"] },
+        },
+      },
+      RoleCreate: {
+        type: "object",
+        required: ["name"],
+        properties: {
+          name: { type: "string", example: "SUPERVISOR" },
+          description: { type: "string", example: "Supervisa la planta de lavado" },
+          status: { type: "string", enum: ["active", "inactive"], default: "active" },
+        },
+      },
+      RoleUpdate: { type: "object", required: ["name"], properties: { name: { type: "string" }, description: { type: "string", nullable: true } } },
+      RolePatch: { type: "object", properties: { name: { type: "string" }, description: { type: "string", nullable: true } } },
+    },
+  },
 };

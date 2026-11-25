@@ -1,69 +1,40 @@
 /**
- * Cantidad de registros por feature/entidad.
- * Prioridad: CLI (--clients=N) > env (SEED_CLIENTS) > default de este archivo.
+ * Cantidad de registros por entidad para el SeedersRunner.
+ * Prioridad: CLI (--customers=N) > env (SEED_CUSTOMERS) > default de este archivo.
  *
- * Cuando agregues features, suma aquí la clave y léela en el runner.
+ * Al agregar un feature, suma su clave aquí (y su variable SEED_*).
  */
 export type SeedCounts = {
-  clients: number;
   users: number;
-  // roles?: number;
-    product_types: number;
-    products: number;
-    sales: number;
-    product_sales: number;
+  customers: number;
+  garment_types: number;
+  laundry_services: number;
+  service_orders: number;
+  service_order_items: number;
 };
 
 export const DEFAULT_SEED_COUNTS: SeedCounts = {
-  clients: 10,
   users: 2,
-    product_types: 25,
-    products: 15,
-    sales: 10,
-    product_sales: 25,
+  customers: 10,
+  garment_types: 10,
+  laundry_services: 20,
+  service_orders: 15,
+  service_order_items: 10,
 };
- 
+
 export function resolveSeedCounts(argv: string[] = process.argv.slice(2)): SeedCounts {
   const counts: SeedCounts = { ...DEFAULT_SEED_COUNTS };
 
-  const envClients = process.env.SEED_CLIENTS;
-  if (envClients !== undefined && envClients !== "") {
-    counts.clients = Number(envClients);
+  // env: SEED_<CLAVE EN MAYÚSCULAS>
+  for (const key of Object.keys(counts) as (keyof SeedCounts)[]) {
+    const raw = process.env[`SEED_${key.toUpperCase()}`];
+    if (raw !== undefined && raw !== "" && /^\d+$/.test(raw)) counts[key] = Number(raw);
   }
 
-  const envUsers = process.env.SEED_USERS;
-  if (envUsers !== undefined && envUsers !== "") {
-    counts.users = Number(envUsers);
-  }
-  
-  const envProductTypes = process.env.SEED_PRODUCT_TYPES;
-  if (envProductTypes !== undefined && envProductTypes !== "") {
-    counts.product_types = Number(envProductTypes);
-  }
-
-  const envProducts = process.env.SEED_PRODUCTS;
-  if (envProducts !== undefined && envProducts !== "") {
-    counts.products = Number(envProducts);
-  }
-
-  const envSales = process.env.SEED_SALES;
-  if (envSales !== undefined && envSales !== "") {
-    counts.sales = Number(envSales);
-  }
-
-  const envProductSales = process.env.SEED_PRODUCT_SALES;
-  if (envProductSales !== undefined && envProductSales !== "") {
-    counts.product_sales = Number(envProductSales);
-  }
-
+  // CLI: --clave=N
   for (const arg of argv) {
     const m = arg.match(/^--([a-zA-Z_]+)=(\d+)$/);
-    if (!m) continue;
-    const key = m[1] as keyof SeedCounts;
-    const value = Number(m[2]);
-    if (key in counts) {
-      counts[key] = value;
-    }
+    if (m && m[1] in counts) counts[m[1] as keyof SeedCounts] = Number(m[2]);
   }
 
   return counts;

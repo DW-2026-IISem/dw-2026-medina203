@@ -2,9 +2,15 @@ import { DataTypes, Model } from "sequelize";
 import { sequelize } from "../../../database/db";
 import { hashPassword } from "../../../shared/auth/password";
 
+/**
+ * Usuario del sistema TextilClean (personal de la lavandería: administradores y
+ * operarios). No confundir con `customers`, que son las empresas atendidas.
+ * Tabla: `users`. La contraseña se guarda con hash bcrypt (hooks).
+ */
 export interface UserI {
   id?: number;
   username: string;
+  full_name?: string | null;
   email: string;
   password: string;
   avatar?: string | null;
@@ -16,6 +22,7 @@ export interface UserI {
 export class User extends Model {
   public id!: number;
   public username!: string;
+  public full_name!: string | null;
   public email!: string;
   public password!: string;
   public avatar!: string | null;
@@ -35,6 +42,7 @@ User.init(
         len: { args: [3, 80], msg: "Username must be between 3 and 80 characters" },
       },
     },
+    full_name: { type: DataTypes.STRING(120), allowNull: true },
     email: {
       type: DataTypes.STRING(150),
       allowNull: false,

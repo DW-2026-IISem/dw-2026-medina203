@@ -4,6 +4,7 @@ import { BaseController } from "../../../shared/http/base-controller";
 import { LoginDto, LogoutSessionDto, RefreshSessionDto } from "./dto";
 import { SessionService } from "./session.service";
 
+/** Controller de Session: solo HTTP. */
 export class SessionController extends BaseController {
   public constructor(private readonly service: SessionService = new SessionService()) { super(); }
 

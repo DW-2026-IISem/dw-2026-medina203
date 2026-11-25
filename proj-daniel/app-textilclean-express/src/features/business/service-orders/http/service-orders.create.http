@@ -1,0 +1,41 @@
+### Feature ServiceOrders — CREATE transaccional (JWT + RBAC)
+@baseUrl = http://localhost:4000
+# access_token: POST /api/sesion/login (features/auth/session/http/session.http) o npm run dev:token -- admin
+@token = pega-aqui-el-access-token
+
+### CREATE → 201 (una línea por kg y otra por unidad)
+# Revisa en GET /api/servicios qué ids cobran por kg o por unidad.
+POST {{baseUrl}}/api/ordenes
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "customer_id": 1,
+  "notes": "Recoger en la portería",
+  "tax": 0,
+  "discount": 0,
+  "items": [
+    { "laundry_service_id": 2, "quantity": 40, "weight_kg": 18.5 },
+    { "laundry_service_id": 6, "quantity": 25 }
+  ]
+}
+
+### CREATE sin peso en un servicio por kg → 400
+POST {{baseUrl}}/api/ordenes
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "customer_id": 1,
+  "items": [ { "laundry_service_id": 2, "quantity": 10 } ]
+}
+
+### CREATE sin líneas → 400
+POST {{baseUrl}}/api/ordenes
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "customer_id": 1,
+  "items": []
+}

@@ -1,14 +1,16 @@
 import { Application } from "express";
+import { protect } from "../access";
 import { ResourceRolesController } from "./resource-roles.controller";
-import { authenticate, authorize } from "../access";
 
-// TODO ISS-13: añadir authenticate y authorize a todas las operaciones.
+/** Rutas de ResourceRoles (concesiones rol-recurso). JWT + RBAC (authenticate + authorize). */
 export class ResourceRolesRoutes {
-  public resourceRolesController: ResourceRolesController = new ResourceRolesController();
+  public controller: ResourceRolesController = new ResourceRolesController();
+
   public routes(app: Application): void {
-    app.route("/api/concesiones-rol").get(authenticate, authorize, this.resourceRolesController.getAll.bind(this.resourceRolesController)).post(authenticate, authorize, this.resourceRolesController.grant.bind(this.resourceRolesController));
-    app.route("/api/concesiones-rol/:id").get(authenticate, authorize, this.resourceRolesController.getOne.bind(this.resourceRolesController));
-    app.route("/api/concesiones-rol/:id/deactivate").patch(authenticate, authorize, this.resourceRolesController.deactivate.bind(this.resourceRolesController));
-    app.route("/api/concesiones-rol/:id/reactivate").patch(authenticate, authorize, this.resourceRolesController.reactivate.bind(this.resourceRolesController));
+    const c = this.controller;
+    app.route("/api/concesiones-rol").get(...protect, c.getAll.bind(c)).post(...protect, c.grant.bind(c));
+    app.route("/api/concesiones-rol/:id").get(...protect, c.getOne.bind(c));
+    app.route("/api/concesiones-rol/:id/deactivate").patch(...protect, c.deactivate.bind(c));
+    app.route("/api/concesiones-rol/:id/reactivate").patch(...protect, c.reactivate.bind(c));
   }
 }

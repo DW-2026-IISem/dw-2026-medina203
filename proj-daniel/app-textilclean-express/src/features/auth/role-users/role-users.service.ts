@@ -5,6 +5,10 @@ import { CreateRoleUserDto, RoleUserResponseDto, toRoleUserResponse } from "./dt
 import { RoleUser } from "./role-user.model";
 import { RoleUsersRepository } from "./role-users.repository";
 
+/**
+ * Service de RoleUsers: asigna, retira y reactiva roles de un usuario.
+ * Usuario y rol deben estar activos; no se duplica una asignación activa (409).
+ */
 export class RoleUsersService {
   public constructor(
     private readonly repository: RoleUsersRepository = new RoleUsersRepository(),

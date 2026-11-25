@@ -5,14 +5,22 @@ import { EffectivePermissionDto } from "../resource-roles/dto";
 import { ResourceRolesService } from "../resource-roles/resource-roles.service";
 import { RefreshTokensService } from "../refresh-tokens/refresh-tokens.service";
 import { UsersRepository } from "../users/users.repository";
+import { RoleUsersRepository } from "../role-users/role-users.repository";
 import { LoginDto, LogoutSessionDto, ProfileDto, RefreshSessionDto, SessionTokensDto } from "./dto";
 import { User } from "../users/user.model";
 
+/**
+ * Service de Session: login, refresh con rotación, logout, perfil y permisos propios.
+ *
+ * El login responde lo mismo (401 "Invalid credentials") si el usuario no existe,
+ * está inactivo o la contraseña es incorrecta: no revela cuál de las tres falló.
+ */
 export class SessionService {
   public constructor(
     private readonly usersRepository: UsersRepository = new UsersRepository(),
     private readonly refreshTokensService: RefreshTokensService = new RefreshTokensService(),
-    private readonly resourceRolesService: ResourceRolesService = new ResourceRolesService()
+    private readonly resourceRolesService: ResourceRolesService = new ResourceRolesService(),
+    private readonly roleUsersRepository: RoleUsersRepository = new RoleUsersRepository()
   ) {}
 
   public async login(body: LoginDto, deviceInfo: string | null): Promise<SessionTokensDto> {
@@ -58,9 +66,11 @@ export class SessionService {
     return {
       id: user.id,
       username: user.username,
+      full_name: user.full_name ?? null,
       email: user.email,
       avatar: user.avatar ?? null,
       status: user.status,
+      roles: await this.roleUsersRepository.findActiveRoleNamesByUser(user.id),
     };
   }
 
