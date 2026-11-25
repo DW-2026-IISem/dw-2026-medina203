@@ -140,12 +140,12 @@ export const routes: Routes = [
       },
       {
         path: 'admin/permisos',
-        title: 'Concesiones · TextilClean',
+        title: 'Roles y permisos · TextilClean',
         canActivate: [authOnlyGuard, permissionGuard],
         data: { permission: 'GET /api/concesiones-rol' },
         loadComponent: () =>
-          import('./features/admin/resource-roles/resource-role-list/resource-role-list').then(
-            (m) => m.ResourceRoleList,
+          import('./features/admin/resource-roles/permission-matrix/permission-matrix').then(
+            (m) => m.PermissionMatrix,
           ),
       },
       { path: '**', redirectTo: 'panel' },

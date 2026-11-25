@@ -104,7 +104,7 @@ export const NAV: NavGroup[] = [
         permission: 'GET /api/asignaciones-rol',
       },
       {
-        label: 'Concesiones',
+        label: 'Roles y permisos',
         icon: 'pi pi-key',
         routerLink: '/admin/permisos',
         permission: 'GET /api/concesiones-rol',

@@ -14,7 +14,7 @@ Consume el backend [`app-textilclean-express`](../app-textilclean-express) en `h
 | Nueva orden (borrador con líneas por kg o por prenda) | `/ordenes/nueva` | ADMIN, OPERATOR |
 | Detalle de órdenes | `/detalle-ordenes` | ADMIN, OPERATOR |
 | Clientes, tipos de prenda, servicios | `/clientes`, `/tipos-prenda`, `/servicios` | ADMIN (todo) · OPERATOR (consulta; crea clientes) |
-| Seguridad: usuarios, roles, recursos, asignaciones, concesiones | `/admin/*` | ADMIN |
+| Seguridad: usuarios, roles, recursos, asignaciones y matriz de roles y permisos (C/R/U/D por entidad) | `/admin/*` (`/admin/permisos`) | ADMIN |
 | Mi perfil | `/perfil` | Todos |
 
 Usuarios de laboratorio: `admin / Admin123!` y `operador / Operador123!`.

@@ -2,7 +2,12 @@ import { Status } from './api.model';
 import { ResourceCreatePayload } from './resource.model';
 import { RoleCreatePayload } from './role.model';
 
-export type { ResourceRole, ResourceRolePayload } from './resource-role.model';
+export type {
+  ResourceRole,
+  ResourceRolePayload,
+  RoleGrantReconciliation,
+  RoleGrantReconciliationPayload,
+} from './resource-role.model';
 export type { RoleUser, RoleUserPayload } from './role-user.model';
 
 /**
