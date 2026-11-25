@@ -1,0 +1,157 @@
+<app-page-header
+  title="Clientes"
+  subtitle="Empresas que contratan el lavado industrial. El listado muestra solo las activas."
+>
+  <p-tag [value]="rows().length + ' activos'" severity="info" [rounded]="true" />
+  <button pButton type="button" (click)="openCreate()">
+    <i pButtonIcon class="pi pi-plus"></i>
+    <span pButtonLabel>Nuevo cliente</span>
+  </button>
+</app-page-header>
+
+@if (error()) {
+  <p-message severity="error" styleClass="mb-4 w-full">{{ error() }}</p-message>
+}
+
+<div class="rounded-xl border border-slate-200 bg-white">
+  <p-table
+    [value]="visibleRows()"
+    [loading]="loading()"
+    [paginator]="visibleRows().length > 10"
+    [rows]="10"
+    dataKey="id"
+    tableStyleClass="min-w-3xl"
+  >
+    <ng-template #caption>
+      <div class="flex items-center gap-2">
+        <i class="pi pi-search text-slate-400"></i>
+        <input
+          pInputText
+          type="search"
+          aria-label="Buscar clientes"
+          placeholder="Buscar por razón social, NIT, contacto, correo o teléfono…"
+          [value]="filter()"
+          (input)="filter.set($any($event.target).value)"
+          class="w-full"
+        />
+      </div>
+      @if (filter()) {
+        <p class="mt-2 text-xs text-slate-500">
+          {{ visibleRows().length }} de {{ rows().length }} coinciden con «{{ filter() }}».
+        </p>
+      }
+    </ng-template>
+
+    <ng-template #header>
+      <tr>
+        <th pSortableColumn="business_name">
+          <div class="flex items-center gap-1">
+            Razón social <p-sort-icon field="business_name" />
+          </div>
+        </th>
+        <th pSortableColumn="tax_id">
+          <div class="flex items-center gap-1">NIT <p-sort-icon field="tax_id" /></div>
+        </th>
+        <th>Contacto</th>
+        <th>Dirección</th>
+        <th>Estado</th>
+        <th class="w-40 text-right">Acciones</th>
+      </tr>
+    </ng-template>
+
+    <ng-template #body let-customer>
+      <tr>
+        <td>
+          <p class="font-medium text-slate-800">{{ customer.business_name }}</p>
+          <p class="text-xs text-slate-400">#{{ customer.id }}</p>
+        </td>
+        <td class="font-mono text-sm text-slate-700">{{ customer.tax_id }}</td>
+        <td>
+          <p class="text-sm text-slate-700">{{ customer.contact_name || '—' }}</p>
+          <p class="text-xs text-slate-400">{{ customer.email }} · {{ customer.phone }}</p>
+        </td>
+        <td class="text-sm text-slate-600">{{ customer.address || '—' }}</td>
+        <td><app-status-tag [status]="customer.status" /></td>
+        <td>
+          <div class="flex justify-end gap-1">
+            <button
+              pButton
+              type="button"
+              text
+              rounded
+              severity="secondary"
+              aria-label="Editar cliente"
+              pTooltip="Editar"
+              (click)="openEdit(customer)"
+            >
+              <i pButtonIcon class="pi pi-pencil"></i>
+            </button>
+            <button
+              pButton
+              type="button"
+              text
+              rounded
+              severity="warn"
+              aria-label="Desactivar cliente"
+              pTooltip="Baja lógica"
+              (click)="deactivate(customer)"
+            >
+              <i pButtonIcon class="pi pi-ban"></i>
+            </button>
+            <button
+              pButton
+              type="button"
+              text
+              rounded
+              severity="danger"
+              aria-label="Eliminar cliente"
+              pTooltip="Eliminar"
+              (click)="remove(customer)"
+            >
+              <i pButtonIcon class="pi pi-trash"></i>
+            </button>
+          </div>
+        </td>
+      </tr>
+    </ng-template>
+
+    <ng-template #emptymessage>
+      <tr>
+        <td colspan="6">
+          @if (filter()) {
+            <app-empty-state
+              icon="pi pi-search"
+              title="Sin coincidencias"
+              message="Ningún cliente coincide con la búsqueda. Borra el filtro para ver todos."
+            />
+          } @else {
+            <app-empty-state
+              icon="pi pi-building"
+              title="Sin clientes activos"
+              message="Registra la primera empresa con «Nuevo cliente» o ejecuta el seeder del backend."
+            />
+          }
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
+</div>
+
+<p-dialog
+  [visible]="dialogVisible()"
+  (visibleChange)="dialogVisible.set($event)"
+  [header]="title()"
+  [modal]="true"
+  [draggable]="false"
+  [resizable]="false"
+  [dismissableMask]="true"
+  styleClass="w-full max-w-2xl mx-4"
+>
+  <app-customer-form
+    [customer]="editing()"
+    [saving]="saving()"
+    [resetKey]="resetKey()"
+    (saved)="save($event)"
+    (cancelled)="dialogVisible.set(false)"
+  />
+</p-dialog>

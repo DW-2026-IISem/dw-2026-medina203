@@ -18,6 +18,9 @@ export interface NavGroup {
 export const NAV: NavGroup[] = [
   {
     label: 'Operación',
-    items: [{ label: 'Inicio', icon: 'pi pi-home', routerLink: '/inicio' }],
+    items: [
+      { label: 'Inicio', icon: 'pi pi-home', routerLink: '/inicio' },
+      { label: 'Clientes', icon: 'pi pi-building', routerLink: '/clientes' },
+    ],
   },
 ];

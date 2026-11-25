@@ -15,6 +15,12 @@ export const routes: Routes = [
         title: 'Inicio · TextilClean',
         loadComponent: () => import('./features/home/home').then((m) => m.Home),
       },
+      {
+        path: 'clientes',
+        title: 'Clientes · TextilClean',
+        loadComponent: () =>
+          import('./features/customers/customer-list/customer-list').then((m) => m.CustomerList),
+      },
       { path: '**', redirectTo: 'inicio' },
     ],
   },

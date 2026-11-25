@@ -1,0 +1,138 @@
+<form [formGroup]="form" (ngSubmit)="submit()" class="space-y-4">
+  <div class="grid gap-4 sm:grid-cols-[2fr_1fr]">
+    <div>
+      <label for="customer-name" class="mb-1 block text-sm font-medium text-slate-700">
+        Razón social <span class="text-red-500">*</span>
+      </label>
+      <input
+        id="customer-name"
+        pInputText
+        formControlName="business_name"
+        placeholder="Hotel Waya Guajira S.A.S."
+        autocomplete="organization"
+        class="w-full"
+      />
+      @if (form.controls.business_name.touched && form.controls.business_name.invalid) {
+        <p-message severity="error" size="small" variant="simple" styleClass="mt-1">
+          La razón social es obligatoria (máximo 150 caracteres).
+        </p-message>
+      }
+    </div>
+
+    <div>
+      <label for="customer-nit" class="mb-1 block text-sm font-medium text-slate-700">
+        NIT <span class="text-red-500">*</span>
+      </label>
+      <input
+        id="customer-nit"
+        pInputText
+        formControlName="tax_id"
+        placeholder="900123456-7"
+        class="w-full"
+      />
+      @if (form.controls.tax_id.touched && form.controls.tax_id.invalid) {
+        <p-message severity="error" size="small" variant="simple" styleClass="mt-1">
+          NIT inválido. Ejemplo: 900123456-7.
+        </p-message>
+      }
+    </div>
+  </div>
+
+  <div class="grid gap-4 sm:grid-cols-2">
+    <div>
+      <label for="customer-contact" class="mb-1 block text-sm font-medium text-slate-700">
+        Persona de contacto
+      </label>
+      <input
+        id="customer-contact"
+        pInputText
+        formControlName="contact_name"
+        placeholder="Laura Epieyú"
+        autocomplete="name"
+        class="w-full"
+      />
+    </div>
+
+    <div>
+      <label for="customer-phone" class="mb-1 block text-sm font-medium text-slate-700">
+        Teléfono <span class="text-red-500">*</span>
+      </label>
+      <input
+        id="customer-phone"
+        pInputText
+        formControlName="phone"
+        placeholder="300 123 4567"
+        autocomplete="tel"
+        class="w-full"
+      />
+      @if (form.controls.phone.touched && form.controls.phone.invalid) {
+        <p-message severity="error" size="small" variant="simple" styleClass="mt-1">
+          El teléfono es obligatorio.
+        </p-message>
+      }
+    </div>
+  </div>
+
+  <div>
+    <label for="customer-email" class="mb-1 block text-sm font-medium text-slate-700">
+      Correo <span class="text-red-500">*</span>
+    </label>
+    <input
+      id="customer-email"
+      type="email"
+      pInputText
+      formControlName="email"
+      placeholder="compras@empresa.com"
+      autocomplete="email"
+      class="w-full"
+    />
+    @if (form.controls.email.touched && form.controls.email.invalid) {
+      <p-message severity="error" size="small" variant="simple" styleClass="mt-1">
+        Escribe un correo válido.
+      </p-message>
+    }
+  </div>
+
+  <div>
+    <label for="customer-address" class="mb-1 block text-sm font-medium text-slate-700">
+      Dirección
+    </label>
+    <textarea
+      id="customer-address"
+      pTextarea
+      formControlName="address"
+      rows="2"
+      placeholder="Calle 1 #4-50, Riohacha"
+      class="w-full"
+    ></textarea>
+  </div>
+
+  <div>
+    <label for="customer-status" class="mb-1 block text-sm font-medium text-slate-700"
+      >Estado</label
+    >
+    <p-select
+      inputId="customer-status"
+      formControlName="status"
+      [options]="statusOptions"
+      optionLabel="label"
+      optionValue="value"
+      [fluid]="true"
+    />
+    @if (customer()) {
+      <p class="mt-1 text-xs text-slate-500">
+        El estado de un cliente existente solo cambia con la baja lógica.
+      </p>
+    }
+  </div>
+
+  <div class="flex justify-end gap-2 border-t border-slate-100 pt-4">
+    <button pButton type="button" severity="secondary" outlined (click)="cancelled.emit()">
+      <span pButtonLabel>Cancelar</span>
+    </button>
+    <button pButton type="submit" [loading]="saving()">
+      <i pButtonIcon class="pi pi-check"></i>
+      <span pButtonLabel>Guardar</span>
+    </button>
+  </div>
+</form>
