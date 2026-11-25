@@ -29,6 +29,14 @@ export const routes: Routes = [
             (m) => m.GarmentTypeList,
           ),
       },
+      {
+        path: 'servicios',
+        title: 'Servicios · TextilClean',
+        loadComponent: () =>
+          import('./features/laundry-services/laundry-service-list/laundry-service-list').then(
+            (m) => m.LaundryServiceList,
+          ),
+      },
       { path: '**', redirectTo: 'inicio' },
     ],
   },

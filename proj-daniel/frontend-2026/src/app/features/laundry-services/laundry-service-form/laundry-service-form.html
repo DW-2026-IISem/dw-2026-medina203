@@ -1,0 +1,119 @@
+<form [formGroup]="form" (ngSubmit)="submit()" class="space-y-4">
+  <div>
+    <label for="service-name" class="mb-1 block text-sm font-medium text-slate-700">
+      Nombre <span class="text-red-500">*</span>
+    </label>
+    <input
+      id="service-name"
+      pInputText
+      formControlName="name"
+      placeholder="Lavado y secado - Sábanas"
+      class="w-full"
+    />
+    @if (form.controls.name.touched && form.controls.name.invalid) {
+      <p-message severity="error" size="small" variant="simple" styleClass="mt-1">
+        El nombre es obligatorio (máximo 120 caracteres).
+      </p-message>
+    }
+  </div>
+
+  <div class="grid gap-4 sm:grid-cols-2">
+    <div>
+      <label for="service-garment" class="mb-1 block text-sm font-medium text-slate-700">
+        Tipo de prenda <span class="text-red-500">*</span>
+      </label>
+      <p-select
+        inputId="service-garment"
+        formControlName="garment_type_id"
+        [options]="garmentTypes()"
+        optionLabel="name"
+        optionValue="id"
+        [filter]="true"
+        placeholder="Selecciona un tipo"
+        [fluid]="true"
+      />
+      @if (form.controls.garment_type_id.touched && form.controls.garment_type_id.invalid) {
+        <p-message severity="error" size="small" variant="simple" styleClass="mt-1">
+          Elige el tipo de prenda.
+        </p-message>
+      }
+    </div>
+
+    <div>
+      <label for="service-unit" class="mb-1 block text-sm font-medium text-slate-700">
+        Unidad de cobro <span class="text-red-500">*</span>
+      </label>
+      <p-select
+        inputId="service-unit"
+        formControlName="billing_unit"
+        [options]="billingUnits"
+        optionLabel="label"
+        optionValue="value"
+        [fluid]="true"
+      />
+    </div>
+  </div>
+
+  <div class="grid gap-4 sm:grid-cols-2">
+    <div>
+      <label for="service-price" class="mb-1 block text-sm font-medium text-slate-700">
+        Precio {{ form.controls.billing_unit.value === 'kg' ? 'por kg' : 'por prenda' }}
+        <span class="text-red-500">*</span>
+      </label>
+      <p-inputnumber
+        inputId="service-price"
+        formControlName="price"
+        mode="currency"
+        currency="COP"
+        locale="es-CO"
+        [minFractionDigits]="0"
+        [maxFractionDigits]="0"
+        [min]="0"
+        [fluid]="true"
+      />
+      @if (form.controls.price.touched && form.controls.price.invalid) {
+        <p-message severity="error" size="small" variant="simple" styleClass="mt-1">
+          Escribe un precio mayor o igual a 0.
+        </p-message>
+      }
+    </div>
+
+    <div>
+      <label for="service-hours" class="mb-1 block text-sm font-medium text-slate-700">
+        Tiempo estimado (horas)
+      </label>
+      <p-inputnumber
+        inputId="service-hours"
+        formControlName="estimated_hours"
+        [min]="1"
+        [showButtons]="true"
+        suffix=" h"
+        [fluid]="true"
+      />
+    </div>
+  </div>
+
+  <div>
+    <label for="service-description" class="mb-1 block text-sm font-medium text-slate-700">
+      Descripción
+    </label>
+    <textarea
+      id="service-description"
+      pTextarea
+      formControlName="description"
+      rows="2"
+      placeholder="Lavado, secado y doblado"
+      class="w-full"
+    ></textarea>
+  </div>
+
+  <div class="flex justify-end gap-2 border-t border-slate-100 pt-4">
+    <button pButton type="button" severity="secondary" outlined (click)="cancelled.emit()">
+      <span pButtonLabel>Cancelar</span>
+    </button>
+    <button pButton type="submit" [loading]="saving()">
+      <i pButtonIcon class="pi pi-check"></i>
+      <span pButtonLabel>Guardar</span>
+    </button>
+  </div>
+</form>

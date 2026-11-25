@@ -3,7 +3,7 @@ import { Money, Status, Timestamps } from './api.model';
 /** Cómo se cobra un servicio: por kilogramo o por prenda. */
 export type BillingUnit = 'kg' | 'unit';
 
-export const BILLING_UNITS: ReadonlyArray<{ label: string; value: BillingUnit }> = [
+export const BILLING_UNITS: Array<{ label: string; value: BillingUnit }> = [
   { label: 'Por kilogramo', value: 'kg' },
   { label: 'Por unidad', value: 'unit' },
 ];
