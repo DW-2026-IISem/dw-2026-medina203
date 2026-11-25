@@ -1,25 +1,22 @@
 import { TestBed } from '@angular/core/testing';
+import { provideRouter } from '@angular/router';
 import { App } from './app';
 
-describe('App (ISS-01)', () => {
+describe('App', () => {
   beforeEach(async () => {
-    await TestBed.configureTestingModule({ imports: [App] }).compileComponents();
+    await TestBed.configureTestingModule({
+      imports: [App],
+      providers: [provideRouter([])],
+    }).compileComponents();
   });
 
   it('se crea', () => {
-    const fixture = TestBed.createComponent(App);
-    expect(fixture.componentInstance).toBeTruthy();
+    expect(TestBed.createComponent(App).componentInstance).toBeTruthy();
   });
 
-  it('muestra el nombre del sistema y reacciona al botón de PrimeNG', async () => {
+  it('solo hospeda el router-outlet', async () => {
     const fixture = TestBed.createComponent(App);
     await fixture.whenStable();
-    const host: HTMLElement = fixture.nativeElement;
-    expect(host.querySelector('h1')?.textContent).toContain('TextilClean');
-
-    host.querySelector('button')?.click();
-    fixture.detectChanges();
-    await fixture.whenStable();
-    expect(host.textContent).toContain('1 clics');
+    expect(fixture.nativeElement.querySelector('router-outlet')).toBeTruthy();
   });
 });

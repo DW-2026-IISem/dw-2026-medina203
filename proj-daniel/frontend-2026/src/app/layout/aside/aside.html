@@ -1,0 +1,30 @@
+<nav
+  aria-label="Navegación principal"
+  class="flex h-full flex-col gap-1 border-r border-slate-200 bg-white p-3"
+>
+  @for (entry of items(); track entry.label) {
+    @if (entry.items) {
+      <p class="px-3 pt-3 pb-2 text-xs font-semibold tracking-wide text-slate-400 uppercase">
+        {{ entry.label }}
+      </p>
+      @for (item of entry.items; track item.label) {
+        <ng-container *ngTemplateOutlet="link; context: { $implicit: item }"></ng-container>
+      }
+    } @else {
+      <ng-container *ngTemplateOutlet="link; context: { $implicit: entry }"></ng-container>
+    }
+  }
+</nav>
+
+<ng-template #link let-item>
+  <a
+    [routerLink]="item.routerLink"
+    routerLinkActive="bg-teal-50 text-teal-700"
+    [routerLinkActiveOptions]="item.routerLinkActiveOptions ?? { exact: false }"
+    class="flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-100"
+    (click)="navigated.emit()"
+  >
+    <i [class]="item.icon ?? 'pi pi-angle-right'"></i>
+    <span>{{ item.label }}</span>
+  </a>
+</ng-template>

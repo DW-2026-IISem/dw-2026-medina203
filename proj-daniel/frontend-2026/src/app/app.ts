@@ -1,21 +1,15 @@
-import { Component, signal } from '@angular/core';
-import { ButtonModule } from 'primeng/button';
-import { TagModule } from 'primeng/tag';
+import { Component } from '@angular/core';
+import { RouterOutlet } from '@angular/router';
 
 /**
- * Componente raíz (`<app-root>`).
- *
- * En ISS-01 solo comprueba que Angular, PrimeNG (Aura) y Tailwind están bien
- * integrados. ISS-02 lo reduce a un `<router-outlet />` y el layout pasa al Shell.
+ * Componente raíz (`<app-root>`): solo hospeda el router.
+ * El layout real vive en `layout/shell`.
  */
 @Component({
   host: { class: 'block' },
   selector: 'app-root',
-  imports: [ButtonModule, TagModule],
+  imports: [RouterOutlet],
   templateUrl: './app.html',
   styleUrl: './app.css',
 })
-export class App {
-  protected readonly title = 'TextilClean';
-  protected readonly clicks = signal(0);
-}
+export class App {}

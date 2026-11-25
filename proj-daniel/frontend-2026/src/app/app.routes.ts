@@ -1,4 +1,21 @@
 import { Routes } from '@angular/router';
 
-/** Rutas de la aplicación. ISS-02 agrega el layout (Shell) y ISS-03 la primera pantalla. */
-export const routes: Routes = [];
+/**
+ * Rutas de TextilClean. Todas las pantallas viven dentro del Shell y se cargan
+ * de forma diferida (`loadComponent`).
+ */
+export const routes: Routes = [
+  {
+    path: '',
+    loadComponent: () => import('./layout/shell/shell').then((m) => m.Shell),
+    children: [
+      { path: '', pathMatch: 'full', redirectTo: 'inicio' },
+      {
+        path: 'inicio',
+        title: 'Inicio · TextilClean',
+        loadComponent: () => import('./features/home/home').then((m) => m.Home),
+      },
+      { path: '**', redirectTo: 'inicio' },
+    ],
+  },
+];

@@ -1,18 +1,1 @@
-<main class="flex min-h-dvh items-center justify-center p-6">
-  <section class="w-full max-w-md rounded-2xl border border-slate-200 bg-white p-8 shadow-sm">
-    <div class="flex items-center gap-3">
-      <i class="pi pi-sparkles text-2xl text-teal-600"></i>
-      <h1 class="text-2xl font-semibold tracking-tight">{{ title }}</h1>
-    </div>
-    <p class="mt-2 text-sm text-slate-500">
-      Lavandería industrial · Angular 22 + PrimeNG 22 + Tailwind CSS 4
-    </p>
-    <div class="mt-6 flex items-center gap-3">
-      <button pButton type="button" (click)="clicks.set(clicks() + 1)">
-        <i pButtonIcon class="pi pi-check"></i>
-        <span pButtonLabel>Probar PrimeNG</span>
-      </button>
-      <p-tag [value]="clicks() + ' clics'" severity="info" [rounded]="true" />
-    </div>
-  </section>
-</main>
+<router-outlet />

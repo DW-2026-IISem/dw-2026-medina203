@@ -1,11 +1,15 @@
 /**
  * Entorno de producción (`ng build`).
  *
- * `primeUiLicense`: clave Community de PrimeUI (PrimeNG 22). Vacía = aviso en
- * consola; la app funciona igual. ISS-02 agrega la URL del API.
+ * - `apiUrl` termina en `/api` SIN slash final (si no, saldrían URLs `//clientes`).
+ * - `requireAuth`: mitad frontal del interruptor de fases; se empareja con
+ *   `AUTH_ENABLED` del backend. Nadie lo lee hasta ISS-08.
+ * - `primeUiLicense`: clave Community de PrimeUI. Vacía = aviso en consola.
  */
 export const environment = {
   production: true,
   appName: 'TextilClean',
+  apiUrl: 'http://localhost:4000/api',
+  requireAuth: true,
   primeUiLicense: '',
 };
