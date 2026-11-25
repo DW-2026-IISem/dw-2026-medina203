@@ -3,6 +3,8 @@ export interface NavItem {
   label: string;
   icon: string;
   routerLink: string;
+  /** Resaltar solo con la URL exacta (evita que /ordenes se marque en /ordenes/nueva). */
+  exact?: boolean;
 }
 
 /** Grupo de elementos del menú. */
@@ -23,6 +25,8 @@ export const NAV: NavGroup[] = [
       { label: 'Clientes', icon: 'pi pi-building', routerLink: '/clientes' },
       { label: 'Tipos de prenda', icon: 'pi pi-tags', routerLink: '/tipos-prenda' },
       { label: 'Servicios', icon: 'pi pi-sparkles', routerLink: '/servicios' },
+      { label: 'Órdenes', icon: 'pi pi-inbox', routerLink: '/ordenes', exact: true },
+      { label: 'Nueva orden', icon: 'pi pi-plus-circle', routerLink: '/ordenes/nueva' },
     ],
   },
 ];

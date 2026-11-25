@@ -1,0 +1,244 @@
+<app-page-header
+  title="Nueva orden de servicio"
+  subtitle="Registra la ropa que entrega el cliente. Los precios se congelan al confirmar la orden."
+>
+  <button pButton type="button" severity="secondary" outlined (click)="load()">
+    <i pButtonIcon class="pi pi-refresh"></i>
+    <span pButtonLabel>Recargar catálogos</span>
+  </button>
+</app-page-header>
+
+@if (error()) {
+  <p-message severity="error" styleClass="mb-4 w-full">{{ error() }}</p-message>
+}
+
+<p-card header="Cliente">
+  <div class="grid gap-4 sm:grid-cols-2">
+    <div>
+      <label for="order-customer" class="mb-1 block text-sm font-medium text-slate-700">
+        Empresa <span class="text-red-500">*</span>
+      </label>
+      <p-select
+        inputId="order-customer"
+        [fluid]="true"
+        [ngModel]="customerId()"
+        (ngModelChange)="customerId.set($event)"
+        [options]="customers()"
+        optionLabel="business_name"
+        optionValue="id"
+        [filter]="true"
+        filterBy="business_name,tax_id"
+        placeholder="Selecciona un cliente activo"
+        [loading]="loading()"
+      />
+    </div>
+    <div>
+      <label for="order-notes" class="mb-1 block text-sm font-medium text-slate-700">Notas</label>
+      <textarea
+        id="order-notes"
+        pTextarea
+        rows="1"
+        class="w-full"
+        placeholder="Entregar en recepción, prendas con manchas de vino…"
+        [ngModel]="notes()"
+        (ngModelChange)="notes.set($event)"
+      ></textarea>
+    </div>
+  </div>
+</p-card>
+
+<p-card header="Prendas y servicios" styleClass="mt-4">
+  <div class="grid items-end gap-3 lg:grid-cols-[2fr_1fr_1fr_auto]">
+    <div>
+      <label for="order-service" class="mb-1 block text-sm font-medium text-slate-700"
+        >Servicio</label
+      >
+      <p-select
+        inputId="order-service"
+        [fluid]="true"
+        [ngModel]="selectedServiceId()"
+        (ngModelChange)="selectedServiceId.set($event)"
+        [options]="services()"
+        optionLabel="name"
+        optionValue="id"
+        [filter]="true"
+        placeholder="Buscar servicio"
+      />
+      @if (selectedService(); as service) {
+        <p class="mt-1 text-xs text-slate-500">
+          {{ service.price | cop }} {{ service.billing_unit === 'kg' ? 'por kg' : 'por prenda' }} ·
+          entrega en {{ service.estimated_hours }} h
+        </p>
+      }
+    </div>
+    <div>
+      <label for="order-qty" class="mb-1 block text-sm font-medium text-slate-700">Prendas</label>
+      <p-inputnumber
+        inputId="order-qty"
+        [fluid]="true"
+        [ngModel]="quantity()"
+        (ngModelChange)="quantity.set($event ?? 1)"
+        [min]="1"
+        [showButtons]="true"
+      />
+    </div>
+    <div>
+      <label for="order-weight" class="mb-1 block text-sm font-medium text-slate-700">
+        Peso (kg)
+        @if (needsWeight()) {
+          <span class="text-red-500">*</span>
+        }
+      </label>
+      <p-inputnumber
+        inputId="order-weight"
+        [fluid]="true"
+        [ngModel]="weightKg()"
+        (ngModelChange)="weightKg.set($event)"
+        mode="decimal"
+        [minFractionDigits]="0"
+        [maxFractionDigits]="2"
+        [min]="0"
+        locale="es-CO"
+        suffix=" kg"
+        [placeholder]="needsWeight() ? 'Obligatorio' : 'Opcional'"
+      />
+    </div>
+    <button pButton type="button" (click)="addLine()" [disabled]="loading()">
+      <i pButtonIcon class="pi pi-plus"></i>
+      <span pButtonLabel>Agregar</span>
+    </button>
+  </div>
+
+  <div class="mt-4 overflow-hidden rounded-xl border border-slate-200">
+    <p-table [value]="lines()" tableStyleClass="min-w-3xl">
+      <ng-template #header>
+        <tr>
+          <th>Servicio</th>
+          <th class="text-right">Precio</th>
+          <th class="text-right">Prendas</th>
+          <th class="text-right">Peso</th>
+          <th class="text-right">Total línea</th>
+          <th class="w-12"></th>
+        </tr>
+      </ng-template>
+      <ng-template #body let-line let-index="rowIndex">
+        <tr>
+          <td>{{ serviceById().get(line.laundry_service_id)?.name }}</td>
+          <td class="text-right text-sm">
+            {{ serviceById().get(line.laundry_service_id)?.price | cop }}
+            <span class="text-xs text-slate-400">
+              /
+              {{ serviceById().get(line.laundry_service_id)?.billing_unit === 'kg' ? 'kg' : 'und' }}
+            </span>
+          </td>
+          <td class="text-right">{{ line.quantity }}</td>
+          <td class="text-right">{{ line.weight_kg !== null ? line.weight_kg + ' kg' : '—' }}</td>
+          <td class="text-right font-medium">{{ lineTotal(line) | cop }}</td>
+          <td class="text-right">
+            <button
+              pButton
+              type="button"
+              text
+              rounded
+              severity="danger"
+              aria-label="Quitar línea"
+              pTooltip="Quitar línea"
+              (click)="removeLine(index)"
+            >
+              <i pButtonIcon class="pi pi-times"></i>
+            </button>
+          </td>
+        </tr>
+      </ng-template>
+      <ng-template #emptymessage>
+        <tr>
+          <td colspan="6" class="p-4 text-center text-sm text-slate-500">
+            Sin líneas todavía. Elige un servicio, escribe prendas y peso, y pulsa «Agregar».
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </div>
+</p-card>
+
+<p-card header="Totales" styleClass="mt-4">
+  <div class="grid gap-4 sm:grid-cols-2">
+    <div>
+      <label for="order-tax" class="mb-1 block text-sm font-medium text-slate-700">Impuesto</label>
+      <p-inputnumber
+        inputId="order-tax"
+        [fluid]="true"
+        [ngModel]="tax()"
+        (ngModelChange)="tax.set($event ?? 0)"
+        mode="currency"
+        currency="COP"
+        locale="es-CO"
+        [maxFractionDigits]="0"
+        [min]="0"
+      />
+    </div>
+    <div>
+      <label for="order-discount" class="mb-1 block text-sm font-medium text-slate-700">
+        Descuento
+      </label>
+      <p-inputnumber
+        inputId="order-discount"
+        [fluid]="true"
+        [ngModel]="discount()"
+        (ngModelChange)="discount.set($event ?? 0)"
+        mode="currency"
+        currency="COP"
+        locale="es-CO"
+        [maxFractionDigits]="0"
+        [min]="0"
+      />
+    </div>
+  </div>
+
+  <dl class="mt-4 space-y-2 text-sm">
+    <div class="flex justify-between">
+      <dt class="text-slate-500">Subtotal</dt>
+      <dd class="font-medium">{{ subtotal() | cop }}</dd>
+    </div>
+    <div class="flex justify-between">
+      <dt class="text-slate-500">Impuesto</dt>
+      <dd>{{ tax() | cop }}</dd>
+    </div>
+    <div class="flex justify-between">
+      <dt class="text-slate-500">Descuento</dt>
+      <dd>-{{ discount() | cop }}</dd>
+    </div>
+    <div class="flex justify-between border-t border-slate-200 pt-2 text-base">
+      <dt class="font-semibold">Total</dt>
+      <dd class="font-semibold" [class.text-red-600]="total() < 0">{{ total() | cop }}</dd>
+    </div>
+    @if (estimatedDelivery(); as delivery) {
+      <div class="flex justify-between text-xs text-slate-500">
+        <dt>Entrega estimada</dt>
+        <dd>{{ delivery | date: 'dd/MM/yyyy HH:mm' }}</dd>
+      </div>
+    }
+  </dl>
+
+  <div class="mt-4 flex justify-end gap-2">
+    <button
+      pButton
+      type="button"
+      severity="secondary"
+      outlined
+      (click)="router.navigate(['/ordenes'])"
+    >
+      <span pButtonLabel>Cancelar</span>
+    </button>
+    <button
+      pButton
+      type="button"
+      [loading]="saving()"
+      [disabled]="lines().length === 0"
+      (click)="save()"
+    >
+      <i pButtonIcon class="pi pi-check"></i>
+      <span pButtonLabel>Registrar orden</span>
+    </button>
+  </div>
+</p-card>

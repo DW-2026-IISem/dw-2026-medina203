@@ -1,0 +1,149 @@
+<app-page-header
+  title="Órdenes de servicio"
+  subtitle="Ropa recibida de los clientes y su avance en la planta: recibida → en proceso → lista → entregada."
+>
+  <p-tag
+    [value]="rows().length + ' órdenes · ' + (totalAmount() | cop)"
+    severity="info"
+    [rounded]="true"
+  />
+  <a pButton routerLink="/ordenes/nueva">
+    <i pButtonIcon class="pi pi-plus"></i>
+    <span pButtonLabel>Nueva orden</span>
+  </a>
+</app-page-header>
+
+@if (error()) {
+  <p-message severity="error" styleClass="mb-4 w-full">{{ error() }}</p-message>
+}
+
+<div class="rounded-xl border border-slate-200 bg-white">
+  <p-table
+    [value]="rows()"
+    [loading]="loading()"
+    [paginator]="rows().length > 10"
+    [rows]="10"
+    dataKey="id"
+    tableStyleClass="min-w-4xl"
+  >
+    <ng-template #caption>
+      <div class="grid gap-2 sm:grid-cols-2">
+        <p-select
+          ariaLabel="Filtrar por estado del proceso"
+          [options]="statusOptions"
+          optionLabel="label"
+          optionValue="value"
+          [showClear]="true"
+          placeholder="Todos los estados"
+          [ngModel]="statusFilter()"
+          (ngModelChange)="setStatusFilter($event)"
+          [fluid]="true"
+        />
+        <p-select
+          ariaLabel="Filtrar por cliente"
+          [options]="customers()"
+          optionLabel="business_name"
+          optionValue="id"
+          [filter]="true"
+          [showClear]="true"
+          placeholder="Todos los clientes"
+          [ngModel]="customerFilter()"
+          (ngModelChange)="setCustomerFilter($event)"
+          [fluid]="true"
+        />
+      </div>
+    </ng-template>
+
+    <ng-template #header>
+      <tr>
+        <th pSortableColumn="id">
+          <div class="flex items-center gap-1"># <p-sort-icon field="id" /></div>
+        </th>
+        <th>Cliente</th>
+        <th pSortableColumn="received_at">
+          <div class="flex items-center gap-1">Recibida <p-sort-icon field="received_at" /></div>
+        </th>
+        <th>Entrega</th>
+        <th>Proceso</th>
+        <th class="text-right">Total</th>
+        <th class="w-56 text-right">Acciones</th>
+      </tr>
+    </ng-template>
+
+    <ng-template #body let-order>
+      <tr>
+        <td class="font-medium text-slate-800">#{{ order.id }}</td>
+        <td>
+          <p class="text-sm font-medium text-slate-800">
+            {{ order.customer?.business_name ?? 'Cliente #' + order.customer_id }}
+          </p>
+          @if (order.notes) {
+            <p class="text-xs text-slate-400">{{ order.notes }}</p>
+          }
+        </td>
+        <td class="text-sm text-slate-600">{{ order.received_at | date: 'dd/MM/yyyy HH:mm' }}</td>
+        <td class="text-sm text-slate-600">
+          {{ order.delivery_date ? (order.delivery_date | date: 'dd/MM/yyyy HH:mm') : '—' }}
+        </td>
+        <td><app-process-status-tag [status]="order.process_status" /></td>
+        <td class="text-right font-medium">{{ order.total | cop }}</td>
+        <td>
+          <div class="flex items-center justify-end gap-1">
+            @if (nextLabel(order); as next) {
+              <button
+                pButton
+                type="button"
+                size="small"
+                outlined
+                [loading]="busyId() === order.id"
+                [attr.aria-label]="'Pasar la orden ' + order.id + ' a ' + next"
+                (click)="advance(order)"
+              >
+                <i pButtonIcon class="pi pi-arrow-right"></i>
+                <span pButtonLabel>{{ next }}</span>
+              </button>
+            }
+            @if (order.process_status !== 'delivered') {
+              <button
+                pButton
+                type="button"
+                text
+                rounded
+                severity="warn"
+                aria-label="Anular orden"
+                pTooltip="Anular"
+                (click)="cancel(order)"
+              >
+                <i pButtonIcon class="pi pi-ban"></i>
+              </button>
+            }
+            <button
+              pButton
+              type="button"
+              text
+              rounded
+              severity="danger"
+              aria-label="Eliminar orden"
+              pTooltip="Eliminar"
+              (click)="remove(order)"
+            >
+              <i pButtonIcon class="pi pi-trash"></i>
+            </button>
+          </div>
+        </td>
+      </tr>
+    </ng-template>
+
+    <ng-template #emptymessage>
+      <tr>
+        <td colspan="7">
+          <app-empty-state
+            icon="pi pi-inbox"
+            title="Sin órdenes"
+            message="No hay órdenes con estos filtros. Registra una con «Nueva orden»."
+          />
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
+</div>

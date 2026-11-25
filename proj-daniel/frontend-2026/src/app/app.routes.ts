@@ -37,6 +37,22 @@ export const routes: Routes = [
             (m) => m.LaundryServiceList,
           ),
       },
+      {
+        path: 'ordenes',
+        title: 'Órdenes de servicio · TextilClean',
+        loadComponent: () =>
+          import('./features/service-orders/service-order-list/service-order-list').then(
+            (m) => m.ServiceOrderList,
+          ),
+      },
+      {
+        path: 'ordenes/nueva',
+        title: 'Nueva orden · TextilClean',
+        loadComponent: () =>
+          import('./features/service-orders/service-order-form/service-order-form').then(
+            (m) => m.ServiceOrderForm,
+          ),
+      },
       { path: '**', redirectTo: 'inicio' },
     ],
   },

@@ -36,6 +36,7 @@ export class Shell {
         label: item.label,
         icon: item.icon,
         routerLink: item.routerLink,
+        routerLinkActiveOptions: { exact: item.exact ?? false },
       })),
     })),
   );
