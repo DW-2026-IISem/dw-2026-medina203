@@ -6,6 +6,16 @@ import { Routes } from '@angular/router';
  */
 export const routes: Routes = [
   {
+    path: 'login',
+    title: 'Iniciar sesión · TextilClean',
+    loadComponent: () => import('./features/auth/login/login').then((m) => m.Login),
+  },
+  {
+    path: 'forbidden',
+    title: 'Acceso denegado · TextilClean',
+    loadComponent: () => import('./features/auth/forbidden/forbidden').then((m) => m.Forbidden),
+  },
+  {
     path: '',
     loadComponent: () => import('./layout/shell/shell').then((m) => m.Shell),
     children: [
@@ -14,6 +24,11 @@ export const routes: Routes = [
         path: 'panel',
         title: 'Panel · TextilClean',
         loadComponent: () => import('./features/dashboard/dashboard').then((m) => m.Dashboard),
+      },
+      {
+        path: 'perfil',
+        title: 'Mi perfil · TextilClean',
+        loadComponent: () => import('./features/auth/profile/profile').then((m) => m.Profile),
       },
       {
         path: 'clientes',

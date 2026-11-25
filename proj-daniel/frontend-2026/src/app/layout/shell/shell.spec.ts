@@ -22,6 +22,7 @@ describe('Shell (ISS-02)', () => {
       'Órdenes',
       'Nueva orden',
       'Detalle de órdenes',
+      'Mi perfil',
     ]);
   });
 

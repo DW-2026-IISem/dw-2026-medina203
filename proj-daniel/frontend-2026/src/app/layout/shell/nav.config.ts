@@ -30,4 +30,8 @@ export const NAV: NavGroup[] = [
       { label: 'Detalle de órdenes', icon: 'pi pi-list', routerLink: '/detalle-ordenes' },
     ],
   },
+  {
+    label: 'Cuenta',
+    items: [{ label: 'Mi perfil', icon: 'pi pi-user', routerLink: '/perfil' }],
+  },
 ];
