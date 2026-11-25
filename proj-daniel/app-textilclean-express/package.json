@@ -9,6 +9,7 @@
     "dev": "nodemon --watch src --ext ts --exec ts-node -- src/server.ts",
     "start": "node dist/server.js",
     "db:seed": "ts-node -- src/database/seeders/index.ts",
+    "db:seed:catalog": "ts-node -- src/database/seeders/catalog.ts",
     "typecheck": "tsc --noEmit",
     "dev:token": "ts-node -- src/scripts/dev-token.ts",
     "smoke": "ts-node -- src/scripts/smoke-e2e.ts"

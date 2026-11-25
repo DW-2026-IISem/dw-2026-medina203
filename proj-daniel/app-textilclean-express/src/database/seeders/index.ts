@@ -36,8 +36,14 @@ dotenv.config({ quiet: true });
  *   npm run db:seed
  *   npm run db:seed -- --customers=20
  *   SEED_CUSTOMERS=5 npm run db:seed
+ *   npm run db:seed -- --skip-grants   # no reconcilia resource_roles
+ *
+ * ⚠️ Sin `--skip-grants`, `seedResourceRoles` deja ADMIN y OPERATOR con la matriz
+ * por defecto: SOBRESCRIBE los permisos ajustados en el panel de roles y permisos.
+ * Para solo registrar rutas nuevas usa `npm run db:seed:catalog`.
  */
-export async function runAllSeeders(): Promise<void> {
+export async function runAllSeeders(argv: string[] = process.argv.slice(2)): Promise<void> {
+  const skipGrants = argv.includes("--skip-grants") || process.env.SEED_SKIP_GRANTS === "true";
   const counts = resolveSeedCounts();
   console.log("🌱 Iniciando SeedersRunner...");
   console.log("📊 Conteos:", counts);
@@ -50,7 +56,8 @@ export async function runAllSeeders(): Promise<void> {
   await seedResources();
   await seedUsers(counts.users);
   await seedRoleUsers();
-  await seedResourceRoles();
+  if (skipGrants) console.log("⏭️  resource_roles: omitido (--skip-grants), se conserva la matriz actual");
+  else await seedResourceRoles();
 
   // 2) Negocio (padres → hijos)
   await seedCustomers(counts.customers);

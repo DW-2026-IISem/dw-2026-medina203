@@ -1,3 +1,5 @@
+import { normalizePath } from "../../../shared/auth/resource-match";
+
 /**
  * Catálogo de seguridad de TextilClean: TODAS las operaciones protegidas por
  * RBAC (`authenticate` + `authorize`).
@@ -106,10 +108,33 @@ export const RESOURCE_CATALOG: readonly CatalogResource[] = [
   // ===== Seguridad: concesiones rol-recurso (ISS-12) =====
   { method: "GET", path: "/api/concesiones-rol", description: "Listar concesiones rol-recurso" },
   { method: "GET", path: "/api/concesiones-rol/:id", description: "Consultar concesión" },
-  { method: "POST", path: "/api/concesiones-rol", description: "Conceder recurso a rol" },
+  { method: "POST", path: "/api/concesiones-rol", description: "Conceder recurso o guardar la matriz de un rol" },
   { method: "PATCH", path: "/api/concesiones-rol/:id/deactivate", description: "Retirar recurso" },
   { method: "PATCH", path: "/api/concesiones-rol/:id/reactivate", description: "Reactivar recurso" },
 ];
+
+/**
+ * Devuelve las operaciones `METHOD path` repetidas del catálogo (comparando el
+ * path normalizado). Un catálogo sano devuelve `[]`: la BD además tiene el
+ * índice único `uq_resources_method_path`, pero fallar antes da un mensaje claro.
+ */
+export function findCatalogDuplicates(catalog: readonly CatalogResource[] = RESOURCE_CATALOG): string[] {
+  const seen = new Set<string>();
+  const duplicates = new Set<string>();
+  for (const entry of catalog) {
+    const key = `${entry.method.toUpperCase()} ${normalizePath(entry.path)}`;
+    if (seen.has(key)) duplicates.add(key);
+    seen.add(key);
+  }
+  return [...duplicates];
+}
+
+export function assertUniqueCatalog(catalog: readonly CatalogResource[] = RESOURCE_CATALOG): void {
+  const duplicates = findCatalogDuplicates(catalog);
+  if (duplicates.length > 0) {
+    throw new Error(`RESOURCE_CATALOG tiene operaciones duplicadas: ${duplicates.join(", ")}`);
+  }
+}
 
 export const OPERATOR_RESOURCES: readonly CatalogResource[] = RESOURCE_CATALOG.filter(
   (resource) => resource.operator === true
